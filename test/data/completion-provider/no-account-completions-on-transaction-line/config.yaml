@@ -1,0 +1,6 @@
+description: Should not provide account completions on non-indented lines
+cursorLine: 0
+cursorColumn: 15
+expectedCompletions: []
+completionType: none
+noAccountCompletions: true

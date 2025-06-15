@@ -1,0 +1,9 @@
+; Important comment about this transaction
+; Another line
+2024-01-20 Transaction with comments
+    Expenses:Test    $10.00
+    Assets:Checking
+
+2024-01-15 Earlier transaction
+    Expenses:Food    $45.67
+    Assets:Checking

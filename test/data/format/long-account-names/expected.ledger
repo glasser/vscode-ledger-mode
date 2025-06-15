@@ -1,0 +1,7 @@
+2024-01-01 Test Long Account Names
+ Expenses:Food:Restaurants:FancyPlaceName:VeryLongLocationDescription  $25.50
+ Assets:Cash
+
+2024-01-02 Regular Account
+ Expenses:Food                                           $10.00
+ Assets:Cash

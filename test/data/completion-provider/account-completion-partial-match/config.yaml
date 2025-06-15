@@ -1,0 +1,11 @@
+description: Should filter accounts by partial match
+cursorLine: 6
+cursorColumn: 7
+expectedCompletions:
+  - label: Expenses:Food:Groceries
+    kind: Module
+    detail: Account
+  - label: Expenses:Transportation
+    kind: Module
+    detail: Account
+completionType: account

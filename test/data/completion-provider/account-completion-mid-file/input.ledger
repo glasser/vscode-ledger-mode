@@ -1,0 +1,20 @@
+2024-01-01 Opening Balances
+    Assets:Bank:Checking    $1000.00
+    Assets:Bank:Savings     $500.00
+    Equity:Opening-Balances
+
+2024-01-05 Grocery Store
+    Expenses:Food           $75.00
+    Assets:Bank:Checking
+
+2024-01-10 Gas Station
+    Expenses:Auto:Fuel      $45.00
+    Assets:
+
+2024-01-15 Hardware Store
+    Expenses:Home:Tools     $120.00
+    Assets:Bank:Checking
+
+2024-01-20 Restaurant
+    Expenses:Dining         $60.00
+    Assets:Bank:Checking

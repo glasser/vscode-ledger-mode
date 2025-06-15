@@ -1,0 +1,13 @@
+description: Should set range when completing account with existing text
+cursorLine: 5
+cursorColumn: 14
+expectedCompletions:
+  - label: Assets:Bank:Checking
+    kind: Module
+    detail: Account
+    expectedRange:
+      startLine: 5
+      startColumn: 4
+      endLine: 5
+      endColumn: 14
+completionType: account

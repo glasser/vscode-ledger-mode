@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ledger CLI Test Cases</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case { 
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-style: italic;
+        }
+        .test-file {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 0;
+        }
+        .ledger-column { 
+            padding: 15px;
+            border-right: 1px solid #ddd;
+            background-color: #fafafa;
+        }
+        .errors-column { 
+            padding: 15px;
+            background-color: #f8f0f0;
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content { 
+            background-color: #ffffff; 
+            padding: 12px; 
+            border-radius: 4px; 
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        .errors-content {
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: normal;
+        }
+        .no-errors {
+            color: #27ae60;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background-color: #e8f5e8;
+            border-radius: 4px;
+            border: 1px solid #27ae60;
+        }
+        .error-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 4px solid #d73027;
+            background-color: #fff2f0;
+            border-radius: 0 4px 4px 0;
+        }
+        .error-message {
+            font-weight: bold;
+            color: #d73027;
+            margin-bottom: 5px;
+        }
+        .error-line {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            font-family: monospace;
+        }
+        .error-severity {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .error-severity.error {
+            background-color: #d73027;
+            color: white;
+        }
+        .error-severity.warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .error-description {
+            font-size: 13px;
+            color: #555;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Syntax highlighting styles */
+        .comment { color: #22863a; font-style: italic; }
+        .date { color: #005cc5; font-weight: bold; }
+        .amount { color: #d73a49; font-weight: bold; }
+        .reconciliation { color: #6f42c1; font-weight: bold; }
+        .account { color: #032f62; }
+        .directive { color: #e36209; font-weight: bold; }
+        
+        /* Line numbering and error highlighting */
+        .line {
+            display: block;
+            position: relative;
+        }
+        .line.error-line {
+            background-color: #ffeaea;
+            border-left: 3px solid #d73027;
+            margin: 0 -12px;
+            padding: 0 12px;
+            font-weight: bold;
+        }
+        .line-number {
+            color: #666;
+            margin-right: 10px;
+            user-select: none;
+            display: inline-block;
+            font-weight: normal;
+        }
+        .error-line .line-number {
+            color: #d73027;
+            font-weight: bold;
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ledger CLI Test Cases</h1>
+    
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>This preview shows ledger files used for CLI validation testing and their expected error outputs.</p>
+        <p><strong>Features being tested:</strong></p>
+        <ul>
+            <li><strong>File validation</strong>: Testing ledger CLI parsing and validation</li>
+            <li><strong>Error detection</strong>: Expected errors, warnings, and their locations</li>
+            <li><strong>Clean files</strong>: Files that should pass validation without errors</li>
+        </ul>
+        <p><strong>Test configurations:</strong> 2</p>
+    </div>
+
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">clean-sample</h3>
+            <p class="test-description">Clean valid ledger file</p>
+            <p class="test-file">File: ../../fixtures/clean-sample.ledger</p>
+        </div>
+        <div class="test-content">
+            <div class="ledger-column">
+                <div class="column-header">Ledger File Content</div>
+                <pre class="content"><span class="line"><span class="line-number">  1</span> <span class="comment">; Clean sample ledger file for testing without validation errors</span></span><span class="line"><span class="line-number">  2</span> </span><span class="line"><span class="line-number">  3</span> <span class="directive">account</span> Assets:Bank:Checking</span><span class="line"><span class="line-number">  4</span>     <span class="account">note</span> Main checking account</span><span class="line"><span class="line-number">  5</span>     <span class="account">alias</span> checking</span><span class="line"><span class="line-number">  6</span> </span><span class="line"><span class="line-number">  7</span> <span class="directive">payee</span> Whole Foods Market</span><span class="line"><span class="line-number">  8</span>     <span class="account">alias</span> wholefoods</span><span class="line"><span class="line-number">  9</span>     <span class="account">note</span> Grocery store</span><span class="line"><span class="line-number"> 10</span> </span><span class="line"><span class="line-number"> 11</span> <span class="directive">commodity</span> $</span><span class="line"><span class="line-number"> 12</span>     <span class="account">format</span> <span class="amount">$1,000.00</span></span><span class="line"><span class="line-number"> 13</span>     <span class="account">default</span></span><span class="line"><span class="line-number"> 14</span> </span><span class="line"><span class="line-number"> 15</span> <span class="date">2024-01-15</span> Whole Foods Market</span><span class="line"><span class="line-number"> 16</span>     <span class="account">Expenses:Food:Groceries</span>    <span class="amount">$45.67</span></span><span class="line"><span class="line-number"> 17</span>     <span class="account">Assets:Bank:Checking</span>      -<span class="amount">$45.67</span></span><span class="line"><span class="line-number"> 18</span> </span><span class="line"><span class="line-number"> 19</span> <span class="date">2024-01-16</span><span class="reconciliation"> * </span>ATM Withdrawal</span><span class="line"><span class="line-number"> 20</span>     <span class="account">Expenses:Cash</span>              <span class="amount">$60.00</span></span><span class="line"><span class="line-number"> 21</span>     <span class="account">Assets:Bank:Checking</span>      -<span class="amount">$60.00</span></span><span class="line"><span class="line-number"> 22</span> </span><span class="line"><span class="line-number"> 23</span> <span class="date">2024-01-17</span><span class="reconciliation"> ! </span>Gas Station</span><span class="line"><span class="line-number"> 24</span>     <span class="account">Expenses:Transportation:Gas</span>    <span class="amount">$32.50</span></span><span class="line"><span class="line-number"> 25</span>     <span class="account">CC:Visa</span>                       -<span class="amount">$32.50</span></span><span class="line"><span class="line-number"> 26</span> </span><span class="line"><span class="line-number"> 27</span> <span class="date">2024-01-18</span>=<span class="date">2024-01-20</span> (CODE123) Monthly Rent</span><span class="line"><span class="line-number"> 28</span>     <span class="account">Expenses:Housing:Rent</span>      <span class="amount">$1,200.00</span></span><span class="line"><span class="line-number"> 29</span>     <span class="account">Assets:Bank:Checking</span>      -<span class="amount">$1,200.00</span>  ; rent payment</span><span class="line"><span class="line-number"> 30</span> </span><span class="line"><span class="line-number"> 31</span> <span class="directive">P</span> <span class="date">2024-01-15</span> USD <span class="amount">$1.00</span></span><span class="line"><span class="line-number"> 32</span> </span><span class="line"><span class="line-number"> 33</span> <span class="directive">D</span> <span class="amount">$1,000.00</span></span><span class="line"><span class="line-number"> 34</span> </span><span class="line"><span class="line-number"> 35</span> <span class="directive">year</span> 2024</span><span class="line"><span class="line-number"> 36</span> </span><span class="line"><span class="line-number"> 37</span> <span class="directive">tag</span> important</span><span class="line"><span class="line-number"> 38</span> </span><span class="line"><span class="line-number"> 39</span> <span class="directive">define</span> CHECKING=Assets:Bank:Checking</span><span class="line"><span class="line-number"> 40</span> </span><span class="line"><span class="line-number"> 41</span> <span class="directive">alias</span> rent=Expenses:Housing:Rent</span><span class="line"><span class="line-number"> 42</span> </span><span class="line"><span class="line-number"> 43</span> <span class="directive">bucket</span> Assets:Bank:Checking</span><span class="line"><span class="line-number"> 44</span> </span><span class="line"><span class="line-number"> 45</span> <span class="comment">; Test various comment styles</span></span><span class="line"><span class="line-number"> 46</span> <span class="comment"># Hash comment</span></span><span class="line"><span class="line-number"> 47</span> <span class="comment">% Percent comment</span></span><span class="line"><span class="line-number"> 48</span> <span class="comment">| Pipe comment</span></span><span class="line"><span class="line-number"> 49</span> <span class="comment">* Star comment</span></span><span class="line"><span class="line-number"> 50</span> </span><span class="line"><span class="line-number"> 51</span> <span class="date">2024-01-21</span> Test Price @ Symbol</span><span class="line"><span class="line-number"> 52</span>     <span class="account">Assets:Stocks:AAPL</span>        10 AAPL @ <span class="amount">$150.00</span></span><span class="line"><span class="line-number"> 53</span>     <span class="account">Assets:Bank:Checking</span>     -<span class="amount">$1,500.00</span></span><span class="line"><span class="line-number"> 54</span> </span><span class="line"><span class="line-number"> 55</span> <span class="directive">commodity</span> AAPL</span><span class="line"><span class="line-number"> 56</span>     <span class="account">note</span> Apple Inc. stock</span><span class="line"><span class="line-number"> 57</span>     <span class="account">format</span> 1,000.00 AAPL</span></pre>
+            </div>
+            <div class="errors-column">
+                <div class="column-header">Expected Validation Results</div>
+                <div class="content errors-content">
+                    <div class="no-errors">✅ No errors expected<br>File should pass validation</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">syntax-errors</h3>
+            <p class="test-description">Various syntax errors for testing validation</p>
+            <p class="test-file">File: ../../fixtures/syntax-errors.ledger</p>
+        </div>
+        <div class="test-content">
+            <div class="ledger-column">
+                <div class="column-header">Ledger File Content</div>
+                <pre class="content"><span class="line"><span class="line-number">  1</span> <span class="comment">; File with syntax errors for testing diagnostics</span></span><span class="line"><span class="line-number">  2</span> </span><span class="line"><span class="line-number">  3</span> <span class="date">2024-01-15</span> Missing account postings</span><span class="line"><span class="line-number">  4</span> </span><span class="line error-line"><span class="line-number">  5</span> <span class="date">2024-02-30</span> Invalid Date</span><span class="line"><span class="line-number">  6</span>     <span class="account">Expenses:Food</span>    <span class="amount">$10.00</span></span><span class="line"><span class="line-number">  7</span>     <span class="account">Assets:Checking</span>  -<span class="amount">$10.00</span></span><span class="line"><span class="line-number">  8</span> </span><span class="line"><span class="line-number">  9</span> <span class="date">2024-01-16</span> Unbalanced Transaction</span><span class="line"><span class="line-number"> 10</span>     <span class="account">Expenses:Food</span>    <span class="amount">$10.00</span></span><span class="line error-line"><span class="line-number"> 11</span>     <span class="account">Assets:Checking</span>  -<span class="amount">$5.00</span></span><span class="line"><span class="line-number"> 12</span> </span><span class="line"><span class="line-number"> 13</span> <span class="directive">account</span> Assets:Checking</span><span class="line"><span class="line-number"> 14</span>     <span class="account">Expenses:Food</span>    <span class="amount">$10.00</span></span><span class="line"><span class="line-number"> 15</span> </span><span class="line error-line"><span class="line-number"> 16</span> invalid-directive test</span><span class="line"><span class="line-number"> 17</span> </span><span class="line"><span class="line-number"> 18</span> <span class="date">2024-01-17</span> Balance Assertion Failure</span><span class="line error-line"><span class="line-number"> 19</span>     <span class="account">Assets:Checking</span>    <span class="amount">$100.00</span> = <span class="amount">$50.00</span></span><span class="line"><span class="line-number"> 20</span>     <span class="account">Income:Salary</span>     -<span class="amount">$100.00</span></span></pre>
+            </div>
+            <div class="errors-column">
+                <div class="column-header">Expected Validation Results</div>
+                <div class="content errors-content">
+                    
+                            <div class="error-item">
+                                <div class="error-message">Day of month is not valid for year</div>
+                                <div class="error-line">Line 5</div>
+                                <div class="error-severity error">error</div>
+                                <div class="error-description">Invalid date 2024-02-30</div>
+                            </div>
+                        
+                            <div class="error-item">
+                                <div class="error-message">Transaction does not balance (off by $5.00)</div>
+                                <div class="error-line">Line 11</div>
+                                <div class="error-severity error">error</div>
+                                <div class="error-description">Unbalanced transaction with $5 difference</div>
+                            </div>
+                        
+                            <div class="error-item">
+                                <div class="error-message">Invalid date/time: valid-directive tes</div>
+                                <div class="error-line">Line 16</div>
+                                <div class="error-severity error">error</div>
+                                <div class="error-description">Invalid directive format</div>
+                            </div>
+                        
+                            <div class="error-item">
+                                <div class="error-message">Balance assertion off by $-50.00 (expected to see $100.00)</div>
+                                <div class="error-line">Line 19</div>
+                                <div class="error-severity error">error</div>
+                                <div class="error-description">Balance assertion failure - expected $50 but got $100</div>
+                            </div>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

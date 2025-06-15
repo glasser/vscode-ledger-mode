@@ -1,0 +1,39 @@
+This file has ideas of features and fixes to implement. Go top down through unchecked ideas and implement them, using TDD and ensuring that we remain at 100% coverage (read the bottom of `npm run test:coverage`). Ask me to review before committing (unless you are in SOLO MODE). "CAMO" means "Commit and move on", which means to commit your last change (including checking off a line here) and then work on the first unchecked element.
+
+- [x] Syntax highlighting for reconciled/pending works on transaction lines and the first posting of a transaction but not the second, I think.
+- [x] Are standaloneComments from the beginning or the end?
+- [x] diagnosticProvider.test.ts doesn't seem like a great test. You should be able to actually test the diagnostics themselves (assuming ledger is installed, which is an OK assumption to make)! eg, by saving.
+- [x] The unit tests of validateFile are only semi-data-driven: we should have a JSON file describing the expected parsed errors, not just looking to see if there are errors. Also we should fail if ledger isn't installed instead of skipping.
+- [x] LedgerOrganizer.parseTransactions skips blank lines within transactions, but that's incorrect: empty (or all-whitespace) lines terminate transactions. Note that this will also affect the c8-ignored `posting.trim() === ''` block in alignTransaction.
+- [x] In LedgerOrganizer, `originalText` is a bit oddly named given that it does trim trailing whitespace from the first line (only!). It might still be a useful thing to calcuate, but an odd name.
+- [x] It's smart that the Payee completion provider triggers when you hit space after a date. Can we make it trigger right after hitting "C-c C-t" which inserts today's date and a space?
+- [x] In the report view error parser, why not linkify the two line numbers in a span separately?
+- [x] Can you show some examples of what formatErrorDetails does (data-driven test?) and why?
+- [x] When all transactions are in the past, the now marker should be on the very last line of the file (or past it) rather than the second line of the last transaction.
+- [x] Look more carefully at the last change you made to nowMarker.ts. (The one you made around the end of the file, not the one I made about "today".)
+- [x] In the balance report, please make the background of entire lines with negative balance light red.
+- [x] I don't really understand the tests you added in balance-report-error-formatting. Why would we get ledger output without newlines or with too many? Can you show a concrete example of running the ledger command against a specific file that returns error text that really wants to be edited (in ways other than linkifying)?
+- [x] Maybe instead of "insert today" I want something that prompts me for a date (with nice completion/ways of writing less), finds the right spot for it (it can assume the file is sorted, like how the now marker works — in fact it could share a "find a place for an entry on a date" implementation), and starts over there.
+- [x] tokenization.test.ts seems to do nothing.
+- [x] I don't love that completion only works well when the whole file is valid. Maybe we should switch them to built-in error-tolerant parsing.
+- [x] Syntax highlighting for amounts should deal with commodities and expressions. (Shouldn't it just be "anything after two spaces and before a comment"?)
+- [x] I need to look more deeply into this one but the account completion regexp might not work well with \*/! or with spaces in account names?
+- [x] Before making this public, review coverage.
+- [x] Before making this public, review the README.
+
+- [x] The preview file format.html appears to be showing the files from organize-ledger even though it's saying they're from data.
+- [x] The preview file syntax.html doesn't really need the left hand side.
+- [x] The preview file transaction-completion.html should use the same visual cursor as completion-provider.
+- [x] The preview file ledger-cli.html should actually show the files that are being parsed (and show the list of expected errors in a nicer more formatted way).
+- [x] The preview file nowMarker.html should highlight the expected line based on the filename. Think carefully about 0 vs 1 based line numbers (read the test!).
+- [x] Similarly, the preview file toggle-reconciliation.html should highlight the toggled line in the output based on the filename.
+- [x] Despite your fix, the preview file format.html appears to be showing the files from organize-ledger even though it's saying they're from data.
+- [x] The visual cursor you just added to transaction-completion.html appears to be one character to the left of where it should be.
+- [x] Make sure the index is sorted by fixture directory name.
+- [x] You can come up with a better way to display tokenization.html.
+- [x] The ledger-cli generator should show line numbers on the file so that it's easier to understand the errors. Make sure the 0 vs 1-ness of the line numbers matches the errors!
+- [x] In toggle-reconciliation, the expected output has some extra effective newlines, because you have display:block spans that then have a newline after it (move the newline in, we figured this out elsewhere). Also the whole "input" section on the left is redundant with showing input (better) for each sub-test on the right.
+- [x] The highlight in nowMarker.html appears to add a blank line after it, and it also doesn't appear if it's on a blank line or something. idk, it's just not great.
+- [x] Instead of gitignoring the preview output, let's check it in, so we can browse in GitHub or something.
+- [x] Ooh, I found an actual bug from looking at the test output. test/data/format/reconciliation-normalization is leaving the amount columns unaligned. (FIXED: normalize reconciliation markers before alignment, not after)
+- [x] I like the names of the test/data/X subdirectories. Can we make sure the actual test files have very consistent matching names? Maybe put the test code in `test/data/FOO/data.test.ts` and make sure that thesefiles ONLY have tests that are data-driven, no ad hoc tests (which can remain elsewhere in their own files).

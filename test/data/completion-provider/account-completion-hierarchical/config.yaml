@@ -1,0 +1,8 @@
+description: Should provide hierarchical account completions
+cursorLine: 5
+cursorColumn: 13
+expectedCompletions:
+  - label: Expenses:Food:Restaurants
+    kind: Module
+    detail: Account
+completionType: account

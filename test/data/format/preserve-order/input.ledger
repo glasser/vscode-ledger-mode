@@ -1,0 +1,11 @@
+2024-06-20 Future Transaction
+    Assets:Future   $100.00
+    Income:Test
+
+2024-01-01 Past Transaction
+    Expenses:Past   $50.00
+    Assets:Past
+
+2024-06-15 Middle Transaction
+  Assets:Middle   $25.00
+  Income:Middle

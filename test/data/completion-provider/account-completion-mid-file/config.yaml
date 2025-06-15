@@ -1,0 +1,11 @@
+description: Should provide account completions in middle of file
+cursorLine: 11
+cursorColumn: 11
+expectedCompletions:
+  - label: Assets:Bank:Checking
+    kind: Module
+    detail: Account
+  - label: Assets:Bank:Savings
+    kind: Module
+    detail: Account
+completionType: account

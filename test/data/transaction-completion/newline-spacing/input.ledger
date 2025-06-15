@@ -1,0 +1,6 @@
+2024-01-01 * Test Store
+    Expenses:Test    $25.00
+    Assets:Checking  -$25.00
+
+2024-01-15 Test Store
+; This comment comes right after the incomplete transaction

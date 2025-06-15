@@ -1,0 +1,57 @@
+; Clean sample ledger file for testing without validation errors
+
+account Assets:Bank:Checking
+    note Main checking account
+    alias checking
+
+payee Whole Foods Market
+    alias wholefoods
+    note Grocery store
+
+commodity $
+    format $1,000.00
+    default
+
+2024-01-15 Whole Foods Market
+    Expenses:Food:Groceries    $45.67
+    Assets:Bank:Checking      -$45.67
+
+2024-01-16 * ATM Withdrawal
+    Expenses:Cash              $60.00
+    Assets:Bank:Checking      -$60.00
+
+2024-01-17 ! Gas Station
+    Expenses:Transportation:Gas    $32.50
+    CC:Visa                       -$32.50
+
+2024-01-18=2024-01-20 (CODE123) Monthly Rent
+    Expenses:Housing:Rent      $1,200.00
+    Assets:Bank:Checking      -$1,200.00  ; rent payment
+
+P 2024-01-15 USD $1.00
+
+D $1,000.00
+
+year 2024
+
+tag important
+
+define CHECKING=Assets:Bank:Checking
+
+alias rent=Expenses:Housing:Rent
+
+bucket Assets:Bank:Checking
+
+; Test various comment styles
+# Hash comment
+% Percent comment
+| Pipe comment
+* Star comment
+
+2024-01-21 Test Price @ Symbol
+    Assets:Stocks:AAPL        10 AAPL @ $150.00
+    Assets:Bank:Checking     -$1,500.00
+
+commodity AAPL
+    note Apple Inc. stock
+    format 1,000.00 AAPL

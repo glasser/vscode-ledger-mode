@@ -1,0 +1,7 @@
+Error: Account "Assets:Typo" not found
+> 2024-01-01 Transaction 1  
+>     Assets:Typo    $100.00
+Context continues here
+> 2024-01-02 Transaction 2
+>     Assets:Checking   $50.00
+Error: Multiple issues detected

@@ -1,0 +1,12 @@
+; Opening file comment
+
+; Comment before first transaction
+2024-01-01 Test Transaction
+    Expenses:Test    $10.00
+    Assets:Checking
+
+; Comment between transactions
+; Another comment
+2024-01-02 Second Transaction
+  Income:Salary   $1000.00
+  Assets:Checking

@@ -1,0 +1,17 @@
+2024-01-01 Valid Store
+    Expenses:Food    $50.00
+    Assets:Checking $-50.00
+
+This is not a transaction at all
+    Some random text
+
+2024-01-02 * Another Valid Store
+    Expenses:Dining
+    ; Missing amount and balancing account
+
+Invalid date format transaction
+    Assets:Bank    $100
+
+; Comment line
+
+2024-01-03 Valid

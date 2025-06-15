@@ -1,0 +1,8 @@
+description: Should handle posting line with tabs
+cursorLine: 5
+cursorColumn: 11
+expectedCompletions:
+  - label: Assets:Bank:Checking
+    kind: Module
+    detail: Account
+completionType: account

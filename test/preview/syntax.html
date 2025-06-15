@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Syntax Highlighting Test Cases</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case { 
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-content {
+            padding: 15px;
+            background-color: #f0f8f0;
+        }
+        .content-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content { 
+            background-color: #ffffff; 
+            padding: 12px; 
+            border-radius: 4px; 
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        
+        /* Syntax highlighting styles */
+        .comment { color: #22863a; font-style: italic; }
+        .date { color: #005cc5; font-weight: bold; }
+        .amount { color: #d73a49; font-weight: bold; }
+        .reconciliation { color: #6f42c1; font-weight: bold; }
+        .account { color: #032f62; }
+        
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Syntax Highlighting Test Cases</h1>
+    
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>This preview shows syntax highlighting test files and how they should be highlighted.</p>
+        <p><strong>Features being tested:</strong></p>
+        <ul>
+            <li><strong>Comments</strong>: Lines starting with ;</li>
+            <li><strong>Dates</strong>: YYYY-MM-DD format</li>
+            <li><strong>Amounts</strong>: Currency amounts with $ symbol</li>
+            <li><strong>Reconciliation markers</strong>: * and ! symbols</li>
+            <li><strong>Account names</strong>: Indented account hierarchies</li>
+        </ul>
+        <p><strong>Note:</strong> These are used by vscode-tmgrammar-test for TextMate grammar validation.</p>
+        <p><strong>Test files:</strong> 5</p>
+    </div>
+
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Accounts</h3>
+            <p class="test-name">test/data/syntax/accounts.test.ledger</p>
+        </div>
+        <div class="test-content">
+            <div class="content-header">Syntax Highlighted Content</div>
+            <pre class="content"><span class="comment">; SYNTAX TEST &quot;source.ledger&quot; &quot;Ledger account name syntax highlighting&quot;</span>
+
+<span class="comment">; Test basic account names</span>
+<span class="date">2024-01-15</span><span class="reconciliation"> * </span>Test Transaction
+    <span class="account">Assets:Checking</span>                       <span class="amount">$100.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+    <span class="account">Expenses:Food:Groceries</span>               <span class="amount">$100.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+
+<span class="comment">; Test account names with spaces</span>
+<span class="date">2024-01-16</span><span class="reconciliation"> * </span>Test Transaction
+    <span class="account">Assets:Checking</span> Account               <span class="amount">$200.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+    <span class="account">Expenses:Dining</span> Out                   <span class="amount">$50.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+
+<span class="comment">; Test account names with parentheses</span>
+<span class="date">2024-01-17</span><span class="reconciliation"> * </span>Test Transaction
+    <span class="account">Assets:401</span>(k) Plan                    <span class="amount">$500.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+    <span class="account">Liabilities:Credit</span> Card (Visa)        <span class="amount">$100.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+
+<span class="comment">; Test account names with mixed characters</span>
+<span class="date">2024-01-18</span><span class="reconciliation"> * </span>Test Transaction
+    <span class="account">Assets:Bank_Account-1</span>                 <span class="amount">$300.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+    <span class="account">Expenses:Auto:Gas</span> &amp; Oil               <span class="amount">$75.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+
+<span class="comment">; Test single character account names</span>
+<span class="date">2024-01-19</span><span class="reconciliation"> * </span>Test Transaction
+    A                                     <span class="amount">$50.00</span>
+<span class="comment">;   ^ entity.name.account.cleared.ledger</span>
+    <span class="account">X:Y</span>                                   <span class="amount">$25.00</span>
+<span class="comment">;   ^^^ entity.name.account.cleared.ledger</span></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Amounts</h3>
+            <p class="test-name">test/data/syntax/amounts.test.ledger</p>
+        </div>
+        <div class="test-content">
+            <div class="content-header">Syntax Highlighted Content</div>
+            <pre class="content"><span class="comment">; SYNTAX TEST &quot;source.ledger&quot; &quot;Ledger amount syntax highlighting&quot;</span>
+
+<span class="comment">; Test basic dollar amounts</span>
+<span class="date">2024-01-15</span><span class="reconciliation"> * </span>Test Transaction
+    <span class="account">Assets:Checking</span>                       <span class="amount">$100.00</span>
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:Savings</span>                        <span class="amount">$1,500.50</span>
+<span class="comment">;                                         ^^^^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test negative amounts</span>
+<span class="date">2024-01-16</span><span class="reconciliation"> * </span>Test Transaction  
+    <span class="account">Expenses:Food</span>                         $-25.00
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:Checking</span>                       -<span class="amount">$25.00</span>
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test different currency symbols</span>
+<span class="date">2024-01-17</span><span class="reconciliation"> * </span>Currency Test
+    <span class="account">Assets:Euro</span>                           €200.00
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:Pound</span>                          £150.00
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:Yen</span>                            ¥10000
+<span class="comment">;                                         ^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test amounts without currency symbols</span>
+<span class="date">2024-01-18</span><span class="reconciliation"> * </span>Plain Numbers
+    <span class="account">Assets:Checking</span>                       100.00
+<span class="comment">;                                         ^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:Savings</span>                        1500
+<span class="comment">;                                         ^^^^ constant.numeric.amount.ledger</span></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Complex Amounts</h3>
+            <p class="test-name">test/data/syntax/complex-amounts.test.ledger</p>
+        </div>
+        <div class="test-content">
+            <div class="content-header">Syntax Highlighted Content</div>
+            <pre class="content"><span class="comment">; SYNTAX TEST &quot;source.ledger&quot; &quot;Complex amount syntax highlighting&quot;</span>
+
+<span class="comment">; Test commodity amounts (commodity after number)</span>
+<span class="date">2024-01-15</span><span class="reconciliation"> * </span>Stock Purchase
+    <span class="account">Assets:Stocks</span>                             100 AAPL
+<span class="comment">;                                             ^^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:Checking</span>                           $-5000.00
+
+<span class="comment">; Test commodity amounts (commodity before number)  </span>
+<span class="date">2024-01-16</span><span class="reconciliation"> * </span>Foreign Exchange
+    <span class="account">Assets:EUR</span>                                EUR 1000.00
+<span class="comment">;                                             ^^^^^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:USD</span>                                USD -1100.00
+<span class="comment">;                                             ^^^^^^^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test expressions</span>
+<span class="date">2024-01-17</span><span class="reconciliation"> * </span>Expression Test
+    <span class="account">Assets:Checking</span>                           (<span class="amount">$100.00</span> + <span class="amount">$25.00</span>)
+<span class="comment">;                                             ^^^^^^^^^^^^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Expenses:Food</span>                             $-125.00
+
+<span class="comment">; Test lot pricing</span>
+<span class="date">2024-01-18</span><span class="reconciliation"> * </span>Lot Purchase
+    <span class="account">Assets:Stocks</span>                             10 AAPL {<span class="amount">$150.00</span>}
+<span class="comment">;                                             ^^^^^^^^^^^^^^^^^ constant.numeric.amount.ledger</span>
+    <span class="account">Assets:Checking</span>                           $-1500.00
+
+<span class="comment">; Test balance assertions (for now treating whole expression as amount)</span>
+<span class="date">2024-01-19</span><span class="reconciliation"> * </span>Balance Assertion
+    <span class="account">Assets:Checking</span>                           <span class="amount">$100.00</span> = <span class="amount">$1000.00</span>
+<span class="comment">;                                             ^^^^^^^^^^^^^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test with comments after amounts</span>
+<span class="date">2024-01-20</span><span class="reconciliation"> * </span>Comment Test
+    <span class="account">Assets:Checking</span>                           <span class="amount">$100.00</span>  ; comment here
+<span class="comment">;                                             ^^^^^^^ constant.numeric.amount.ledger</span>
+<span class="comment">;                                                       ^^^^^^^^^^^^^ comment.line.semicolon.ledger</span>
+    <span class="account">Expenses:Food</span>                             $-100.00</pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Postings</h3>
+            <p class="test-name">test/data/syntax/postings.test.ledger</p>
+        </div>
+        <div class="test-content">
+            <div class="content-header">Syntax Highlighted Content</div>
+            <pre class="content"><span class="comment">; SYNTAX TEST &quot;source.ledger&quot; &quot;Ledger posting syntax highlighting&quot;</span>
+
+<span class="comment">; Test cleared posting with reconciliation marker</span>
+<span class="date">2024-01-15</span><span class="reconciliation"> * </span>Test Transaction
+   <span class="reconciliation"> * </span>Assets:Checking Account             <span class="amount">$100.00</span>
+<span class="comment">;   ^ invalid.illegal.ledger</span>
+<span class="comment">;     ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test pending posting with reconciliation marker  </span>
+<span class="date">2024-01-16</span><span class="reconciliation"> ! </span>Test Transaction
+   <span class="reconciliation"> ! </span>Assets:Savings Account              <span class="amount">$200.00</span>
+<span class="comment">;   ^ markup.bold token.warn-token</span>
+<span class="comment">;     ^^^^^^^^^^^^^^^^^^^^^^ markup.bold token.warn-token</span>
+<span class="comment">;                                         ^^^^^^^ markup.bold token.warn-token</span>
+
+<span class="comment">; Test uncleared posting (no marker)</span>
+<span class="date">2024-01-17</span> Test Transaction
+    <span class="account">Assets:Investment</span> Account             <span class="amount">$300.00</span>
+<span class="comment">;   ^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.uncleared.ledger</span>
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test account with spaces and parentheses</span>
+<span class="date">2024-01-18</span><span class="reconciliation"> * </span>Test Transaction
+   <span class="reconciliation"> * </span>Assets:401(k) Plan:Employee Match   <span class="amount">$150.00</span>
+<span class="comment">;   ^ invalid.illegal.ledger</span>
+<span class="comment">;     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+
+<span class="comment">; Test different currency symbols</span>
+<span class="date">2024-01-19</span><span class="reconciliation"> * </span>Currency Test
+   <span class="reconciliation"> * </span>Assets:Euro Account                 €500.00
+<span class="comment">;   ^ invalid.illegal.ledger</span>
+<span class="comment">;     ^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span>
+   <span class="reconciliation"> * </span>Assets:Pound Account                £300.00
+<span class="comment">;   ^ invalid.illegal.ledger</span>
+<span class="comment">;     ^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger</span>
+<span class="comment">;                                         ^^^^^^^ constant.numeric.amount.ledger</span></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Transactions</h3>
+            <p class="test-name">test/data/syntax/transactions.test.ledger</p>
+        </div>
+        <div class="test-content">
+            <div class="content-header">Syntax Highlighted Content</div>
+            <pre class="content"><span class="comment">; SYNTAX TEST &quot;source.ledger&quot; &quot;Ledger transaction syntax highlighting&quot;</span>
+
+<span class="comment">; Test basic transaction syntax</span>
+<span class="date">2024-01-15</span><span class="reconciliation"> * </span>Grocery Store
+<span class="comment">; &lt;---------- constant.numeric.date.ledger</span>
+<span class="comment">;          ^ invalid.illegal.ledger</span>
+<span class="comment">;            ^^^^^^^^^^^^^ entity.name.merchant.cleared.ledger</span>
+
+<span class="comment">; Test pending transaction</span>
+<span class="date">2024-01-16</span><span class="reconciliation"> ! </span>Gas Station
+<span class="comment">; &lt;---------- constant.numeric.date.ledger</span>
+<span class="comment">;          ^ markup.bold token.warn-token</span>
+<span class="comment">;            ^^^^^^^^^^^ markup.bold token.warn-token</span>
+
+<span class="comment">; Test uncleared transaction  </span>
+<span class="date">2024-01-17</span> Coffee Shop
+<span class="comment">; &lt;---------- constant.numeric.date.ledger</span>
+<span class="comment">;          ^^^^^^^^^^^ entity.name.merchant.uncleared.ledger</span>
+</pre>
+        </div>
+    </div>
+
+
+</body>
+</html>

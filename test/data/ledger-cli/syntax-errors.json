@@ -1,0 +1,30 @@
+{
+  "file": "../../fixtures/syntax-errors.ledger",
+  "description": "Various syntax errors for testing validation",
+  "expectedErrors": [
+    {
+      "message": "Day of month is not valid for year",
+      "line": 4,
+      "severity": "error",
+      "description": "Invalid date 2024-02-30"
+    },
+    {
+      "message": "Transaction does not balance (off by $5.00)",
+      "line": 10,
+      "severity": "error", 
+      "description": "Unbalanced transaction with $5 difference"
+    },
+    {
+      "message": "Invalid date/time: valid-directive tes",
+      "line": 15,
+      "severity": "error",
+      "description": "Invalid directive format"
+    },
+    {
+      "message": "Balance assertion off by $-50.00 (expected to see $100.00)",
+      "line": 18,
+      "severity": "error",
+      "description": "Balance assertion failure - expected $50 but got $100"
+    }
+  ]
+}

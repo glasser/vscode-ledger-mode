@@ -1,0 +1,11 @@
+<div class="error-details"><span class="context-label">While parsing file</span> <span class="file-link" onclick="goToLocation('/tmp/unbalanced.ledger', 4)" title="Click to open /tmp/unbalanced.ledger at line 4">&quot;unbalanced.ledger&quot;, line 4</span>:
+<span class="context-label">While balancing transaction</span> from &quot;unbalanced.ledger&quot;, lines <span class="file-link" onclick="goToLocation('/tmp/unbalanced.ledger', 1)" title="Click to open /tmp/unbalanced.ledger at line 1">1</span>-<span class="file-link" onclick="goToLocation('/tmp/unbalanced.ledger', 4)" title="Click to open /tmp/unbalanced.ledger at line 4">4</span>:
+<span class="quoted-block">&gt; 2024-01-01 Test Transaction
+&gt;     Assets:Checking    $100.00
+&gt;     Expenses:Food       $50.00
+&gt;     ; This transaction doesn&#039;t balance - missing posting
+</span>Unbalanced remainder is:
+             $150.00
+Amount to balance against:
+             $150.00
+<span class="error-message">Error: Transaction does not balance</span></div>

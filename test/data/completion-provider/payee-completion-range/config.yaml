@@ -1,0 +1,13 @@
+description: Should set range when completing payee with existing text
+cursorLine: 4
+cursorColumn: 18
+expectedCompletions:
+  - label: Whole Foods Market
+    kind: Value
+    detail: Payee
+    expectedRange:
+      startLine: 4
+      startColumn: 13
+      endLine: 4
+      endColumn: 18
+completionType: payee

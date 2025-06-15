@@ -1,0 +1,8 @@
+; Header comment
+
+2024-01-01 Transaction
+ Assets:Test                                             $10.00
+ Income:Test                                            -$10.00
+
+; End comment about totals
+; Final summary line

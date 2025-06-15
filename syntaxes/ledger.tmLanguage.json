@@ -1,0 +1,353 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Ledger",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#directive"
+    },
+    {
+      "include": "#transaction"
+    },
+    {
+      "include": "#price"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "name": "comment.line.semicolon.ledger",
+          "match": "^[;#%|*].*$"
+        },
+        {
+          "name": "comment.line.semicolon.ledger",
+          "match": ";.*$"
+        }
+      ]
+    },
+    "transaction": {
+      "patterns": [
+        {
+          "name": "meta.transaction.pending.ledger",
+          "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(!)\\s*(?:\\(([^)]+)\\)\\s*)?(.*)$",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.numeric.date.ledger"
+            },
+            "2": {
+              "name": "keyword.operator.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.date.effective.ledger"
+            },
+            "4": {
+              "name": "markup.bold token.warn-token"
+            },
+            "5": {
+              "name": "constant.other.code.ledger"
+            },
+            "6": {
+              "name": "markup.bold token.warn-token"
+            }
+          },
+          "end": "^(?=\\S)",
+          "patterns": [
+            {
+              "include": "#posting-pending"
+            },
+            {
+              "include": "#comment"
+            }
+          ]
+        },
+        {
+          "name": "meta.transaction.cleared.ledger",
+          "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(\\*)\\s*(?:\\(([^)]+)\\)\\s*)?(.*)$",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.numeric.date.ledger"
+            },
+            "2": {
+              "name": "keyword.operator.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.date.effective.ledger"
+            },
+            "4": {
+              "name": "invalid.illegal.ledger"
+            },
+            "5": {
+              "name": "constant.other.code.ledger"
+            },
+            "6": {
+              "name": "entity.name.merchant.cleared.ledger"
+            }
+          },
+          "end": "^(?=\\S)",
+          "patterns": [
+            {
+              "include": "#posting-cleared"
+            },
+            {
+              "include": "#comment"
+            }
+          ]
+        },
+        {
+          "name": "meta.transaction.ledger",
+          "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(?:\\(([^)]+)\\)\\s*)?(.*)$",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.numeric.date.ledger"
+            },
+            "2": {
+              "name": "keyword.operator.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.date.effective.ledger"
+            },
+            "4": {
+              "name": "constant.other.code.ledger"
+            },
+            "5": {
+              "name": "entity.name.merchant.uncleared.ledger"
+            }
+          },
+          "end": "^(?=\\S)",
+          "patterns": [
+            {
+              "include": "#posting"
+            },
+            {
+              "include": "#comment"
+            }
+          ]
+        }
+      ]
+    },
+    "posting": {
+      "patterns": [
+        {
+          "name": "meta.posting.cleared.ledger",
+          "match": "^\\s+(\\*)\\s*([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "invalid.illegal.ledger"
+            },
+            "2": {
+              "name": "entity.name.account.cleared.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.amount.ledger"
+            },
+            "4": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        },
+        {
+          "name": "meta.posting.pending.ledger",
+          "match": "^\\s+(!)\\s*([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "markup.bold token.warn-token"
+            },
+            "2": {
+              "name": "markup.bold token.warn-token"
+            },
+            "3": {
+              "name": "markup.bold token.warn-token"
+            },
+            "4": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        },
+        {
+          "name": "meta.posting.ledger",
+          "match": "^\\s+([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "entity.name.account.uncleared.ledger"
+            },
+            "2": {
+              "name": "constant.numeric.amount.ledger"
+            },
+            "3": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        }
+      ]
+    },
+    "posting-pending": {
+      "patterns": [
+        {
+          "name": "meta.posting.cleared.ledger",
+          "match": "^\\s+(\\*)\\s*([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "invalid.illegal.ledger"
+            },
+            "2": {
+              "name": "variable.other.ledger"
+            },
+            "3": {
+              "name": "variable.other.ledger"
+            },
+            "4": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        },
+        {
+          "name": "meta.posting.pending.ledger",
+          "match": "^\\s+(!)\\s*([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "markup.bold token.warn-token"
+            },
+            "2": {
+              "name": "markup.bold token.warn-token"
+            },
+            "3": {
+              "name": "markup.bold token.warn-token"
+            },
+            "4": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        },
+        {
+          "name": "meta.posting.pending.default.ledger",
+          "match": "^\\s+([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "markup.bold token.warn-token"
+            },
+            "2": {
+              "name": "markup.bold token.warn-token"
+            },
+            "3": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        }
+      ]
+    },
+    "posting-cleared": {
+      "patterns": [
+        {
+          "name": "meta.posting.cleared.individual.ledger",
+          "match": "^\\s+(\\*)\\s*([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "invalid.illegal.ledger"
+            },
+            "2": {
+              "name": "entity.name.account.cleared.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.amount.ledger"
+            },
+            "4": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        },
+        {
+          "name": "meta.posting.pending.individual.ledger",
+          "match": "^\\s+(!)\\s*([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "markup.bold token.warn-token"
+            },
+            "2": {
+              "name": "markup.bold token.warn-token"
+            },
+            "3": {
+              "name": "markup.bold token.warn-token"
+            },
+            "4": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        },
+        {
+          "name": "meta.posting.cleared.default.ledger",
+          "match": "^\\s+([^\\s](?:[^\\s]|\\s(?!\\s))*)(?:\\s{2,}([^\\s;](?:[^;])*?))?(?:\\s*(;.*))?$",
+          "captures": {
+            "1": {
+              "name": "entity.name.account.cleared.ledger"
+            },
+            "2": {
+              "name": "constant.numeric.amount.ledger"
+            },
+            "3": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          }
+        }
+      ]
+    },
+    "amount": {
+      "patterns": [
+        {
+          "name": "meta.amount.ledger",
+          "match": "([^\\s;](?:[^;])*?)",
+          "captures": {
+            "1": {
+              "name": "constant.numeric.amount.ledger"
+            }
+          }
+        }
+      ]
+    },
+    "directive": {
+      "patterns": [
+        {
+          "name": "meta.directive.ledger",
+          "match": "^(account|payee|commodity|tag|year|Y|bucket|A|alias|define|def|D|apply|end)\\s+(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.directive.ledger"
+            },
+            "2": {
+              "name": "string.unquoted.ledger"
+            }
+          }
+        }
+      ]
+    },
+    "price": {
+      "patterns": [
+        {
+          "name": "meta.price.ledger",
+          "match": "^(P)\\s+(\\d{4}[/-]\\d{2}[/-]\\d{2})\\s+(\\S+)\\s+(.+)$",
+          "captures": {
+            "1": {
+              "name": "keyword.directive.price.ledger"
+            },
+            "2": {
+              "name": "constant.numeric.date.ledger"
+            },
+            "3": {
+              "name": "entity.name.type.ledger"
+            },
+            "4": {
+              "patterns": [
+                {
+                  "include": "#amount"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "scopeName": "source.ledger"
+}

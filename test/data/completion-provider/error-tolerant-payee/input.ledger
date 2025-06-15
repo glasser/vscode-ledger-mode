@@ -1,0 +1,12 @@
+2024-01-01 Grocery Store
+    Expenses:Food    $50.00
+    ; Missing balancing account - syntax error that would break CLI
+
+2024-01-02 Coffee Shop
+    Expenses:Food    $invalid-amount
+    Assets:Checking
+
+Invalid line without date
+    Some:Account    $25.00
+
+2024-01-03 Groc

@@ -1,0 +1,7 @@
+2024-01-01 Withdrawal
+  Assets:Checking   -$100.00
+  Expenses:Cash  $100.00
+  
+2024-01-02 Transfer
+    Assets:Checking    -$50.00
+    Assets:Savings   $50.00

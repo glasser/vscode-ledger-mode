@@ -1,0 +1,4 @@
+Error: Invalid character '<' in account name
+> 2024-01-01 Transaction with <script>alert('xss')</script>
+>     Assets:Checking<>&"'    $100.00
+Context: file "/path/with<special>&chars.ledger"

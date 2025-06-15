@@ -1,0 +1,8 @@
+description: Should handle transaction with code
+cursorLine: 4
+cursorColumn: 25
+expectedCompletions:
+  - label: Previous Store
+    kind: Value
+    detail: Payee
+completionType: payee

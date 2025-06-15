@@ -1,0 +1,2 @@
+            $1930.00  [34mAssets:Checking[0m
+           [31m$-1000.00[0m  [34mEquity:Opening-Balances[0m

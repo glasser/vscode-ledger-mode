@@ -1,0 +1,183 @@
+{
+  "name": "ledger-mode",
+  "displayName": "Ledger Mode",
+  "description": "Comprehensive Ledger accounting file support for VSCode with formatting, syntax highlighting, autocompletion, and balance reports",
+  "version": "1.0.0",
+  "publisher": "glasser",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "ledger",
+    "accounting",
+    "finance",
+    "plaintext-accounting",
+    "double-entry",
+    "bookkeeping",
+    "formatter",
+    "syntax-highlighting",
+    "autocompletion",
+    "balance-reports"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glasser/vscode-ledger-mode.git"
+  },
+  "homepage": "https://github.com/glasser/vscode-ledger-mode",
+  "bugs": {
+    "url": "https://github.com/glasser/vscode-ledger-mode/issues"
+  },
+  "license": "GPL-3.0",
+  "main": "./out/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "languages": [
+      {
+        "id": "ledger",
+        "aliases": [
+          "Ledger",
+          "ledger"
+        ],
+        "extensions": [
+          ".ledger",
+          ".rec"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ledger",
+        "scopeName": "source.ledger",
+        "path": "./syntaxes/ledger.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "ledger.showBalanceReport",
+        "title": "Ledger: Show Balance Report"
+      },
+      {
+        "command": "ledger.insertDate",
+        "title": "Ledger: Insert Date"
+      },
+      {
+        "command": "ledger.sortFile",
+        "title": "Ledger: Sort File"
+      },
+      {
+        "command": "ledger.jumpToNow",
+        "title": "Ledger: Jump to Now"
+      },
+      {
+        "command": "ledger.toggleReconciliation",
+        "title": "Ledger: Toggle Reconciliation"
+      },
+      {
+        "command": "ledger.completeTransaction",
+        "title": "Ledger: Complete Transaction"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ledger.completeTransaction",
+        "key": "ctrl+c tab",
+        "when": "editorTextFocus && editorLangId == ledger"
+      },
+      {
+        "command": "ledger.insertDate",
+        "key": "ctrl+c ctrl+t",
+        "when": "editorTextFocus && editorLangId == ledger"
+      },
+      {
+        "command": "ledger.toggleReconciliation",
+        "key": "ctrl+c ctrl+c",
+        "when": "editorTextFocus && editorLangId == ledger"
+      }
+    ],
+    "configurationDefaults": {
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          {
+            "scope": "entity.name.merchant.uncleared.ledger",
+            "settings": {
+              "foreground": "#000000",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "entity.name.account.uncleared.ledger",
+            "settings": {
+              "foreground": "#000000",
+              "fontStyle": ""
+            }
+          },
+          {
+            "scope": "entity.name.merchant.cleared.ledger",
+            "settings": {
+              "foreground": "#808080",
+              "fontStyle": ""
+            }
+          },
+          {
+            "scope": "entity.name.account.cleared.ledger",
+            "settings": {
+              "foreground": "#808080",
+              "fontStyle": ""
+            }
+          }
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "compile-tests": "tsc -p ./test",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run test:mocha && npm run test:syntax",
+    "posttest": "npm run lint",
+    "pretest:mocha": "npm run compile && npm run compile-tests",
+    "test:mocha": "vscode-test",
+    "test:syntax": "vscode-tmgrammar-test 'test/data/syntax/**/*.test.ledger'",
+    "test:coverage": "npm run test:mocha -- --coverage",
+    "validate-coverage": "node scripts/validate-coverage.js",
+    "eslint": "eslint src test --ext ts",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "npm run eslint && npm run format:check",
+    "package": "vsce package",
+    "install-in-vscode": "npm run package && code --install-extension ledger-mode-1.0.0.vsix --force",
+    "preview:generate": "npx ts-node test/generators/generate-all.ts",
+    "preview:publish": "npm run preview:generate && gh-pages -d test/preview"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/sinon": "^17.0.4",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.2.0",
+    "@vscode/vsce": "^3.5.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "gh-pages": "^6.3.0",
+    "glob": "^8.0.3",
+    "js-yaml": "^4.1.0",
+    "mocha": "^10.1.0",
+    "prettier": "^3.5.3",
+    "sinon": "^21.0.0",
+    "typescript": "^4.9.3",
+    "vscode-tmgrammar-test": "^0.1.3"
+  },
+  "dependencies": {
+    "chrono-node": "^2.8.3"
+  }
+}

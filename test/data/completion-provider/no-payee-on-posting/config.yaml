@@ -1,0 +1,12 @@
+description: Should not provide payee completions on posting lines
+cursorLine: 1
+cursorColumn: 4
+expectedCompletions:
+  - label: Assets:Bank:Checking
+    kind: Module
+    detail: Account
+  - label: Expenses:Food
+    kind: Module
+    detail: Account
+completionType: none
+noPayeeCompletions: true

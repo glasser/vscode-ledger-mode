@@ -1,0 +1,68 @@
+[
+  {
+    "description": "Basic transaction with reconciliation marker",
+    "input": "2024-01-15 * Grocery Store",
+    "expected": {
+      "date": "2024-01-15",
+      "state": "*",
+      "payee": "Grocery Store",
+      "code": null,
+      "effectiveDate": null
+    }
+  },
+  {
+    "description": "Transaction with effective date and code",
+    "input": "2024-01-16=2024-01-20 ! (CHECK001) Rent Payment",
+    "expected": {
+      "date": "2024-01-16",
+      "effectiveDate": "2024-01-20",
+      "state": "!",
+      "code": "CHECK001",
+      "payee": "Rent Payment"
+    }
+  },
+  {
+    "description": "Transaction without state marker",
+    "input": "2024-01-17 Partial Transaction",
+    "expected": {
+      "date": "2024-01-17",
+      "state": null,
+      "payee": "Partial Transaction",
+      "code": null,
+      "effectiveDate": null
+    }
+  },
+  {
+    "description": "Transaction with special characters in payee",
+    "input": "2024-01-15 Café & Restaurant",
+    "expected": {
+      "date": "2024-01-15",
+      "state": null,
+      "payee": "Café & Restaurant",
+      "code": null,
+      "effectiveDate": null
+    }
+  },
+  {
+    "description": "Transaction with code but no state",
+    "input": "2024-01-15 (CODE123) Store Purchase",
+    "expected": {
+      "date": "2024-01-15",
+      "state": null,
+      "payee": "Store Purchase",
+      "code": "CODE123",
+      "effectiveDate": null
+    }
+  },
+  {
+    "description": "Transaction with date using slashes",
+    "input": "2024/01/15 Test Payment",
+    "expected": {
+      "date": "2024/01/15",
+      "state": null,
+      "payee": "Test Payment",
+      "code": null,
+      "effectiveDate": null
+    }
+  }
+]

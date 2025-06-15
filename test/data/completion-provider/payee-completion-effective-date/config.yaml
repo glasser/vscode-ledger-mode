@@ -1,0 +1,8 @@
+description: Should handle transaction with effective date
+cursorLine: 4
+cursorColumn: 28
+expectedCompletions:
+  - label: Previous Store
+    kind: Value
+    detail: Payee
+completionType: payee

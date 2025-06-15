@@ -1,0 +1,42 @@
+[
+  {
+    "description": "Parse transaction line with reconciliation marker",
+    "type": "transaction",
+    "input": "2024-01-15 * Grocery Store",
+    "expected": {
+      "date": "2024-01-15",
+      "status": "*",
+      "rest": " Grocery Store"
+    }
+  },
+  {
+    "description": "Parse posting line with reconciliation marker",
+    "type": "posting",
+    "input": "    * Expenses:Food    $25.00",
+    "expected": {
+      "status": "*",
+      "indent": "    ",
+      "rest": "Expenses:Food    $25.00"
+    }
+  },
+  {
+    "description": "Parse posting line with comment",
+    "type": "posting",
+    "input": "    Expenses:Food    $25.00    ; lunch",
+    "expected": {
+      "status": "",
+      "indent": "    ",
+      "rest": "Expenses:Food    $25.00    ; lunch"
+    }
+  },
+  {
+    "description": "Invalid lines that should not parse as transactions",
+    "type": "transaction",
+    "shouldParse": false,
+    "inputs": [
+      "invalid line",
+      "  not a valid transaction",
+      ";; comment line"
+    ]
+  }
+]

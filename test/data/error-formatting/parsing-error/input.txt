@@ -1,0 +1,4 @@
+While parsing file "/path/to/ledger.txt", line 42:
+> 2024-01-15 * Grocery Shopping
+>     Assets:Checking
+Error: Amount required for posting

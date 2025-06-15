@@ -1,0 +1,8 @@
+description: Test virtual account completion with brackets
+cursorLine: 5
+cursorColumn: 12
+expectedCompletions:
+  - label: "[Budget:Food]"
+    kind: Module
+    detail: Account
+completionType: account

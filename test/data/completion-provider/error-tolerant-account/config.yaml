@@ -1,0 +1,8 @@
+description: Should provide account completions despite syntax errors in file
+cursorLine: 8
+cursorColumn: 7
+expectedCompletions:
+  - label: Expenses:Food
+    kind: Module
+    detail: Account
+completionType: account

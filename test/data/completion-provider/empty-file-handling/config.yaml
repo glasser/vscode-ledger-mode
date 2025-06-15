@@ -1,0 +1,5 @@
+description: Should handle empty files gracefully
+cursorLine: 0
+cursorColumn: 0
+expectedCompletions: []
+completionType: none

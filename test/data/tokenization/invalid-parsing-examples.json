@@ -1,0 +1,40 @@
+[
+  {
+    "description": "Invalid transaction lines that should not parse",
+    "type": "transaction",
+    "inputs": [
+      "Invalid line",
+      "    Expenses:Food    $100.00",
+      "; This is a comment",
+      "account Assets:Bank",
+      "",
+      "24-01-15 Test",
+      "2024-1-5 Test",
+      "abcd-01-15 Test"
+    ],
+    "shouldParse": false,
+    "reason": "These are not valid transaction lines"
+  },
+  {
+    "description": "Invalid posting lines that should not parse",
+    "type": "posting", 
+    "inputs": [
+      "2024-01-15 Transaction",
+      "; Comment line",
+      "account Assets",
+      "",
+      "Not indented posting"
+    ],
+    "shouldParse": false,
+    "reason": "These are not valid posting lines"
+  },
+  {
+    "description": "Edge case - invalid month accepted by parser",
+    "type": "transaction",
+    "inputs": [
+      "2024-13-01 Test"
+    ],
+    "shouldParse": true,
+    "reason": "Parser currently accepts invalid month/day values - this documents current behavior"
+  }
+]

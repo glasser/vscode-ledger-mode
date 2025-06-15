@@ -1,0 +1,6 @@
+description: Should not provide completions when cursor is before date prefix
+cursorLine: 0
+cursorColumn: 5
+expectedCompletions: []
+completionType: none
+noPayeeCompletions: true

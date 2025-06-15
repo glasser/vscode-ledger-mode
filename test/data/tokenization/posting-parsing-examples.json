@@ -1,0 +1,92 @@
+[
+  {
+    "description": "Basic posting with amount",
+    "input": "    Expenses:Food:Groceries    $45.67",
+    "expected": {
+      "account": "Expenses:Food:Groceries",
+      "amount": "$45.67",
+      "state": null,
+      "comment": null
+    }
+  },
+  {
+    "description": "Posting without amount",
+    "input": "    Assets:Bank:Checking",
+    "expected": {
+      "account": "Assets:Bank:Checking",
+      "amount": null,
+      "state": null,
+      "comment": null
+    }
+  },
+  {
+    "description": "Posting with state marker",
+    "input": "    * Expenses:Housing:Rent    $1,200.00",
+    "expected": {
+      "account": "Expenses:Housing:Rent",
+      "amount": "$1,200.00",
+      "state": "*",
+      "comment": null
+    }
+  },
+  {
+    "description": "Posting with comment",
+    "input": "    Expenses:Food    $25.00    ; lunch",
+    "expected": {
+      "account": "Expenses:Food",
+      "amount": "$25.00",
+      "state": null,
+      "comment": "; lunch"
+    }
+  },
+  {
+    "description": "Posting with complex account name",
+    "input": "    Assets:Bank Account:Checking    $100.00",
+    "expected": {
+      "account": "Assets:Bank Account:Checking",
+      "amount": "$100.00",
+      "state": null,
+      "comment": null
+    }
+  },
+  {
+    "description": "Posting with negative amount",
+    "input": "    Expenses:Food    -$45.67",
+    "expected": {
+      "account": "Expenses:Food",
+      "amount": "-$45.67",
+      "state": null,
+      "comment": null
+    }
+  },
+  {
+    "description": "Posting with non-dollar currency",
+    "input": "    Expenses:Food    €100.00",
+    "expected": {
+      "account": "Expenses:Food",
+      "amount": "€100.00",
+      "state": null,
+      "comment": null
+    }
+  },
+  {
+    "description": "Posting with shares",
+    "input": "    Expenses:Food    10 SHARES",
+    "expected": {
+      "account": "Expenses:Food",
+      "amount": "10 SHARES",
+      "state": null,
+      "comment": null
+    }
+  },
+  {
+    "description": "Posting with balance assertion",
+    "input": "    Expenses:Food    $100.00 = $500.00",
+    "expected": {
+      "account": "Expenses:Food",
+      "amount": "$100.00 = $500.00",
+      "state": null,
+      "comment": null
+    }
+  }
+]

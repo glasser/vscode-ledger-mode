@@ -1,0 +1,7 @@
+Error: While balancing transaction from "/test/file.ledger", lines 100-102:
+> 2025-01-01 Test Transaction
+>   Assets:Cash    $100
+>   Expenses:Food   $50
+
+Unbalanced remainder is: $50.00
+Error: Transaction does not balance

@@ -1,0 +1,32 @@
+; Test file for transaction completion functionality
+
+2024-01-01 * Grocery Store
+    Expenses:Food:Groceries    $45.67
+    Assets:Bank:Checking      -$45.67
+
+2024-01-05 Grocery Store
+    Expenses:Food:Groceries    $32.10
+    Assets:Bank:Checking      -$32.10
+
+2024-01-10 ! Grocery Store
+    Expenses:Food:Groceries    $28.95
+    Assets:Bank:Checking      -$28.95
+
+2024-01-15 Grocery Store
+    Expenses:Food:Groceries    $41.23
+    CC:Visa                   -$41.23
+
+2024-01-20 Gas Station
+    Expenses:Transportation:Gas    $35.00
+    Assets:Bank:Checking          -$35.00
+
+2024-01-25 Gas Station
+    Expenses:Transportation:Gas    $42.50
+    CC:Visa                       -$42.50
+
+2024-01-30 Restaurant ABC
+    Expenses:Food:Dining       $65.00
+    Assets:Bank:Checking      -$65.00
+
+; Partial transaction for testing completion
+2024-02-01 Grocery Store

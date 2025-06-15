@@ -1,0 +1,11 @@
+2024-01-15 Test Transaction
+    Assets:Bank:Checking    $10.00
+    Assets:Cash             $5.00  
+    Expenses:Food          -$15.00
+
+2024-01-16 Second Transaction  
+    Assets:Bank:Savings     $20.00
+    Expenses:Shopping      -$20.00
+
+2024-01-17 Third Transaction
+    Assets:

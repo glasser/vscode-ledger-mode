@@ -1,0 +1,38 @@
+; SYNTAX TEST "source.ledger" "Complex amount syntax highlighting"
+
+; Test commodity amounts (commodity after number)
+2024-01-15 * Stock Purchase
+    Assets:Stocks                             100 AAPL
+;                                             ^^^^^^^^ constant.numeric.amount.ledger
+    Assets:Checking                           $-5000.00
+
+; Test commodity amounts (commodity before number)  
+2024-01-16 * Foreign Exchange
+    Assets:EUR                                EUR 1000.00
+;                                             ^^^^^^^^^^^ constant.numeric.amount.ledger
+    Assets:USD                                USD -1100.00
+;                                             ^^^^^^^^^^^^ constant.numeric.amount.ledger
+
+; Test expressions
+2024-01-17 * Expression Test
+    Assets:Checking                           ($100.00 + $25.00)
+;                                             ^^^^^^^^^^^^^^^^^^ constant.numeric.amount.ledger
+    Expenses:Food                             $-125.00
+
+; Test lot pricing
+2024-01-18 * Lot Purchase
+    Assets:Stocks                             10 AAPL {$150.00}
+;                                             ^^^^^^^^^^^^^^^^^ constant.numeric.amount.ledger
+    Assets:Checking                           $-1500.00
+
+; Test balance assertions (for now treating whole expression as amount)
+2024-01-19 * Balance Assertion
+    Assets:Checking                           $100.00 = $1000.00
+;                                             ^^^^^^^^^^^^^^^^^^ constant.numeric.amount.ledger
+
+; Test with comments after amounts
+2024-01-20 * Comment Test
+    Assets:Checking                           $100.00  ; comment here
+;                                             ^^^^^^^ constant.numeric.amount.ledger
+;                                                       ^^^^^^^^^^^^^ comment.line.semicolon.ledger
+    Expenses:Food                             $-100.00

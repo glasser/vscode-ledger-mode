@@ -1,0 +1,11 @@
+description: Should work with completely malformed transactions
+cursorLine: 16
+cursorColumn: 16
+expectedCompletions:
+  - label: Another Valid Store
+    kind: Value
+    detail: Payee
+  - label: Valid Store
+    kind: Value
+    detail: Payee
+completionType: payee

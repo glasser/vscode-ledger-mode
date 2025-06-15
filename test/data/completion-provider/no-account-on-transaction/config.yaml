@@ -1,0 +1,9 @@
+description: Should not provide account completions on transaction date lines
+cursorLine: 4
+cursorColumn: 20
+expectedCompletions:
+  - label: Test Payee
+    kind: Value
+    detail: Payee
+completionType: payee
+noAccountCompletions: true

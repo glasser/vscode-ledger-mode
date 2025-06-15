@@ -1,0 +1,11 @@
+While parsing file "/tmp/unbalanced.ledger", line 4:
+While balancing transaction from "/tmp/unbalanced.ledger", lines 1-4:
+> 2024-01-01 Test Transaction
+>     Assets:Checking    $100.00
+>     Expenses:Food       $50.00
+>     ; This transaction doesn't balance - missing posting
+Unbalanced remainder is:
+             $150.00
+Amount to balance against:
+             $150.00
+Error: Transaction does not balance

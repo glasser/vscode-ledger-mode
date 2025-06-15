@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error Formatting Test Cases</title>
+    <style>
+        :root {
+            /* VSCode theme variables for preview */
+            --vscode-errorForeground: #d73027;
+            --vscode-inputValidation-errorBackground: #fff2f0;
+            --vscode-textCodeBlock-background: #f0f4f8;
+            --vscode-textBlockQuote-border: #4a90e2;
+            --vscode-descriptionForeground: #666;
+            --vscode-textLink-foreground: #0066cc;
+            --vscode-textLink-activeForeground: #004499;
+            --vscode-editor-font-family: 'Courier New', monospace;
+        }
+        
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case { 
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .comparison { 
+            display: flex;
+        }
+        .column { 
+            flex: 1; 
+            padding: 15px;
+        }
+        .before { 
+            background-color: #fafafa; 
+            border-right: 1px solid #ddd;
+        }
+        .after { 
+            background-color: #f0f8f0; 
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content { 
+            background-color: #f8f8f8; 
+            padding: 12px; 
+            border-radius: 4px; 
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        .input-content {
+            color: #666;
+        }
+        .styled-content {
+            background-color: #ffffff; 
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        /* Imported error formatting styles from actual implementation */
+        
+        .file-link {
+            color: var(--vscode-textLink-foreground);
+            cursor: pointer;
+            text-decoration: underline;
+            border-radius: 3px;
+            padding: 1px 3px;
+            background-color: rgba(var(--vscode-textLink-foreground), 0.1);
+        }
+        .file-link:hover {
+            color: var(--vscode-textLink-activeForeground);
+            background-color: rgba(var(--vscode-textLink-foreground), 0.2);
+        }
+        .error-message {
+            color: var(--vscode-errorForeground);
+            background-color: var(--vscode-inputValidation-errorBackground);
+            padding: 2px 4px;
+            border-radius: 3px;
+            border-left: 3px solid var(--vscode-errorForeground);
+        }
+        .quoted-block {
+            background-color: var(--vscode-textCodeBlock-background);
+            padding: 2px 6px;
+            border-left: 3px solid var(--vscode-textBlockQuote-border);
+            margin: 4px 0;
+            display: block;
+            font-family: var(--vscode-editor-font-family);
+            white-space: pre;
+        }
+        .context-label {
+            color: var(--vscode-descriptionForeground);
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Error Formatting Test Cases</h1>
+    
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>This preview shows how raw ledger error output is transformed into styled HTML.</p>
+        <p><strong>Features being tested:</strong></p>
+        <ul>
+            <li><strong>Error messages</strong>: Styled with red background and left border</li>
+            <li><strong>Context labels</strong>: "While parsing..." phrases in italic gray</li>
+            <li><strong>Quoted blocks</strong>: Lines starting with ">" grouped with blue background and left border</li>
+        </ul>
+        <p><strong>Test cases:</strong> 8</p>
+    </div>
+
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Html Escaping</h3>
+            <p class="test-name">test/data/error-formatting/html-escaping/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">Error: Invalid character &#039;&lt;&#039; in account name
+&gt; 2024-01-01 Transaction with &lt;script&gt;alert(&#039;xss&#039;)&lt;/script&gt;
+&gt;     Assets:Checking&lt;&gt;&amp;&quot;&#039;    $100.00
+Context: file &quot;/path/with&lt;special&gt;&amp;chars.ledger&quot;</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="error-message">Error: Invalid character &#039;&lt;&#039; in account name</span>
+<span class="quoted-block">&gt; 2024-01-01 Transaction with &lt;script&gt;alert(&#039;xss&#039;)&lt;/script&gt;
+&gt;     Assets:Checking&lt;&gt;&amp;&quot;&#039;    $100.00
+</span>Context: file &quot;/path/with&lt;special&gt;&amp;chars.ledger&quot;</div></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Invalid Date</h3>
+            <p class="test-name">test/data/error-formatting/invalid-date/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">While parsing file &quot;/tmp/syntax_error.ledger&quot;, line 9:
+While parsing transaction:
+&gt; 202X-01-03 Bad Date
+Error: Invalid date: 202X-01-03</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="context-label">While parsing file</span> <span class="file-link" onclick="goToLocation('/tmp/syntax_error.ledger', 9)" title="Click to open /tmp/syntax_error.ledger at line 9">&quot;syntax_error.ledger&quot;, line 9</span>:
+<span class="context-label">While parsing transaction</span>:
+<span class="quoted-block">&gt; 202X-01-03 Bad Date
+</span><span class="error-message">Error: Invalid date: 202X-01-03</span></div></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Multiple Errors</h3>
+            <p class="test-name">test/data/error-formatting/multiple-errors/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">While balancing transaction from &quot;/Users/glasser/Projects/Personal/personal-ledger/personal.ledger&quot;, lines 76982-76984:
+&gt; 2025-05-02 Berkeley Bowl
+&gt;  Expenses:Personal:Groceries                  $91.14
+&gt;  * CC:Amazon Chase   -$5
+
+
+Unbalanced remainder is:
+              $86.14
+
+Amount to balance against:
+              $91.14
+
+
+Error: Transaction does not balance
+While parsing file &quot;/Users/glasser/Projects/Personal/personal-ledger/personal.ledger&quot;, line 78004:
+
+
+While balancing transaction from &quot;/Users/glasser/Projects/Personal/personal-ledger/personal.ledger&quot;, lines 78002-78004:
+&gt; 2025-07-05 Compound Gallery
+&gt;  Expenses:Personal:Art:Studio                   $250
+&gt;  Assets:SF Fire:Checking  -$5
+
+
+Unbalanced remainder is:
+             $245.00
+
+Amount to balance against:
+             $250.00
+
+
+Error: Transaction does not balance</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="context-label">While balancing transaction</span> from &quot;personal.ledger&quot;, lines <span class="file-link" onclick="goToLocation('/Users/glasser/Projects/Personal/personal-ledger/personal.ledger', 76982)" title="Click to open /Users/glasser/Projects/Personal/personal-ledger/personal.ledger at line 76982">76982</span>-<span class="file-link" onclick="goToLocation('/Users/glasser/Projects/Personal/personal-ledger/personal.ledger', 76984)" title="Click to open /Users/glasser/Projects/Personal/personal-ledger/personal.ledger at line 76984">76984</span>:
+<span class="quoted-block">&gt; 2025-05-02 Berkeley Bowl
+&gt;  Expenses:Personal:Groceries                  $91.14
+&gt;  * CC:Amazon Chase   -$5
+</span>
+
+Unbalanced remainder is:
+              $86.14
+
+Amount to balance against:
+              $91.14
+
+
+<span class="error-message">Error: Transaction does not balance</span>
+<span class="context-label">While parsing file</span> <span class="file-link" onclick="goToLocation('/Users/glasser/Projects/Personal/personal-ledger/personal.ledger', 78004)" title="Click to open /Users/glasser/Projects/Personal/personal-ledger/personal.ledger at line 78004">&quot;personal.ledger&quot;, line 78004</span>:
+
+
+<span class="context-label">While balancing transaction</span> from &quot;personal.ledger&quot;, lines <span class="file-link" onclick="goToLocation('/Users/glasser/Projects/Personal/personal-ledger/personal.ledger', 78002)" title="Click to open /Users/glasser/Projects/Personal/personal-ledger/personal.ledger at line 78002">78002</span>-<span class="file-link" onclick="goToLocation('/Users/glasser/Projects/Personal/personal-ledger/personal.ledger', 78004)" title="Click to open /Users/glasser/Projects/Personal/personal-ledger/personal.ledger at line 78004">78004</span>:
+<span class="quoted-block">&gt; 2025-07-05 Compound Gallery
+&gt;  Expenses:Personal:Art:Studio                   $250
+&gt;  Assets:SF Fire:Checking  -$5
+</span>
+
+Unbalanced remainder is:
+             $245.00
+
+Amount to balance against:
+             $250.00
+
+
+<span class="error-message">Error: Transaction does not balance</span></div></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Multiple Quoted Blocks</h3>
+            <p class="test-name">test/data/error-formatting/multiple-quoted-blocks/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">Error: Account &quot;Assets:Typo&quot; not found
+&gt; 2024-01-01 Transaction 1  
+&gt;     Assets:Typo    $100.00
+Context continues here
+&gt; 2024-01-02 Transaction 2
+&gt;     Assets:Checking   $50.00
+Error: Multiple issues detected</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="error-message">Error: Account &quot;Assets:Typo&quot; not found</span>
+<span class="quoted-block">&gt; 2024-01-01 Transaction 1  
+&gt;     Assets:Typo    $100.00
+</span>Context continues here
+<span class="quoted-block">&gt; 2024-01-02 Transaction 2
+&gt;     Assets:Checking   $50.00
+</span><span class="error-message">Error: Multiple issues detected</span></div></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">No File Location</h3>
+            <p class="test-name">test/data/error-formatting/no-file-location/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">Error: Could not execute ledger command</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="error-message">Error: Could not execute ledger command</span></div></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Parsing Error</h3>
+            <p class="test-name">test/data/error-formatting/parsing-error/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">While parsing file &quot;/path/to/ledger.txt&quot;, line 42:
+&gt; 2024-01-15 * Grocery Shopping
+&gt;     Assets:Checking
+Error: Amount required for posting</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="context-label">While parsing file</span> <span class="file-link" onclick="goToLocation('/path/to/ledger.txt', 42)" title="Click to open /path/to/ledger.txt at line 42">&quot;ledger.txt&quot;, line 42</span>:
+<span class="quoted-block">&gt; 2024-01-15 * Grocery Shopping
+&gt;     Assets:Checking
+</span><span class="error-message">Error: Amount required for posting</span></div></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Transaction Details</h3>
+            <p class="test-name">test/data/error-formatting/transaction-details/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">Error: While balancing transaction from &quot;/test/file.ledger&quot;, lines 100-102:
+&gt; 2025-01-01 Test Transaction
+&gt;   Assets:Cash    $100
+&gt;   Expenses:Food   $50
+
+Unbalanced remainder is: $50.00
+Error: Transaction does not balance</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="error-message">Error: While balancing transaction from &quot;/test/file.ledger&quot;, lines 100-102:</span>
+<span class="quoted-block">&gt; 2025-01-01 Test Transaction
+&gt;   Assets:Cash    $100
+&gt;   Expenses:Food   $50
+</span>
+Unbalanced remainder is: $50.00
+<span class="error-message">Error: Transaction does not balance</span></div></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Unbalanced Transaction</h3>
+            <p class="test-name">test/data/error-formatting/unbalanced-transaction/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">While parsing file &quot;/tmp/unbalanced.ledger&quot;, line 4:
+While balancing transaction from &quot;/tmp/unbalanced.ledger&quot;, lines 1-4:
+&gt; 2024-01-01 Test Transaction
+&gt;     Assets:Checking    $100.00
+&gt;     Expenses:Food       $50.00
+&gt;     ; This transaction doesn&#039;t balance - missing posting
+Unbalanced remainder is:
+             $150.00
+Amount to balance against:
+             $150.00
+Error: Transaction does not balance</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content"><div class="error-details"><span class="context-label">While parsing file</span> <span class="file-link" onclick="goToLocation('/tmp/unbalanced.ledger', 4)" title="Click to open /tmp/unbalanced.ledger at line 4">&quot;unbalanced.ledger&quot;, line 4</span>:
+<span class="context-label">While balancing transaction</span> from &quot;unbalanced.ledger&quot;, lines <span class="file-link" onclick="goToLocation('/tmp/unbalanced.ledger', 1)" title="Click to open /tmp/unbalanced.ledger at line 1">1</span>-<span class="file-link" onclick="goToLocation('/tmp/unbalanced.ledger', 4)" title="Click to open /tmp/unbalanced.ledger at line 4">4</span>:
+<span class="quoted-block">&gt; 2024-01-01 Test Transaction
+&gt;     Assets:Checking    $100.00
+&gt;     Expenses:Food       $50.00
+&gt;     ; This transaction doesn&#039;t balance - missing posting
+</span>Unbalanced remainder is:
+             $150.00
+Amount to balance against:
+             $150.00
+<span class="error-message">Error: Transaction does not balance</span></div></pre>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

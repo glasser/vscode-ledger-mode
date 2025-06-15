@@ -1,0 +1,31 @@
+While balancing transaction from "/Users/glasser/Projects/Personal/personal-ledger/personal.ledger", lines 76982-76984:
+> 2025-05-02 Berkeley Bowl
+>  Expenses:Personal:Groceries                  $91.14
+>  * CC:Amazon Chase   -$5
+
+
+Unbalanced remainder is:
+              $86.14
+
+Amount to balance against:
+              $91.14
+
+
+Error: Transaction does not balance
+While parsing file "/Users/glasser/Projects/Personal/personal-ledger/personal.ledger", line 78004:
+
+
+While balancing transaction from "/Users/glasser/Projects/Personal/personal-ledger/personal.ledger", lines 78002-78004:
+> 2025-07-05 Compound Gallery
+>  Expenses:Personal:Art:Studio                   $250
+>  Assets:SF Fire:Checking  -$5
+
+
+Unbalanced remainder is:
+             $245.00
+
+Amount to balance against:
+             $250.00
+
+
+Error: Transaction does not balance

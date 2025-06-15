@@ -1,0 +1,9 @@
+2024-01-01 * Grocery Store
+    * Expenses:Food:Groceries    $45.67
+    * Assets:Bank:Checking      -$45.67
+
+2024-01-05 ! Gas Station  
+    ! Expenses:Transportation:Gas    $35.00
+    ! Assets:Bank:Checking          -$35.00
+
+2024-02-01 Gas Station

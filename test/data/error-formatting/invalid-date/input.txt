@@ -1,0 +1,4 @@
+While parsing file "/tmp/syntax_error.ledger", line 9:
+While parsing transaction:
+> 202X-01-03 Bad Date
+Error: Invalid date: 202X-01-03

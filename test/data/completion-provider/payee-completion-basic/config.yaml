@@ -1,0 +1,8 @@
+description: Should provide payee completions on transaction lines
+cursorLine: 8
+cursorColumn: 12
+expectedCompletions:
+  - label: Whole Foods Market
+    kind: Value
+    detail: Payee
+completionType: payee

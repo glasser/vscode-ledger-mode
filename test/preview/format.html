@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ledger Format Test Cases</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case { 
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .comparison { 
+            display: flex;
+        }
+        .column { 
+            flex: 1; 
+            padding: 15px;
+        }
+        .before { 
+            background-color: #fafafa; 
+            border-right: 1px solid #ddd;
+        }
+        .after { 
+            background-color: #f0f8f0; 
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content { 
+            background-color: #f8f8f8; 
+            padding: 12px; 
+            border-radius: 4px; 
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        .input-content {
+            color: #666;
+        }
+        .styled-content {
+            background-color: #ffffff; 
+            color: #333;
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ledger Format Test Cases</h1>
+    
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>This preview shows how the ledger formatter transforms input ledger files into properly formatted output.</p>
+        <p><strong>Features being tested:</strong></p>
+        <ul>
+            <li><strong>Amount alignment</strong>: Consistent column alignment for amounts</li>
+            <li><strong>Account spacing</strong>: Proper spacing between accounts and amounts</li>
+            <li><strong>Comment preservation</strong>: Comments are maintained in correct positions</li>
+            <li><strong>Reconciliation markers</strong>: Status markers are normalized</li>
+        </ul>
+        <p><strong>Test cases:</strong> 6</p>
+    </div>
+
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Basic Alignment</h3>
+            <p class="test-name">test/data/format/basic-alignment/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Unformatted)</div>
+                <pre class="content input-content">1999-12-01 Test Transaction
+    Expenses:Test    $10.00
+    Assets:Checking
+
+1999-01-01 Earlier Transaction  
+  Expenses:Food   $5.00
+  Assets:Checking</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Formatted)</div>
+                <pre class="content styled-content">1999-12-01 Test Transaction
+ Expenses:Test                                           $10.00
+ Assets:Checking
+
+1999-01-01 Earlier Transaction
+ Expenses:Food                                           $5.00
+ Assets:Checking
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Long Account Names</h3>
+            <p class="test-name">test/data/format/long-account-names/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Unformatted)</div>
+                <pre class="content input-content">2024-01-01 Test Long Account Names  
+      Expenses:Food:Restaurants:FancyPlaceName:VeryLongLocationDescription   $25.50
+    Assets:Cash
+    
+2024-01-02 Regular Account
+  Expenses:Food  $10.00
+  Assets:Cash</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Formatted)</div>
+                <pre class="content styled-content">2024-01-01 Test Long Account Names
+ Expenses:Food:Restaurants:FancyPlaceName:VeryLongLocationDescription  $25.50
+ Assets:Cash
+
+2024-01-02 Regular Account
+ Expenses:Food                                           $10.00
+ Assets:Cash
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Negative Amounts</h3>
+            <p class="test-name">test/data/format/negative-amounts/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Unformatted)</div>
+                <pre class="content input-content">2024-01-01 Withdrawal
+  Assets:Checking   -$100.00
+  Expenses:Cash  $100.00
+  
+2024-01-02 Transfer
+    Assets:Checking    -$50.00
+    Assets:Savings   $50.00</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Formatted)</div>
+                <pre class="content styled-content">2024-01-01 Withdrawal
+ Assets:Checking                                        -$100.00
+ Expenses:Cash                                           $100.00
+
+2024-01-02 Transfer
+ Assets:Checking                                        -$50.00
+ Assets:Savings                                          $50.00
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Preserve Comments</h3>
+            <p class="test-name">test/data/format/preserve-comments/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Unformatted)</div>
+                <pre class="content input-content">; Opening file comment
+
+; Comment before first transaction
+2024-01-01 Test Transaction
+    Expenses:Test    $10.00
+    Assets:Checking
+
+; Comment between transactions
+; Another comment
+2024-01-02 Second Transaction
+  Income:Salary   $1000.00
+  Assets:Checking</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Formatted)</div>
+                <pre class="content styled-content">; Opening file comment
+
+; Comment before first transaction
+2024-01-01 Test Transaction
+ Expenses:Test                                           $10.00
+ Assets:Checking
+
+; Comment between transactions
+; Another comment
+2024-01-02 Second Transaction
+ Income:Salary                                           $1000.00
+ Assets:Checking
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Preserve Order</h3>
+            <p class="test-name">test/data/format/preserve-order/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Unformatted)</div>
+                <pre class="content input-content">2024-06-20 Future Transaction
+    Assets:Future   $100.00
+    Income:Test
+
+2024-01-01 Past Transaction
+    Expenses:Past   $50.00
+    Assets:Past
+
+2024-06-15 Middle Transaction
+  Assets:Middle   $25.00
+  Income:Middle</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Formatted)</div>
+                <pre class="content styled-content">2024-06-20 Future Transaction
+ Assets:Future                                           $100.00
+ Income:Test
+
+2024-01-01 Past Transaction
+ Expenses:Past                                           $50.00
+ Assets:Past
+
+2024-06-15 Middle Transaction
+ Assets:Middle                                           $25.00
+ Income:Middle
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Reconciliation Normalization</h3>
+            <p class="test-name">test/data/format/reconciliation-normalization/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Unformatted)</div>
+                <pre class="content input-content">2024-01-15 Grocery Store
+ * Expenses:Groceries          $50.00
+ * Assets:Checking            -$50.00
+
+2024-01-16 Gas Station
+ Expenses:Fuel                 $30.00
+ Assets:Checking              -$30.00
+
+2024-01-17 Coffee Shop
+ ! Expenses:Coffee             $5.00
+ ! Assets:Checking            -$5.00</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Formatted)</div>
+                <pre class="content styled-content">2024-01-15 * Grocery Store
+ Expenses:Groceries                                      $50.00
+ Assets:Checking                                        -$50.00
+
+2024-01-16 Gas Station
+ Expenses:Fuel                                           $30.00
+ Assets:Checking                                        -$30.00
+
+2024-01-17 ! Coffee Shop
+ Expenses:Coffee                                         $5.00
+ Assets:Checking                                        -$5.00
+</pre>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

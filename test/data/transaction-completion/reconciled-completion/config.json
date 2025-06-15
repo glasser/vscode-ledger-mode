@@ -1,0 +1,5 @@
+{
+  "cursorLine": 8,
+  "cursorColumn": 15,
+  "description": "Complete transaction from pending (!) template - should create unreconciled postings"
+}

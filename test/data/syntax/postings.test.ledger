@@ -1,0 +1,39 @@
+; SYNTAX TEST "source.ledger" "Ledger posting syntax highlighting"
+
+; Test cleared posting with reconciliation marker
+2024-01-15 * Test Transaction
+    * Assets:Checking Account             $100.00
+;   ^ invalid.illegal.ledger
+;     ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+;                                         ^^^^^^^ constant.numeric.amount.ledger
+
+; Test pending posting with reconciliation marker  
+2024-01-16 ! Test Transaction
+    ! Assets:Savings Account              $200.00
+;   ^ markup.bold token.warn-token
+;     ^^^^^^^^^^^^^^^^^^^^^^ markup.bold token.warn-token
+;                                         ^^^^^^^ markup.bold token.warn-token
+
+; Test uncleared posting (no marker)
+2024-01-17 Test Transaction
+    Assets:Investment Account             $300.00
+;   ^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.uncleared.ledger
+;                                         ^^^^^^^ constant.numeric.amount.ledger
+
+; Test account with spaces and parentheses
+2024-01-18 * Test Transaction
+    * Assets:401(k) Plan:Employee Match   $150.00
+;   ^ invalid.illegal.ledger
+;     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+;                                         ^^^^^^^ constant.numeric.amount.ledger
+
+; Test different currency symbols
+2024-01-19 * Currency Test
+    * Assets:Euro Account                 €500.00
+;   ^ invalid.illegal.ledger
+;     ^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+;                                         ^^^^^^^ constant.numeric.amount.ledger
+    * Assets:Pound Account                £300.00
+;   ^ invalid.illegal.ledger
+;     ^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+;                                         ^^^^^^^ constant.numeric.amount.ledger

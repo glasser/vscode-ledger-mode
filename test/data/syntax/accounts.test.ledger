@@ -1,0 +1,36 @@
+; SYNTAX TEST "source.ledger" "Ledger account name syntax highlighting"
+
+; Test basic account names
+2024-01-15 * Test Transaction
+    Assets:Checking                       $100.00
+;   ^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+    Expenses:Food:Groceries               $100.00
+;   ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+
+; Test account names with spaces
+2024-01-16 * Test Transaction
+    Assets:Checking Account               $200.00
+;   ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+    Expenses:Dining Out                   $50.00
+;   ^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+
+; Test account names with parentheses
+2024-01-17 * Test Transaction
+    Assets:401(k) Plan                    $500.00
+;   ^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+    Liabilities:Credit Card (Visa)        $100.00
+;   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+
+; Test account names with mixed characters
+2024-01-18 * Test Transaction
+    Assets:Bank_Account-1                 $300.00
+;   ^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+    Expenses:Auto:Gas & Oil               $75.00
+;   ^^^^^^^^^^^^^^^^^^^^^^^ entity.name.account.cleared.ledger
+
+; Test single character account names
+2024-01-19 * Test Transaction
+    A                                     $50.00
+;   ^ entity.name.account.cleared.ledger
+    X:Y                                   $25.00
+;   ^^^ entity.name.account.cleared.ledger

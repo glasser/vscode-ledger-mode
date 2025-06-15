@@ -1,0 +1,5 @@
+{
+  "cursorLine": 8,
+  "cursorColumn": 20,
+  "description": "Complete transaction from cleared (*) template - should create unreconciled postings"
+}

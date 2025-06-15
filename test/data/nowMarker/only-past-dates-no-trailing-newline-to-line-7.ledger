@@ -1,0 +1,7 @@
+2000-12-30 Past Transaction
+ Expenses:Test                                           $10.00
+ Assets:Checking
+
+2000-01-01 Future Transaction
+ Expenses:Future                                         $20.00
+ Assets:Checking

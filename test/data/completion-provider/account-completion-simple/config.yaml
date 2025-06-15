@@ -1,0 +1,14 @@
+description: Should provide account completions after colon
+cursorLine: 10
+cursorColumn: 11
+expectedCompletions:
+  - label: Assets:Bank:Checking
+    kind: Module
+    detail: Account
+  - label: Assets:Bank:Savings
+    kind: Module
+    detail: Account
+  - label: Assets:Cash
+    kind: Module
+    detail: Account
+completionType: account

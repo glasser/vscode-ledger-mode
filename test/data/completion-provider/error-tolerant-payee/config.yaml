@@ -1,0 +1,8 @@
+description: Should provide payee completions despite syntax errors in file
+cursorLine: 11
+cursorColumn: 15
+expectedCompletions:
+  - label: Grocery Store
+    kind: Value
+    detail: Payee
+completionType: payee

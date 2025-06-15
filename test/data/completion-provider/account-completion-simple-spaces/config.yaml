@@ -1,0 +1,8 @@
+description: Simple test for account names with spaces
+cursorLine: 4
+cursorColumn: 11
+expectedCompletions:
+  - label: "Assets:My Bank"
+    kind: Module
+    detail: Account
+completionType: account

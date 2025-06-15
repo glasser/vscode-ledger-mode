@@ -1,0 +1,6 @@
+description: Should not provide completions when no account text matches regex
+cursorLine: 1
+cursorColumn: 11
+expectedCompletions: []
+completionType: none
+noAccountCompletions: true

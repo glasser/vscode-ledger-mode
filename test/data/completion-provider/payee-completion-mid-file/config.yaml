@@ -1,0 +1,8 @@
+description: Should provide payee completions in middle of file
+cursorLine: 8
+cursorColumn: 16
+expectedCompletions:
+  - label: Grocery Store
+    kind: Value
+    detail: Payee
+completionType: payee

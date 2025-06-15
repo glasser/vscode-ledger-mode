@@ -1,0 +1,9 @@
+Not a transaction line
+ Should not toggle anything
+
+2024-01-15 Store
+ Account with tabs		$50.00
+ Other:Account		       -$50.00
+
+2024-01-16 Another transaction
+ Just checking it finds the right one

@@ -1,0 +1,9 @@
+2024-01-01 Valid Transaction
+    Expenses:Food    $50.00
+    Assets:Checking  $-50.00
+
+Broken transaction without date
+    Expenses:Invalid    $malformed-amount
+
+2024-01-02 Another Transaction
+    Exp
