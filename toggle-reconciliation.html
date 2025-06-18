@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toggle Reconciliation Test Cases</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case { 
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-content {
+            display: block;
+        }
+        .expected-column { 
+            padding: 15px;
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content { 
+            background-color: #f8f8f8; 
+            padding: 12px; 
+            border-radius: 4px; 
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        .expected-item {
+            margin-bottom: 15px;
+        }
+        .expected-item:last-child {
+            margin-bottom: 0;
+        }
+        .expected-name {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .cursor-line {
+            background-color: #e3f2fd;
+            display: block;
+            margin: 0 -12px;
+            padding: 0 12px;
+            border-left: 3px solid #2196f3;
+        }
+        .changed-line {
+            background-color: #e8f5e8;
+            display: block;
+            margin: 0 -12px;
+            padding: 0 12px;
+            border-left: 3px solid #4caf50;
+            font-weight: bold;
+        }
+        .normal-line {
+            display: block;
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .legend {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        .cursor-indicator { 
+            background-color: #e3f2fd; 
+            padding: 2px 4px; 
+            border-radius: 2px; 
+            border-left: 3px solid #2196f3;
+        }
+        .changed-indicator { 
+            background-color: #e8f5e8; 
+            padding: 2px 4px; 
+            border-radius: 2px; 
+            border-left: 3px solid #4caf50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Toggle Reconciliation Test Cases</h1>
+    
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for the reconciliation toggle feature that adds/removes reconciliation markers (* and !) from transactions and postings.</p>
+        <p><strong>Testing process:</strong></p>
+        <ol>
+            <li>Place cursor on a specific line (shown with blue highlighting)</li>
+            <li>Execute the "Toggle Reconciliation" command</li>
+            <li>Verify the output matches expected result (changed lines shown with green highlighting)</li>
+        </ol>
+        <div class="legend">
+            <strong>Legend:</strong>
+            <span class="cursor-indicator">Cursor position (line where toggle command is executed)</span> |
+            <span class="changed-indicator">Changed lines (showing the toggle result)</span>
+        </div>
+        <p><strong>Test cases:</strong> 13</p>
+    </div>
+
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">All Postings Reconciled</h3>
+            <p class="test-name">test/data/toggle-reconciliation/all-postings-reconciled/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="cursor-line"> * Expenses:Groceries          $50.00</span><span class="normal-line"> * Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="changed-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> * Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Comment Lines</h3>
+            <p class="test-name">test/data/toggle-reconciliation/comment-lines/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 0 → expected-line0.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="cursor-line">; Just a comment</span><span class="normal-line">; Another comment</span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Expenses:Food  $50.00</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">; Just a comment</span><span class="normal-line">; Another comment</span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Expenses:Food  $50.00</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case multi-expected">
+        <div class="test-header">
+            <h3 class="test-title">Edge Cases</h3>
+            <p class="test-name">test/data/toggle-reconciliation/edge-cases/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 0 → expected-line0.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="cursor-line">Not a transaction line</span><span class="normal-line"> Should not toggle anything</span><span class="normal-line"></span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Account with tabs		$50.00</span><span class="normal-line"> Other:Account		       -$50.00</span><span class="normal-line"></span><span class="normal-line">2024-01-16 Another transaction</span><span class="normal-line"> Just checking it finds the right one</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">Not a transaction line</span><span class="normal-line"> Should not toggle anything</span><span class="normal-line"></span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Account with tabs		$50.00</span><span class="normal-line"> Other:Account		       -$50.00</span><span class="normal-line"></span><span class="normal-line">2024-01-16 Another transaction</span><span class="normal-line"> Just checking it finds the right one</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">Not a transaction line</span><span class="cursor-line"> Should not toggle anything</span><span class="normal-line"></span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Account with tabs		$50.00</span><span class="normal-line"> Other:Account		       -$50.00</span><span class="normal-line"></span><span class="normal-line">2024-01-16 Another transaction</span><span class="normal-line"> Just checking it finds the right one</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">Not a transaction line</span><span class="normal-line"> Should not toggle anything</span><span class="normal-line"></span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Account with tabs		$50.00</span><span class="normal-line"> Other:Account		       -$50.00</span><span class="normal-line"></span><span class="normal-line">2024-01-16 Another transaction</span><span class="normal-line"> Just checking it finds the right one</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <div class="expected-item">
+                        <div class="expected-name">Line 4 → expected-line4.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">Not a transaction line</span><span class="normal-line"> Should not toggle anything</span><span class="normal-line"></span><span class="normal-line">2024-01-15 Store</span><span class="cursor-line"> Account with tabs		$50.00</span><span class="normal-line"> Other:Account		       -$50.00</span><span class="normal-line"></span><span class="normal-line">2024-01-16 Another transaction</span><span class="normal-line"> Just checking it finds the right one</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">Not a transaction line</span><span class="normal-line"> Should not toggle anything</span><span class="normal-line"></span><span class="normal-line">2024-01-15 Store</span><span class="changed-line"> * Account with tabs		$50.00</span><span class="normal-line"> Other:Account		       -$50.00</span><span class="normal-line"></span><span class="normal-line">2024-01-16 Another transaction</span><span class="normal-line"> Just checking it finds the right one</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Malformed Date</h3>
+            <p class="test-name">test/data/toggle-reconciliation/malformed-date/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 0 → expected-line0.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="cursor-line">NotADate Some Store</span><span class="normal-line"> Expenses:Food  $50.00</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">NotADate Some Store</span><span class="normal-line"> Expenses:Food  $50.00</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Malformed Posting</h3>
+            <p class="test-name">test/data/toggle-reconciliation/malformed-posting/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Store</span><span class="cursor-line">NotAPosting</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Store</span><span class="normal-line">NotAPosting</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Mixed Reconciliation</h3>
+            <p class="test-name">test/data/toggle-reconciliation/mixed-reconciliation/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 2 → expected-line2.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="normal-line"> * Expenses:Groceries          $50.00</span><span class="cursor-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 * Some Store</span><span class="changed-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Orphan Posting</h3>
+            <p class="test-name">test/data/toggle-reconciliation/orphan-posting/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 0 → expected-line0.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="cursor-line"> Orphan:Posting  $50.00</span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Expenses:Food  $50.00</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line"> Orphan:Posting  $50.00</span><span class="normal-line">2024-01-15 Store</span><span class="normal-line"> Expenses:Food  $50.00</span><span class="normal-line"> Assets:Cash   -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Pending Posting</h3>
+            <p class="test-name">test/data/toggle-reconciliation/pending-posting/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="cursor-line"> ! Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="changed-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Reconciled Posting</h3>
+            <p class="test-name">test/data/toggle-reconciliation/reconciled-posting/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="cursor-line"> * Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="changed-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case multi-expected">
+        <div class="test-header">
+            <h3 class="test-title">Transaction Pending</h3>
+            <p class="test-name">test/data/toggle-reconciliation/transaction-pending/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 0 → expected-line0.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="cursor-line">2024-01-15 ! Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 ! Some Store</span><span class="cursor-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="changed-line"> ! Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <div class="expected-item">
+                        <div class="expected-name">Line 2 → expected-line2.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 ! Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="cursor-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 Some Store</span><span class="changed-line"> ! Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case multi-expected">
+        <div class="test-header">
+            <h3 class="test-title">Transaction Reconciled</h3>
+            <p class="test-name">test/data/toggle-reconciliation/transaction-reconciled/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 0 → expected-line0.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="cursor-line">2024-01-15 * Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 * Some Store</span><span class="cursor-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="changed-line"> * Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <div class="expected-item">
+                        <div class="expected-name">Line 2 → expected-line2.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 * Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="cursor-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 Some Store</span><span class="changed-line"> * Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Unreconciled Posting</h3>
+            <p class="test-name">test/data/toggle-reconciliation/unreconciled-posting/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 1 → expected-line1.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="cursor-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="changed-line"> * Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case multi-expected">
+        <div class="test-header">
+            <h3 class="test-title">Unreconciled Transaction</h3>
+            <p class="test-name">test/data/toggle-reconciliation/unreconciled-transaction/</p>
+        </div>
+        <div class="test-content">
+            <div class="expected-column">
+                <div class="column-header">Test Results (by cursor line)</div>
+                
+                    <div class="expected-item">
+                        <div class="expected-name">Line 0 → expected-line0.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="cursor-line">2024-01-15 Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="changed-line">2024-01-15 * Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="normal-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <div class="expected-item">
+                        <div class="expected-name">Line 2 → expected-line2.ledger</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Input (cursor position)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="cursor-line"> Assets:Checking            -$50.00</span></pre>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Expected (changes highlighted)</div>
+                                <pre class="content" style="margin: 0; font-size: 11px;"><span class="normal-line">2024-01-15 Some Store</span><span class="normal-line"> Expenses:Groceries          $50.00</span><span class="changed-line"> * Assets:Checking            -$50.00</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                  
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

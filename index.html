@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VSCode Ledger Mode - Test Fixture Previews</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px auto; 
+            max-width: 1200px;
+            line-height: 1.6;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .intro {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 5px solid #0066cc;
+        }
+        .generator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .generator-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
+        }
+        .generator-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .card-title {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .card-title a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .card-title a:hover {
+            text-decoration: underline;
+        }
+        .card-stats {
+            color: #666;
+            font-size: 14px;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .card-description {
+            color: #555;
+            margin: 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
+            color: #666;
+        }
+        .stats-summary {
+            background-color: #f0f8f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #28a745;
+        }
+        .stats-summary h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧾 VSCode Ledger Mode - Test Fixture Previews</h1>
+    
+    <div class="intro">
+        <h2 style="margin-top: 0;">📋 About This Preview</h2>
+        <p>This directory contains HTML previews of all test fixture data used by the VSCode Ledger Mode extension. Each preview shows the test inputs, expected outputs, and configurations in an easy-to-read format.</p>
+        <p><strong>🎯 Purpose:</strong> These previews help developers understand test cases, verify formatting, and ensure test data quality.</p>
+    </div>
+    
+    <div class="stats-summary">
+        <h3>📊 Test Coverage Summary</h3>
+        <ul>
+            <li><strong>Total test fixture types:</strong> 11</li>
+            <li><strong>Total test cases:</strong> 104</li>
+        </ul>
+    </div>
+    
+    <div class="generator-grid">
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="balance-report-ansi-colors.html">Balance Report ANSI Colors</a>
+                    </h3>
+                    <div class="card-stats">3 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">ANSI color code conversion from ledger balance reports to HTML</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="completion-provider.html">Completion Provider</a>
+                    </h3>
+                    <div class="card-stats">22 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Autocompletion test cases with configurations</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="error-formatting.html">Error Formatting</a>
+                    </h3>
+                    <div class="card-stats">8 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Transformation of raw ledger error output into styled HTML</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="format.html">Ledger Formatting</a>
+                    </h3>
+                    <div class="card-stats">6 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Input and expected output for ledger file formatting</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="ledger-cli.html">Ledger CLI</a>
+                    </h3>
+                    <div class="card-stats">2 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Ledger CLI validation test cases with files and expected error outputs</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="nowMarker.html">Now Marker</a>
+                    </h3>
+                    <div class="card-stats">6 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Test files for 'jump to now' functionality with expected cursor positions</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="organize-ledger.html">Ledger Organization</a>
+                    </h3>
+                    <div class="card-stats">6 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Input and expected output for ledger file organization</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="syntax.html">Syntax Highlighting</a>
+                    </h3>
+                    <div class="card-stats">5 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">TextMate grammar test files for syntax highlighting</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="toggle-reconciliation.html">Toggle Reconciliation</a>
+                    </h3>
+                    <div class="card-stats">20 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Reconciliation toggle test cases with cursor positioning and expected changes</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="tokenization.html">Tokenization</a>
+                    </h3>
+                    <div class="card-stats">22 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Transaction and posting parsing test cases with input/expected pairs</p>
+                </div>
+            </div>
+        
+            <div class="generator-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="transaction-completion.html">Transaction Completion</a>
+                    </h3>
+                    <div class="card-stats">4 test cases</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Transaction completion test cases with input, expected output, and configuration</p>
+                </div>
+            </div>
+        
+    </div>
+    
+    <div class="footer">
+        <p>🤖 Generated automatically by the VSCode Ledger Mode test fixture preview system</p>
+        <p><strong>Command:</strong> <code>npm run preview:generate</code></p>
+    </div>
+</body>
+</html>
