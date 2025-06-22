@@ -1,134 +1,4 @@
-#!/usr/bin/env node
-
-// Generator for ledger CLI test data
-// Creates HTML previews showing ledger files being tested and their expected validation results
-
-import * as fs from "fs";
-import * as path from "path";
-
-interface LedgerTestCase {
-  name: string;
-  file: string;
-  description: string;
-  expectedErrors: Array<{
-    message: string;
-    line?: number;
-    severity: string;
-    description?: string;
-  }>;
-  content: string;
-}
-
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-function highlightLedgerSyntax(
-  content: string,
-  errorLines: number[] = [],
-): string {
-  // Split content into lines and add line numbers with highlighting
-  const lines = content.split("\n");
-  const numberedLines = lines.map((line, index) => {
-    const lineNumber = index + 1; // 1-based line numbers
-    const hasError = errorLines.includes(lineNumber);
-
-    // Apply syntax highlighting to the line content
-    let highlighted = escapeHtml(line);
-
-    // Highlight comments (lines starting with ; # % | *)
-    highlighted = highlighted.replace(
-      /^([;#%|*].*)$/,
-      '<span class="comment">$1</span>',
-    );
-
-    // Highlight dates (YYYY-MM-DD pattern)
-    highlighted = highlighted.replace(
-      /(\b\d{4}-\d{2}-\d{2}\b)/g,
-      '<span class="date">$1</span>',
-    );
-
-    // Highlight amounts (currency symbols and numbers)
-    highlighted = highlighted.replace(
-      /(\$[\d,]+\.?\d*)/g,
-      '<span class="amount">$1</span>',
-    );
-
-    // Highlight reconciliation markers (* and !)
-    highlighted = highlighted.replace(
-      /(\s[*!]\s)/g,
-      '<span class="reconciliation">$1</span>',
-    );
-
-    // Highlight account names (indented lines that look like accounts)
-    highlighted = highlighted.replace(
-      /^(\s+)([A-Za-z][A-Za-z0-9:_-]+)/,
-      '$1<span class="account">$2</span>',
-    );
-
-    // Highlight directives (account, payee, commodity, etc.)
-    highlighted = highlighted.replace(
-      /^(account|payee|commodity|year|tag|define|alias|bucket|P|D)\b/,
-      '<span class="directive">$1</span>',
-    );
-
-    // Wrap the line content with line number and error highlighting if needed
-    const lineNumberHtml = `<span class="line-number">${lineNumber.toString().padStart(3, " ")}</span>`;
-    const lineClass = hasError ? " error-line" : "";
-
-    return `<span class="line${lineClass}">${lineNumberHtml} ${highlighted}</span>`;
-  });
-
-  return numberedLines.join("");
-}
-
-export function generateLedgerCliHTML(
-  testDataDir: string,
-  outputDir: string,
-): { name: string; testCases: number; outputFile: string } {
-  const testCases: LedgerTestCase[] = [];
-
-  // Read all JSON configuration files
-  const files = fs
-    .readdirSync(testDataDir)
-    .filter((file) => file.endsWith(".json"))
-    .sort();
-
-  for (const file of files) {
-    const configPath = path.join(testDataDir, file);
-    const configJson = fs.readFileSync(configPath, "utf8");
-    let config: any;
-    try {
-      config = JSON.parse(configJson);
-    } catch (e) {
-      continue; // Skip malformed JSON files
-    }
-
-    // Resolve the ledger file path relative to the config file
-    const ledgerFilePath = path.resolve(path.dirname(configPath), config.file);
-
-    if (fs.existsSync(ledgerFilePath)) {
-      const content = fs.readFileSync(ledgerFilePath, "utf8");
-      const name = file.replace(".json", "");
-
-      testCases.push({
-        name,
-        file: config.file,
-        description: config.description || "No description",
-        expectedErrors: config.expectedErrors || [],
-        content,
-      });
-    }
-  }
-
-  const html = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Ledger CLI Test Cases</title>
@@ -321,74 +191,45 @@ export function generateLedgerCliHTML(
             <li><strong>Error detection</strong>: Expected errors, warnings, and their locations</li>
             <li><strong>Clean files</strong>: Files that should pass validation without errors</li>
         </ul>
-        <p><strong>Test configurations:</strong> ${testCases.length}</p>
+        <p><strong>Test configurations:</strong> {{totalTestCases}}</p>
     </div>
 
-${testCases
-  .map(
-    (testCase) => `
+{{#each testCases}}
+
     <div class="test-case">
         <div class="test-header">
-            <h3 class="test-title">${testCase.name}</h3>
-            <p class="test-description">${testCase.description}</p>
-            <p class="test-file">File: ${testCase.file}</p>
+            <h3 class="test-title">{{name}}</h3>
+            <p class="test-description">{{description}}</p>
+            <p class="test-file">File: {{file}}</p>
         </div>
         <div class="test-content">
             <div class="ledger-column">
                 <div class="column-header">Ledger File Content</div>
-                <pre class="content">${highlightLedgerSyntax(
-                  testCase.content,
-                  testCase.expectedErrors
-                    .map((e) => e.line + 1) // Convert from 0-based to 1-based
-                    .filter((line) => line !== undefined),
-                )}</pre>
+                <pre class="content">{{{highlightLedgerSyntax (readLedgerFile this) (getErrorLines expectedErrors)}}}</pre>
             </div>
             <div class="errors-column">
                 <div class="column-header">Expected Validation Results</div>
                 <div class="content errors-content">
-                    ${
-                      testCase.expectedErrors.length === 0
-                        ? '<div class="no-errors">✅ No errors expected<br>File should pass validation</div>'
-                        : testCase.expectedErrors
-                            .map(
-                              (error) => `
+                    {{#if expectedErrors}}
+                    
+                        {{#each expectedErrors}}
                             <div class="error-item">
-                                <div class="error-message">${escapeHtml(error.message)}</div>
-                                ${error.line !== undefined ? `<div class="error-line">Line ${error.line + 1}</div>` : ""}
-                                <div class="error-severity ${error.severity}">${error.severity}</div>
-                                ${error.description ? `<div class="error-description">${escapeHtml(error.description)}</div>` : ""}
+                                <div class="error-message">{{{escapeHtml message}}}</div>
+                                {{#if line}}<div class="error-line">Line {{math line "+" 1}}</div>{{/if}}
+                                <div class="error-severity {{severity}}">{{severity}}</div>
+                                {{#if description}}<div class="error-description">{{{escapeHtml description}}}</div>{{/if}}
                             </div>
-                        `,
-                            )
-                            .join("")
-                    }
+                        
+                        {{/each}}
+                    {{else}}
+                    <div class="no-errors">✅ No errors expected<br>File should pass validation</div>
+                    {{/if}}
                 </div>
             </div>
         </div>
     </div>
-`,
-  )
-  .join("")}
+{{/each}}
+
 
 </body>
-</html>`;
-
-  const outputFile = path.join(outputDir, "ledger-cli.html");
-  fs.writeFileSync(outputFile, html, "utf8");
-  return { name: "Ledger CLI", testCases: testCases.length, outputFile };
-}
-
-if (require.main === module) {
-  const testDataDir =
-    process.argv[2] || path.join(__dirname, "../data/ledger-cli");
-  const outputDir = process.argv[3] || path.join(__dirname, "../preview");
-
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  const result = generateLedgerCliHTML(testDataDir, outputDir);
-  console.log(
-    `Generated ${result.name}: ${result.testCases} test cases -> ${result.outputFile}`,
-  );
-}
+</html>

@@ -180,576 +180,480 @@
         <p><strong>Total test cases:</strong> 22</p>
     </div>
 
-    
         <div class="file-section">
-          <h2>invalid parsing examples</h2>
-          <div class="test-cases-grid">
-            
-              <div class="test-case invalid-test">
-                <div class="test-header">
-                  <h3>Invalid transaction lines that should not parse</h3>
-                  <span class="test-type">transaction</span>
+            <h2>invalid parsing examples</h2>
+                <div class="test-cases-grid">
+                        <div class="test-case invalid-test">
+                            <div class="test-header">
+                                <h3>Invalid transaction lines that should not parse</h3>
+                                <span class="test-type">transaction</span>
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section full-width">
+                                        <div class="section-header">Test Inputs (Should Not Parse)</div>
+                                        <div class="inputs-list">
+                                                <div class="ledger-line">Invalid line</div>
+                                                <div class="ledger-line">    Expenses:Food    $100.00</div>
+                                                <div class="ledger-line">; This is a comment</div>
+                                                <div class="ledger-line">account Assets:Bank</div>
+                                                <div class="ledger-line"></div>
+                                                <div class="ledger-line">24-01-15 Test</div>
+                                                <div class="ledger-line">2024-1-5 Test</div>
+                                                <div class="ledger-line">abcd-01-15 Test</div>
+                                        </div>
+                                        <div class="reason">These are not valid transaction lines</div>
+                                    </div>
+                                                            </div>
+                        </div>
+                        <div class="test-case invalid-test">
+                            <div class="test-header">
+                                <h3>Invalid posting lines that should not parse</h3>
+                                <span class="test-type">posting</span>
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section full-width">
+                                        <div class="section-header">Test Inputs (Should Not Parse)</div>
+                                        <div class="inputs-list">
+                                                <div class="ledger-line">2024-01-15 Transaction</div>
+                                                <div class="ledger-line">; Comment line</div>
+                                                <div class="ledger-line">account Assets</div>
+                                                <div class="ledger-line"></div>
+                                                <div class="ledger-line">Not indented posting</div>
+                                        </div>
+                                        <div class="reason">These are not valid posting lines</div>
+                                    </div>
+                                                            </div>
+                        </div>
+                        <div class="test-case invalid-test">
+                            <div class="test-header">
+                                <h3>Edge case - invalid month accepted by parser</h3>
+                                <span class="test-type">transaction</span>
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section full-width">
+                                        <div class="section-header">Test Inputs (Should Parse)</div>
+                                        <div class="inputs-list">
+                                                <div class="ledger-line">2024-13-01 Test</div>
+                                        </div>
+                                        <div class="reason">Parser currently accepts invalid month/day values - this documents current behavior</div>
+                                    </div>
+                                                            </div>
+                        </div>
                 </div>
-                <div class="test-content">
-                  
-                    <div class="input-section full-width">
-                      <div class="section-header">Test Inputs (Should Not Parse)</div>
-                      <div class="inputs-list">
-                        
-                          <div class="ledger-line">Invalid line</div>
-                        
-                          <div class="ledger-line">    Expenses:Food    $100.00</div>
-                        
-                          <div class="ledger-line">; This is a comment</div>
-                        
-                          <div class="ledger-line">account Assets:Bank</div>
-                        
-                          <div class="ledger-line"></div>
-                        
-                          <div class="ledger-line">24-01-15 Test</div>
-                        
-                          <div class="ledger-line">2024-1-5 Test</div>
-                        
-                          <div class="ledger-line">abcd-01-15 Test</div>
-                        
-                      </div>
-                      <div class="reason">These are not valid transaction lines</div>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case invalid-test">
-                <div class="test-header">
-                  <h3>Invalid posting lines that should not parse</h3>
-                  <span class="test-type">posting</span>
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section full-width">
-                      <div class="section-header">Test Inputs (Should Not Parse)</div>
-                      <div class="inputs-list">
-                        
-                          <div class="ledger-line">2024-01-15 Transaction</div>
-                        
-                          <div class="ledger-line">; Comment line</div>
-                        
-                          <div class="ledger-line">account Assets</div>
-                        
-                          <div class="ledger-line"></div>
-                        
-                          <div class="ledger-line">Not indented posting</div>
-                        
-                      </div>
-                      <div class="reason">These are not valid posting lines</div>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case invalid-test">
-                <div class="test-header">
-                  <h3>Edge case - invalid month accepted by parser</h3>
-                  <span class="test-type">transaction</span>
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section full-width">
-                      <div class="section-header">Test Inputs (Should Parse)</div>
-                      <div class="inputs-list">
-                        
-                          <div class="ledger-line">2024-13-01 Test</div>
-                        
-                      </div>
-                      <div class="reason">Parser currently accepts invalid month/day values - this documents current behavior</div>
-                    </div>
-                  
-                </div>
-              </div>
-            
-          </div>
         </div>
-      
         <div class="file-section">
-          <h2>posting parsing examples</h2>
-          <div class="test-cases-grid">
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Basic posting with amount</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Expenses:Food:Groceries    $45.67</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+            <h2>posting parsing examples</h2>
+                <div class="test-cases-grid">
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Basic posting with amount</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Expenses:Food:Groceries    $45.67</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Expenses:Food:Groceries&quot;,
   &quot;amount&quot;: &quot;$45.67&quot;,
   &quot;state&quot;: null,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting without amount</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Assets:Bank:Checking</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting without amount</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Assets:Bank:Checking</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Assets:Bank:Checking&quot;,
   &quot;amount&quot;: null,
   &quot;state&quot;: null,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting with state marker</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    * Expenses:Housing:Rent    $1,200.00</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting with state marker</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    * Expenses:Housing:Rent    $1,200.00</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Expenses:Housing:Rent&quot;,
   &quot;amount&quot;: &quot;$1,200.00&quot;,
   &quot;state&quot;: &quot;*&quot;,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting with comment</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Expenses:Food    $25.00    ; lunch</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting with comment</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Expenses:Food    $25.00    ; lunch</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Expenses:Food&quot;,
   &quot;amount&quot;: &quot;$25.00&quot;,
   &quot;state&quot;: null,
   &quot;comment&quot;: &quot;; lunch&quot;
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting with complex account name</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Assets:Bank Account:Checking    $100.00</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting with complex account name</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Assets:Bank Account:Checking    $100.00</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Assets:Bank Account:Checking&quot;,
   &quot;amount&quot;: &quot;$100.00&quot;,
   &quot;state&quot;: null,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting with negative amount</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Expenses:Food    -$45.67</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting with negative amount</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Expenses:Food    -$45.67</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Expenses:Food&quot;,
   &quot;amount&quot;: &quot;-$45.67&quot;,
   &quot;state&quot;: null,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting with non-dollar currency</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Expenses:Food    €100.00</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting with non-dollar currency</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Expenses:Food    €100.00</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Expenses:Food&quot;,
   &quot;amount&quot;: &quot;€100.00&quot;,
   &quot;state&quot;: null,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting with shares</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Expenses:Food    10 SHARES</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting with shares</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Expenses:Food    10 SHARES</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Expenses:Food&quot;,
   &quot;amount&quot;: &quot;10 SHARES&quot;,
   &quot;state&quot;: null,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Posting with balance assertion</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Expenses:Food    $100.00 = $500.00</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Posting with balance assertion</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Expenses:Food    $100.00 = $500.00</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;account&quot;: &quot;Expenses:Food&quot;,
   &quot;amount&quot;: &quot;$100.00 = $500.00&quot;,
   &quot;state&quot;: null,
   &quot;comment&quot;: null
 }</pre>
-                    </div>
-                  
+                                    </div>
+                            </div>
+                        </div>
                 </div>
-              </div>
-            
-          </div>
         </div>
-      
         <div class="file-section">
-          <h2>reconciliation parsing examples</h2>
-          <div class="test-cases-grid">
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Parse transaction line with reconciliation marker</h3>
-                  <span class="test-type">transaction</span>
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">2024-01-15 * Grocery Store</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+            <h2>reconciliation parsing examples</h2>
+                <div class="test-cases-grid">
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Parse transaction line with reconciliation marker</h3>
+                                <span class="test-type">transaction</span>
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">2024-01-15 * Grocery Store</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;date&quot;: &quot;2024-01-15&quot;,
   &quot;status&quot;: &quot;*&quot;,
   &quot;rest&quot;: &quot; Grocery Store&quot;
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Parse posting line with reconciliation marker</h3>
-                  <span class="test-type">posting</span>
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    * Expenses:Food    $25.00</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Parse posting line with reconciliation marker</h3>
+                                <span class="test-type">posting</span>
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    * Expenses:Food    $25.00</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;status&quot;: &quot;*&quot;,
   &quot;indent&quot;: &quot;    &quot;,
   &quot;rest&quot;: &quot;Expenses:Food    $25.00&quot;
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Parse posting line with comment</h3>
-                  <span class="test-type">posting</span>
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">    Expenses:Food    $25.00    ; lunch</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Parse posting line with comment</h3>
+                                <span class="test-type">posting</span>
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">    Expenses:Food    $25.00    ; lunch</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;status&quot;: &quot;&quot;,
   &quot;indent&quot;: &quot;    &quot;,
   &quot;rest&quot;: &quot;Expenses:Food    $25.00    ; lunch&quot;
 }</pre>
-                    </div>
-                  
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Invalid lines that should not parse as transactions</h3>
+                                <span class="test-type">transaction</span>
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section full-width">
+                                        <div class="section-header">Test Inputs (Should Not Parse)</div>
+                                        <div class="inputs-list">
+                                                <div class="ledger-line">invalid line</div>
+                                                <div class="ledger-line">  not a valid transaction</div>
+                                                <div class="ledger-line">;; comment line</div>
+                                        </div>
+                                        
+                                    </div>
+                                                            </div>
+                        </div>
                 </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Invalid lines that should not parse as transactions</h3>
-                  <span class="test-type">transaction</span>
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section full-width">
-                      <div class="section-header">Test Inputs (Should Not Parse)</div>
-                      <div class="inputs-list">
-                        
-                          <div class="ledger-line">invalid line</div>
-                        
-                          <div class="ledger-line">  not a valid transaction</div>
-                        
-                          <div class="ledger-line">;; comment line</div>
-                        
-                      </div>
-                      
-                    </div>
-                  
-                </div>
-              </div>
-            
-          </div>
         </div>
-      
         <div class="file-section">
-          <h2>transaction parsing examples</h2>
-          <div class="test-cases-grid">
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Basic transaction with reconciliation marker</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">2024-01-15 * Grocery Store</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+            <h2>transaction parsing examples</h2>
+                <div class="test-cases-grid">
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Basic transaction with reconciliation marker</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">2024-01-15 * Grocery Store</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;date&quot;: &quot;2024-01-15&quot;,
   &quot;state&quot;: &quot;*&quot;,
   &quot;payee&quot;: &quot;Grocery Store&quot;,
   &quot;code&quot;: null,
   &quot;effectiveDate&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Transaction with effective date and code</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">2024-01-16=2024-01-20 ! (CHECK001) Rent Payment</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Transaction with effective date and code</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">2024-01-16=2024-01-20 ! (CHECK001) Rent Payment</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;date&quot;: &quot;2024-01-16&quot;,
   &quot;effectiveDate&quot;: &quot;2024-01-20&quot;,
   &quot;state&quot;: &quot;!&quot;,
   &quot;code&quot;: &quot;CHECK001&quot;,
   &quot;payee&quot;: &quot;Rent Payment&quot;
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Transaction without state marker</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">2024-01-17 Partial Transaction</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Transaction without state marker</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">2024-01-17 Partial Transaction</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;date&quot;: &quot;2024-01-17&quot;,
   &quot;state&quot;: null,
   &quot;payee&quot;: &quot;Partial Transaction&quot;,
   &quot;code&quot;: null,
   &quot;effectiveDate&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Transaction with special characters in payee</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">2024-01-15 Café &amp; Restaurant</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Transaction with special characters in payee</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">2024-01-15 Café &amp; Restaurant</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;date&quot;: &quot;2024-01-15&quot;,
   &quot;state&quot;: null,
   &quot;payee&quot;: &quot;Café &amp; Restaurant&quot;,
   &quot;code&quot;: null,
   &quot;effectiveDate&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Transaction with code but no state</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">2024-01-15 (CODE123) Store Purchase</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Transaction with code but no state</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">2024-01-15 (CODE123) Store Purchase</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;date&quot;: &quot;2024-01-15&quot;,
   &quot;state&quot;: null,
   &quot;payee&quot;: &quot;Store Purchase&quot;,
   &quot;code&quot;: &quot;CODE123&quot;,
   &quot;effectiveDate&quot;: null
 }</pre>
-                    </div>
-                  
-                </div>
-              </div>
-            
-              <div class="test-case ">
-                <div class="test-header">
-                  <h3>Transaction with date using slashes</h3>
-                  
-                </div>
-                <div class="test-content">
-                  
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">2024/01/15 Test Payment</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">{
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="test-case ">
+                            <div class="test-header">
+                                <h3>Transaction with date using slashes</h3>
+                                
+                            </div>
+                            <div class="test-content">
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">2024/01/15 Test Payment</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{
   &quot;date&quot;: &quot;2024/01/15&quot;,
   &quot;state&quot;: null,
   &quot;payee&quot;: &quot;Test Payment&quot;,
   &quot;code&quot;: null,
   &quot;effectiveDate&quot;: null
 }</pre>
-                    </div>
-                  
+                                    </div>
+                            </div>
+                        </div>
                 </div>
-              </div>
-            
-          </div>
         </div>
-      
 
 </body>
 </html>

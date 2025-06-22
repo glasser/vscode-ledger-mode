@@ -1,64 +1,4 @@
-#!/usr/bin/env node
-
-// Generator for balance report ANSI color test data
-// Creates HTML previews showing input text and expected HTML output
-
-import * as fs from "fs";
-import * as path from "path";
-import { ANSI_COLORS_CSS } from "../../src/ansiColorsCss";
-
-interface TestCase {
-  name: string;
-  title: string;
-  input: string;
-  expected: string;
-}
-
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-export function generateBalanceReportAnsiColorsHTML(
-  testDataDir: string,
-  outputDir: string,
-): { name: string; testCases: number; outputFile: string } {
-  const testCases: TestCase[] = [];
-
-  // Read all test case files
-  const files = fs.readdirSync(testDataDir);
-  const testNames = [
-    ...new Set(
-      files.map((f) => f.replace(/-(?:input\.txt|expected\.html)$/, "")),
-    ),
-  ];
-
-  for (const testName of testNames) {
-    const inputFile = path.join(testDataDir, `${testName}-input.txt`);
-    const expectedFile = path.join(testDataDir, `${testName}-expected.html`);
-
-    if (fs.existsSync(inputFile) && fs.existsSync(expectedFile)) {
-      const input = fs.readFileSync(inputFile, "utf8");
-      const expected = fs.readFileSync(expectedFile, "utf8");
-
-      testCases.push({
-        name: testName,
-        title: testName
-          .replace(/-/g, " ")
-          .replace(/\b\w/g, (l) => l.toUpperCase()),
-        input,
-        expected,
-      });
-    }
-  }
-
-  const html = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Balance Report ANSI Colors Test Cases</title>
@@ -151,7 +91,8 @@ export function generateBalanceReportAnsiColorsHTML(
         }
         
         /* Imported ANSI color styles from actual implementation */
-        ${ANSI_COLORS_CSS}
+        
+        {{{ansiColorsCss}}}
     </style>
 </head>
 <body>
@@ -160,56 +101,29 @@ export function generateBalanceReportAnsiColorsHTML(
     <div class="summary">
         <h2>What This Shows</h2>
         <p>This preview shows how ANSI color codes from ledger balance reports are converted to HTML.</p>
-        <p><strong>Test cases:</strong> ${testCases.length}</p>
+        <p><strong>Test cases:</strong> {{totalTestCases}}</p>
     </div>
 
-${testCases
-  .map(
-    (testCase) => `
+{{#each testCases}}
+
     <div class="test-case">
         <div class="test-header">
-            <h3 class="test-title">${testCase.title}</h3>
-            <p class="test-name">test/data/balance-report-ansi-colors/${testCase.name}</p>
+            <h3 class="test-title">{{title}}</h3>
+            <p class="test-name">test/data/balance-report-ansi-colors/{{name}}</p>
         </div>
         <div class="comparison">
             <div class="column before">
                 <div class="column-header">Input (Raw ANSI)</div>
-                <pre class="content input-content">${escapeHtml(testCase.input)}</pre>
+                <pre class="content input-content">{{{escapeHtml input}}}</pre>
             </div>
             <div class="column after">
                 <div class="column-header">Expected Output (Styled)</div>
-                <pre class="content styled-content">${testCase.expected}</pre>
+                <pre class="content styled-content">{{{expected}}}</pre>
             </div>
         </div>
     </div>
-`,
-  )
-  .join("")}
+{{/each}}
+
 
 </body>
-</html>`;
-
-  const outputFile = path.join(outputDir, "balance-report-ansi-colors.html");
-  fs.writeFileSync(outputFile, html, "utf8");
-  return {
-    name: "Balance Report ANSI Colors",
-    testCases: testCases.length,
-    outputFile,
-  };
-}
-
-if (require.main === module) {
-  const testDataDir =
-    process.argv[2] ||
-    path.join(__dirname, "../data/balance-report-ansi-colors");
-  const outputDir = process.argv[3] || path.join(__dirname, "../preview");
-
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  const result = generateBalanceReportAnsiColorsHTML(testDataDir, outputDir);
-  console.log(
-    `Generated ${result.name}: ${result.testCases} test cases -> ${result.outputFile}`,
-  );
-}
+</html>

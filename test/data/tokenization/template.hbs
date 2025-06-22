@@ -1,132 +1,4 @@
-#!/usr/bin/env node
-
-// Generator for tokenization test data
-// Creates HTML previews showing parsing test cases in a structured, readable format
-
-import * as fs from "fs";
-import * as path from "path";
-
-interface TokenizationTestCase {
-  description: string;
-  input?: string;
-  inputs?: string[];
-  expected?: any;
-  shouldParse?: boolean;
-  reason?: string;
-  type?: string;
-}
-
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-function formatJson(obj: any): string {
-  return JSON.stringify(obj, null, 2);
-}
-
-export function generateTokenizationHTML(
-  testDataDir: string,
-  outputDir: string,
-): { name: string; testCases: number; outputFile: string } {
-  const jsonFiles = fs
-    .readdirSync(testDataDir)
-    .filter((f) => f.endsWith(".json"))
-    .sort();
-
-  let totalTestCases = 0;
-
-  const sections = jsonFiles.map((file) => {
-    const content = fs.readFileSync(path.join(testDataDir, file), "utf8");
-    let testCases: TokenizationTestCase[];
-
-    try {
-      testCases = JSON.parse(content);
-      totalTestCases += testCases.length;
-    } catch (e) {
-      return `
-        <div class="file-section">
-          <h2>${file}</h2>
-          <div class="error">Failed to parse JSON: ${e.message}</div>
-        </div>
-      `;
-    }
-
-    const sectionTitle = file.replace(/-/g, " ").replace(/\.json$/, "");
-    const isParsingTest = file.includes("parsing-examples");
-    const isInvalidTest = file.includes("invalid");
-
-    if (isParsingTest) {
-      // For parsing examples, show input/expected pairs nicely formatted
-      return `
-        <div class="file-section">
-          <h2>${sectionTitle}</h2>
-          <div class="test-cases-grid">
-            ${testCases
-              .map(
-                (testCase, _index) => `
-              <div class="test-case ${isInvalidTest ? "invalid-test" : ""}">
-                <div class="test-header">
-                  <h3>${testCase.description}</h3>
-                  ${testCase.type ? `<span class="test-type">${testCase.type}</span>` : ""}
-                </div>
-                <div class="test-content">
-                  ${
-                    testCase.input
-                      ? `
-                    <div class="input-section">
-                      <div class="section-header">Input</div>
-                      <div class="ledger-line">${escapeHtml(testCase.input)}</div>
-                    </div>
-                    <div class="expected-section">
-                      <div class="section-header">Expected</div>
-                      <pre class="json-output">${escapeHtml(formatJson(testCase.expected))}</pre>
-                    </div>
-                  `
-                      : testCase.inputs
-                        ? `
-                    <div class="input-section full-width">
-                      <div class="section-header">Test Inputs ${testCase.shouldParse !== undefined ? `(Should ${testCase.shouldParse ? "Parse" : "Not Parse"})` : ""}</div>
-                      <div class="inputs-list">
-                        ${testCase.inputs
-                          .map(
-                            (input) => `
-                          <div class="ledger-line">${escapeHtml(input)}</div>
-                        `,
-                          )
-                          .join("")}
-                      </div>
-                      ${testCase.reason ? `<div class="reason">${escapeHtml(testCase.reason)}</div>` : ""}
-                    </div>
-                  `
-                        : ""
-                  }
-                </div>
-              </div>
-            `,
-              )
-              .join("")}
-          </div>
-        </div>
-      `;
-    } else {
-      // For other JSON files, show them in a more structured way
-      return `
-        <div class="file-section">
-          <h2>${sectionTitle}</h2>
-          <pre class="json-content">${escapeHtml(formatJson(testCases))}</pre>
-        </div>
-      `;
-    }
-  });
-
-  const html = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Tokenization Test Cases</title>
@@ -305,35 +177,52 @@ export function generateTokenizationHTML(
             <li><strong>Invalid input handling</strong>: Ensuring malformed lines are properly rejected</li>
             <li><strong>Edge cases</strong>: Special characters, various date formats, complex amounts</li>
         </ul>
-        <p><strong>Total test cases:</strong> ${totalTestCases}</p>
+        <p><strong>Total test cases:</strong> {{getTotalTestCases testCases}}</p>
     </div>
 
-    ${sections.join("")}
+    {{#each testCases}}
+    {{#if (isJsonFile name)}}
+        <div class="file-section">
+            <h2>{{getSectionTitle name}}</h2>
+            {{#if (isParsingTest name)}}
+                <div class="test-cases-grid">
+                    {{#each (getJsonContent this)}}
+                        <div class="test-case {{#if (isInvalidTest ../name)}}invalid-test{{/if}}">
+                            <div class="test-header">
+                                <h3>{{description}}</h3>
+                                {{#if type}}<span class="test-type">{{type}}</span>{{/if}}
+                            </div>
+                            <div class="test-content">
+                                {{#if input}}
+                                    <div class="input-section">
+                                        <div class="section-header">Input</div>
+                                        <div class="ledger-line">{{{escapeHtml input}}}</div>
+                                    </div>
+                                    <div class="expected-section">
+                                        <div class="section-header">Expected</div>
+                                        <pre class="json-output">{{{escapeHtml (formatJson expected)}}}</pre>
+                                    </div>
+                                {{else if inputs}}
+                                    <div class="input-section full-width">
+                                        <div class="section-header">Test Inputs {{#if shouldParse}}(Should Parse){{else}}(Should Not Parse){{/if}}</div>
+                                        <div class="inputs-list">
+                                            {{#each inputs}}
+                                                <div class="ledger-line">{{{escapeHtml this}}}</div>
+                                            {{/each}}
+                                        </div>
+                                        {{#if reason}}<div class="reason">{{{escapeHtml reason}}}</div>{{/if}}
+                                    </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            {{else}}
+                <pre class="json-content">{{{escapeHtml (formatJson (getJsonContent this))}}}</pre>
+            {{/if}}
+        </div>
+    {{/if}}
+    {{/each}}
 
 </body>
-</html>`;
-
-  const outputFile = path.join(outputDir, "tokenization.html");
-  fs.writeFileSync(outputFile, html, "utf8");
-
-  return {
-    name: "Tokenization",
-    testCases: totalTestCases,
-    outputFile,
-  };
-}
-
-if (require.main === module) {
-  const testDataDir =
-    process.argv[2] || path.join(__dirname, "../data/tokenization");
-  const outputDir = process.argv[3] || path.join(__dirname, "../preview");
-
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  const result = generateTokenizationHTML(testDataDir, outputDir);
-  console.log(
-    `Generated ${result.name}: ${result.testCases} test cases -> ${result.outputFile}`,
-  );
-}
+</html>

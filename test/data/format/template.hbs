@@ -1,74 +1,7 @@
-#!/usr/bin/env node
-
-// Generator for format test data
-// Creates HTML previews showing input and expected ledger file formatting
-
-import * as fs from "fs";
-import * as path from "path";
-
-interface TestCase {
-  name: string;
-  title: string;
-  input: string;
-  expected: string;
-}
-
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-export function generateFormatHTML(
-  testDataDir: string,
-  outputDir: string,
-): { name: string; testCases: number; outputFile: string } {
-  // Extract the data directory name from the path to show correct path in HTML
-  const dataDirName = path.basename(testDataDir);
-  const testCases: TestCase[] = [];
-
-  // Read all test case directories
-  const dirs = fs
-    .readdirSync(testDataDir, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name)
-    .sort();
-
-  for (const dir of dirs) {
-    const testCaseDir = path.join(testDataDir, dir);
-    const inputFile = path.join(testCaseDir, "input.ledger");
-    const expectedFile = path.join(testCaseDir, "expected.ledger");
-
-    if (fs.existsSync(inputFile) && fs.existsSync(expectedFile)) {
-      const input = fs.readFileSync(inputFile, "utf8");
-      const expected = fs.readFileSync(expectedFile, "utf8");
-
-      testCases.push({
-        name: dir,
-        title: dir.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
-        input,
-        expected,
-      });
-    }
-  }
-
-  // Dynamic title based on data directory
-  const pageTitle =
-    dataDirName === "format"
-      ? "Ledger Format Test Cases"
-      : dataDirName === "organize-ledger"
-        ? "Ledger Organization Test Cases"
-        : `${dataDirName.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())} Test Cases`;
-
-  const html = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>${pageTitle}</title>
+    <title>Ledger Format Test Cases</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -160,7 +93,7 @@ export function generateFormatHTML(
     </style>
 </head>
 <body>
-    <h1>${pageTitle}</h1>
+    <h1>Ledger Format Test Cases</h1>
     
     <div class="summary">
         <h2>What This Shows</h2>
@@ -172,61 +105,29 @@ export function generateFormatHTML(
             <li><strong>Comment preservation</strong>: Comments are maintained in correct positions</li>
             <li><strong>Reconciliation markers</strong>: Status markers are normalized</li>
         </ul>
-        <p><strong>Test cases:</strong> ${testCases.length}</p>
+        <p><strong>Test cases:</strong> {{totalTestCases}}</p>
     </div>
 
-${testCases
-  .map(
-    (testCase) => `
+{{#each testCases}}
+
     <div class="test-case">
         <div class="test-header">
-            <h3 class="test-title">${testCase.title}</h3>
-            <p class="test-name">test/data/${dataDirName}/${testCase.name}/</p>
+            <h3 class="test-title">{{titleCase name}}</h3>
+            <p class="test-name">test/data/format/{{name}}/</p>
         </div>
         <div class="comparison">
             <div class="column before">
                 <div class="column-header">Input (Unformatted)</div>
-                <pre class="content input-content">${escapeHtml(testCase.input)}</pre>
+                <pre class="content input-content">{{{escapeHtml input}}}</pre>
             </div>
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
-                <pre class="content styled-content">${escapeHtml(testCase.expected)}</pre>
+                <pre class="content styled-content">{{{escapeHtml expected}}}</pre>
             </div>
         </div>
     </div>
-`,
-  )
-  .join("")}
+{{/each}}
+
 
 </body>
-</html>`;
-
-  const outputFile = path.join(outputDir, `${dataDirName}.html`);
-  fs.writeFileSync(outputFile, html, "utf8");
-
-  // Dynamic title based on data directory
-  const title =
-    dataDirName === "format"
-      ? "Format"
-      : dataDirName === "organize-ledger"
-        ? "Organize Ledger"
-        : dataDirName
-            .replace(/-/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase());
-
-  return { name: title, testCases: testCases.length, outputFile };
-}
-
-if (require.main === module) {
-  const testDataDir = process.argv[2] || path.join(__dirname, "../data/format");
-  const outputDir = process.argv[3] || path.join(__dirname, "../preview");
-
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  const result = generateFormatHTML(testDataDir, outputDir);
-  console.log(
-    `Generated ${result.name}: ${result.testCases} test cases -> ${result.outputFile}`,
-  );
-}
+</html>

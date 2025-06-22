@@ -328,6 +328,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="account-completion-mid-file">
       <h2>account-completion-mid-file</h2>
       <p class="description">Should provide account completions in middle of file</p>
@@ -388,6 +389,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="account-completion-partial-match">
       <h2>account-completion-partial-match</h2>
       <p class="description">Should filter accounts by partial match</p>
@@ -435,6 +437,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="account-completion-range">
       <h2>account-completion-range</h2>
       <p class="description">Should set range when completing account with existing text</p>
@@ -483,6 +486,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="account-completion-simple">
       <h2>account-completion-simple</h2>
       <p class="description">Should provide account completions after colon</p>
@@ -537,6 +541,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="account-completion-simple-spaces">
       <h2>account-completion-simple-spaces</h2>
       <p class="description">Simple test for account names with spaces</p>
@@ -579,6 +584,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="account-completion-virtual">
       <h2>account-completion-virtual</h2>
       <p class="description">Test virtual account completion with brackets</p>
@@ -622,6 +628,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="empty-file-handling">
       <h2>empty-file-handling</h2>
       <p class="description">Should handle empty files gracefully</p>
@@ -652,6 +659,7 @@ completionType: none
       </div>
     </div>
   
+        
     <div class="test-case" id="error-tolerant-account">
       <h2>error-tolerant-account</h2>
       <p class="description">Should provide account completions despite syntax errors in file</p>
@@ -698,6 +706,7 @@ completionType: account
       </div>
     </div>
   
+        
     <div class="test-case" id="error-tolerant-payee">
       <h2>error-tolerant-payee</h2>
       <p class="description">Should provide payee completions despite syntax errors in file</p>
@@ -747,6 +756,7 @@ completionType: payee
       </div>
     </div>
   
+        
     <div class="test-case" id="malformed-transactions">
       <h2>malformed-transactions</h2>
       <p class="description">Should work with completely malformed transactions</p>
@@ -804,6 +814,7 @@ completionType: payee
       </div>
     </div>
   
+        
     <div class="test-case" id="no-account-completions-on-transaction-line">
       <h2>no-account-completions-on-transaction-line</h2>
       <p class="description">Should not provide account completions on non-indented lines</p>
@@ -812,6 +823,7 @@ completionType: payee
         <p><strong>Cursor Position:</strong> Line 0, Column 15</p>
         <p><strong>Completion Type:</strong> none</p>
         <p><strong>Negative Assertions:</strong> No account completions expected</p>
+        
         
         
       </div>
@@ -835,6 +847,7 @@ noAccountCompletions: true
       </div>
     </div>
   
+        
     <div class="test-case" id="no-account-on-transaction">
       <h2>no-account-on-transaction</h2>
       <p class="description">Should not provide account completions on transaction date lines</p>
@@ -843,6 +856,7 @@ noAccountCompletions: true
         <p><strong>Cursor Position:</strong> Line 4, Column 20</p>
         <p><strong>Completion Type:</strong> payee</p>
         <p><strong>Negative Assertions:</strong> No account completions expected</p>
+        
         
         
           <div class="expected-completions">
@@ -878,6 +892,7 @@ noAccountCompletions: true
       </div>
     </div>
   
+        
     <div class="test-case" id="no-completions-after-amount">
       <h2>no-completions-after-amount</h2>
       <p class="description">Should not provide completions when no account text matches regex</p>
@@ -886,6 +901,7 @@ noAccountCompletions: true
         <p><strong>Cursor Position:</strong> Line 1, Column 11</p>
         <p><strong>Completion Type:</strong> none</p>
         <p><strong>Negative Assertions:</strong> No account completions expected</p>
+        
         
         
       </div>
@@ -910,6 +926,7 @@ noAccountCompletions: true
       </div>
     </div>
   
+        
     <div class="test-case" id="no-payee-completions-in-date">
       <h2>no-payee-completions-in-date</h2>
       <p class="description">Should not provide completions when cursor is before date prefix</p>
@@ -918,6 +935,7 @@ noAccountCompletions: true
         <p><strong>Cursor Position:</strong> Line 0, Column 5</p>
         <p><strong>Completion Type:</strong> none</p>
         <p><strong>Negative Assertions:</strong> No payee completions expected</p>
+        
         
         
       </div>
@@ -941,6 +959,7 @@ noPayeeCompletions: true
       </div>
     </div>
   
+        
     <div class="test-case" id="no-payee-on-posting">
       <h2>no-payee-on-posting</h2>
       <p class="description">Should not provide payee completions on posting lines</p>
@@ -949,6 +968,7 @@ noPayeeCompletions: true
         <p><strong>Cursor Position:</strong> Line 1, Column 4</p>
         <p><strong>Completion Type:</strong> none</p>
         <p><strong>Negative Assertions:</strong> No payee completions expected</p>
+        
         
         
           <div class="expected-completions">
@@ -985,6 +1005,7 @@ noPayeeCompletions: true
       </div>
     </div>
   
+        
     <div class="test-case" id="payee-completion-basic">
       <h2>payee-completion-basic</h2>
       <p class="description">Should provide payee completions on transaction lines</p>
@@ -1031,6 +1052,7 @@ completionType: payee
       </div>
     </div>
   
+        
     <div class="test-case" id="payee-completion-effective-date">
       <h2>payee-completion-effective-date</h2>
       <p class="description">Should handle transaction with effective date</p>
@@ -1073,6 +1095,7 @@ completionType: payee
       </div>
     </div>
   
+        
     <div class="test-case" id="payee-completion-mid-file">
       <h2>payee-completion-mid-file</h2>
       <p class="description">Should provide payee completions in middle of file</p>
@@ -1127,6 +1150,7 @@ completionType: payee
       </div>
     </div>
   
+        
     <div class="test-case" id="payee-completion-range">
       <h2>payee-completion-range</h2>
       <p class="description">Should set range when completing payee with existing text</p>
@@ -1174,6 +1198,7 @@ completionType: payee
       </div>
     </div>
   
+        
     <div class="test-case" id="payee-completion-with-code">
       <h2>payee-completion-with-code</h2>
       <p class="description">Should handle transaction with code</p>
@@ -1216,6 +1241,7 @@ completionType: payee
       </div>
     </div>
   
+        
     <div class="test-case" id="posting-line-with-tabs">
       <h2>posting-line-with-tabs</h2>
       <p class="description">Should handle posting line with tabs</p>

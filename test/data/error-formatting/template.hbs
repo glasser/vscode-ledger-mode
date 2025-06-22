@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error Formatting Test Cases</title>
+    <style>
+        :root {
+            /* VSCode theme variables for preview */
+            --vscode-errorForeground: #d73027;
+            --vscode-inputValidation-errorBackground: #fff2f0;
+            --vscode-textCodeBlock-background: #f0f4f8;
+            --vscode-textBlockQuote-border: #4a90e2;
+            --vscode-descriptionForeground: #666;
+            --vscode-textLink-foreground: #0066cc;
+            --vscode-textLink-activeForeground: #004499;
+            --vscode-editor-font-family: 'Courier New', monospace;
+        }
+        
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case { 
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .comparison { 
+            display: flex;
+        }
+        .column { 
+            flex: 1; 
+            padding: 15px;
+        }
+        .before { 
+            background-color: #fafafa; 
+            border-right: 1px solid #ddd;
+        }
+        .after { 
+            background-color: #f0f8f0; 
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content { 
+            background-color: #f8f8f8; 
+            padding: 12px; 
+            border-radius: 4px; 
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        .input-content {
+            color: #666;
+        }
+        .styled-content {
+            background-color: #ffffff; 
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        /* Imported error formatting styles from actual implementation */
+        
+        {{{errorFormattingCss}}}
+
+    </style>
+</head>
+<body>
+    <h1>Error Formatting Test Cases</h1>
+    
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>This preview shows how raw ledger error output is transformed into styled HTML.</p>
+        <p><strong>Features being tested:</strong></p>
+        <ul>
+            <li><strong>Error messages</strong>: Styled with red background and left border</li>
+            <li><strong>Context labels</strong>: "While parsing..." phrases in italic gray</li>
+            <li><strong>Quoted blocks</strong>: Lines starting with ">" grouped with blue background and left border</li>
+        </ul>
+        <p><strong>Test cases:</strong> {{totalTestCases}}</p>
+    </div>
+
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Html Escaping</h3>
+            <p class="test-name">test/data/error-formatting/html-escaping/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "html-escaping") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "html-escaping") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Invalid Date</h3>
+            <p class="test-name">test/data/error-formatting/invalid-date/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "invalid-date") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "invalid-date") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Multiple Errors</h3>
+            <p class="test-name">test/data/error-formatting/multiple-errors/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "multiple-errors") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "multiple-errors") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Multiple Quoted Blocks</h3>
+            <p class="test-name">test/data/error-formatting/multiple-quoted-blocks/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "multiple-quoted-blocks") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "multiple-quoted-blocks") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">No File Location</h3>
+            <p class="test-name">test/data/error-formatting/no-file-location/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "no-file-location") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "no-file-location") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Parsing Error</h3>
+            <p class="test-name">test/data/error-formatting/parsing-error/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "parsing-error") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "parsing-error") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Transaction Details</h3>
+            <p class="test-name">test/data/error-formatting/transaction-details/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "transaction-details") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "transaction-details") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Unbalanced Transaction</h3>
+            <p class="test-name">test/data/error-formatting/unbalanced-transaction/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Raw Text)</div>
+                <pre class="content input-content">{{{escapeHtml (lookup (lookup testCaseMap "unbalanced-transaction") "input")}}}</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Styled)</div>
+                <pre class="content styled-content">{{{lookup (lookup testCaseMap "unbalanced-transaction") "expected"}}}</pre>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Now Marker Test Cases</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .file { 
+            margin-bottom: 30px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            overflow: hidden; 
+        }
+        .file-header { 
+            background-color: #f5f5f5; 
+            padding: 15px; 
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+        }
+        .file-description { 
+            background-color: #e8f4f8; 
+            padding: 10px 15px; 
+            font-size: 14px; 
+            color: #0066cc; 
+            border-bottom: 1px solid #ddd;
+            font-style: italic;
+        }
+        .file-content { 
+            padding: 15px; 
+            background-color: #fafafa; 
+            font-family: 'Courier New', monospace; 
+            white-space: pre-wrap; 
+            line-height: 1.6; 
+            font-size: 13px;
+        }
+        .highlighted-line { 
+            background-color: #ffeb3b; 
+            font-weight: bold; 
+            display: block; 
+            margin: 0 -15px; 
+            padding: 0 15px; 
+            min-height: 1.6em; 
+        }
+        .normal-line { 
+            display: block; 
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Now Marker Test Cases</h1>
+    
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Test files for the "jump to now" functionality that finds the appropriate insertion point for today's date (2015-12-23).</p>
+        <p><strong>Expected behavior:</strong> The cursor should jump to the highlighted line when the "jump to now" command is executed.</p>
+        <p><strong>Test files:</strong> {{totalTestCases}}</p>
+    </div>
+    
+    
+    {{#each (loadNowMarkerFiles)}}
+        <div class="file">
+          <div class="file-header">{{filename}}</div>
+          {{#if expectedLine}}<div class="file-description">Expected cursor position: Line {{expectedLine}} ({{testName}})</div>{{/if}}
+          <div class="file-content">{{{highlightedContent}}}</div>
+        </div>
+      
+      {{/each}}
+
+</body>
+</html>

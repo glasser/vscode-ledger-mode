@@ -1,22 +1,13 @@
 #!/usr/bin/env node
 
 // Master generator that creates HTML previews for ALL test fixture directories
-// Invokes individual generators and creates a comprehensive index
+// Uses Handlebars templates for consistent, maintainable HTML generation
 
 import * as fs from "fs";
 import * as path from "path";
 
-// Import all generator modules
-import { generateBalanceReportAnsiColorsHTML } from "./balance-report-ansi-colors";
-import { generateErrorFormattingHTML } from "./error-formatting";
-import { generateFormatHTML } from "./format";
-import { generateCompletionProviderHTML } from "./completion-provider";
-import { generateSyntaxHTML } from "./syntax";
-import { generateTransactionCompletionHTML } from "./transaction-completion";
-import { generateLedgerCliHTML } from "./ledger-cli";
-import { generateToggleReconciliationHTML } from "./toggle-reconciliation";
-import { generateTokenizationHTML } from "./tokenization";
-import { generateNowMarkerHTML } from "./nowMarker";
+// Import template generator
+import { generateFromTemplate } from "./template-generator";
 
 function hasFilesRecursively(dirPath: string): boolean {
   try {
@@ -38,103 +29,87 @@ function hasFilesRecursively(dirPath: string): boolean {
   }
 }
 
-interface GeneratorConfig {
+interface TemplateConfig {
   name: string;
   title: string;
   description: string;
-  generator: (
-    testDataDir: string,
-    outputDir: string,
-  ) => { name: string; testCases: number; outputFile: string };
   dataDir: string;
 }
 
-// Define all generators with their configurations
-const generators: GeneratorConfig[] = [
+// Define template configurations with their descriptions
+const templateConfigs: TemplateConfig[] = [
   {
     name: "balance-report-ansi-colors",
     title: "Balance Report ANSI Colors",
-    description:
-      "ANSI color code conversion from ledger balance reports to HTML",
-    generator: generateBalanceReportAnsiColorsHTML,
+    description: "ANSI color code conversion from ledger balance reports to HTML",
     dataDir: "balance-report-ansi-colors",
   },
   {
     name: "error-formatting",
     title: "Error Formatting",
     description: "Transformation of raw ledger error output into styled HTML",
-    generator: generateErrorFormattingHTML,
     dataDir: "error-formatting",
   },
   {
     name: "format",
     title: "Ledger Formatting",
     description: "Input and expected output for ledger file formatting",
-    generator: generateFormatHTML,
     dataDir: "format",
   },
   {
     name: "organize-ledger",
     title: "Ledger Organization",
     description: "Input and expected output for ledger file organization",
-    generator: generateFormatHTML, // Same pattern as format
     dataDir: "organize-ledger",
   },
   {
     name: "completion-provider",
     title: "Completion Provider",
     description: "Autocompletion test cases with configurations",
-    generator: generateCompletionProviderHTML,
     dataDir: "completion-provider",
   },
   {
     name: "syntax",
     title: "Syntax Highlighting",
     description: "TextMate grammar test files for syntax highlighting",
-    generator: generateSyntaxHTML,
     dataDir: "syntax",
   },
   {
     name: "transaction-completion",
     title: "Transaction Completion",
-    description:
-      "Transaction completion test cases with input, expected output, and configuration",
-    generator: generateTransactionCompletionHTML,
+    description: "Transaction completion test cases with input, expected output, and configuration",
     dataDir: "transaction-completion",
   },
   {
     name: "ledger-cli",
     title: "Ledger CLI",
-    description:
-      "Ledger CLI validation test cases with files and expected error outputs",
-    generator: generateLedgerCliHTML,
+    description: "Ledger CLI validation test cases with files and expected error outputs",
     dataDir: "ledger-cli",
   },
   {
     name: "toggle-reconciliation",
     title: "Toggle Reconciliation",
-    description:
-      "Reconciliation toggle test cases with cursor positioning and expected changes",
-    generator: generateToggleReconciliationHTML,
+    description: "Reconciliation toggle test cases with cursor positioning and expected changes",
     dataDir: "toggle-reconciliation",
   },
   {
     name: "tokenization",
     title: "Tokenization",
-    description:
-      "Transaction and posting parsing test cases with input/expected pairs",
-    generator: generateTokenizationHTML,
+    description: "Transaction and posting parsing test cases with input/expected pairs",
     dataDir: "tokenization",
   },
   {
     name: "nowMarker",
     title: "Now Marker",
-    description:
-      "Test files for 'jump to now' functionality with expected cursor positions",
-    generator: generateNowMarkerHTML,
+    description: "Test files for 'jump to now' functionality with expected cursor positions",
     dataDir: "nowMarker",
   },
 ];
+
+function hasTemplate(dataDir: string): boolean {
+  const templatePath = path.join(dataDir, "template.hbs");
+  return fs.existsSync(templatePath);
+}
 
 function generateAllHTML() {
   const testDataDir = path.join(__dirname, "../data");
@@ -145,17 +120,23 @@ function generateAllHTML() {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  // Generate HTML for each test data type
+  // Generate HTML for each test data type using templates
   const results: any[] = [];
 
-  for (const config of generators) {
+  for (const config of templateConfigs) {
     const dataPath = path.join(testDataDir, config.dataDir);
 
     if (fs.existsSync(dataPath)) {
-      console.log(`Generating ${config.title}...`);
+      if (hasTemplate(dataPath)) {
+        console.log(`Generating ${config.title}...`);
 
-      const result = config.generator(dataPath, outputDir);
-      results.push({ ...config, ...result });
+        const result = generateFromTemplate(dataPath, outputDir, config.title);
+        results.push({ ...config, ...result });
+      } else {
+        console.log(
+          `Skipping ${config.title} - no template found at: ${path.join(dataPath, "template.hbs")}`,
+        );
+      }
     } else {
       console.log(
         `Skipping ${config.title} - directory not found: ${dataPath}`,
@@ -169,7 +150,7 @@ function generateAllHTML() {
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name);
 
-  const configuredDirs = generators.map((g) => g.dataDir);
+  const configuredDirs = templateConfigs.map((g) => g.dataDir);
   const unconfiguredDirs = allDataDirs.filter(
     (dir) => !configuredDirs.includes(dir),
   );
@@ -181,7 +162,7 @@ function generateAllHTML() {
     if (hasFiles) {
       throw new Error(
         `Found unconfigured directory with files: ${dir}\n` +
-          `Please add a generator for this directory to the generators array in generate-all.ts`,
+          `Please add a template configuration for this directory to the templateConfigs array in generate-all.ts`,
       );
     }
   }

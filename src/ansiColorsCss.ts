@@ -1,23 +1,6 @@
 // CSS constants for ANSI colors - shared between implementation and preview
+import * as fs from 'fs';
+import * as path from 'path';
 
-export const ANSI_COLORS_CSS = `
-        /* ANSI color mappings - matches the implementation in balanceReportView.ts */
-        .ansi-red { background-color: #dc2626; color: white; }
-        .ansi-green { color: #51cf66; }
-        .ansi-yellow { color: #ffd43b; }
-        .ansi-blue { color: #339af0; }
-        .ansi-magenta { color: #ff6ac1; }
-        .ansi-cyan { color: #22b8cf; }
-        .ansi-white { color: #ffffff; }
-        .ansi-black { color: #000000; }
-        .ansi-bg-red { background-color: #dc2626; }
-        .ansi-bg-green { background-color: #51cf66; }
-        .ansi-bg-yellow { background-color: #ffd43b; }
-        .ansi-bg-blue { background-color: #339af0; }
-        .ansi-bg-magenta { background-color: #ff6ac1; }
-        .ansi-bg-cyan { background-color: #22b8cf; }
-        .ansi-bg-white { background-color: #ffffff; }
-        .ansi-bg-black { background-color: #000000; }
-        .ansi-bold { font-weight: bold; }
-        .ansi-underline { text-decoration: underline; }
-`;
+const cssPath = path.join(__dirname, '..', '..', 'assets', 'ansi-colors.css');
+export const ANSI_COLORS_CSS = fs.readFileSync(cssPath, 'utf8');

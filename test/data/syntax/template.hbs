@@ -1,83 +1,4 @@
-#!/usr/bin/env node
-
-// Generator for syntax test data
-// Creates HTML previews showing syntax highlighting test files
-
-import * as fs from "fs";
-import * as path from "path";
-
-interface TestCase {
-  name: string;
-  title: string;
-  content: string;
-  file: string;
-}
-
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-function highlightLedgerSyntax(content: string): string {
-  // Simple syntax highlighting for ledger files
-  let html = escapeHtml(content);
-
-  // Highlight comments (lines starting with ;)
-  html = html.replace(/^(;.*)$/gm, '<span class="comment">$1</span>');
-
-  // Highlight dates (YYYY-MM-DD pattern)
-  html = html.replace(
-    /(\b\d{4}-\d{2}-\d{2}\b)/g,
-    '<span class="date">$1</span>',
-  );
-
-  // Highlight amounts (currency symbols and numbers)
-  html = html.replace(/(\$[\d,]+\.?\d*)/g, '<span class="amount">$1</span>');
-
-  // Highlight reconciliation markers (* and !)
-  html = html.replace(/(\s[*!]\s)/g, '<span class="reconciliation">$1</span>');
-
-  // Highlight account names (indented lines that look like accounts)
-  html = html.replace(
-    /^(\s+)([A-Za-z][A-Za-z0-9:_-]+)/gm,
-    '$1<span class="account">$2</span>',
-  );
-
-  return html;
-}
-
-export function generateSyntaxHTML(
-  testDataDir: string,
-  outputDir: string,
-): { name: string; testCases: number; outputFile: string } {
-  const testCases: TestCase[] = [];
-
-  // Read all test files
-  const files = fs
-    .readdirSync(testDataDir)
-    .filter((file) => file.endsWith(".test.ledger"))
-    .sort();
-
-  for (const file of files) {
-    const filePath = path.join(testDataDir, file);
-    const content = fs.readFileSync(filePath, "utf8");
-    const name = file.replace(".test.ledger", "");
-
-    testCases.push({
-      name,
-      title: name.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
-      content,
-      file,
-    });
-  }
-
-  const html = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Syntax Highlighting Test Cases</title>
@@ -176,44 +97,22 @@ export function generateSyntaxHTML(
             <li><strong>Account names</strong>: Indented account hierarchies</li>
         </ul>
         <p><strong>Note:</strong> These are used by vscode-tmgrammar-test for TextMate grammar validation.</p>
-        <p><strong>Test files:</strong> ${testCases.length}</p>
+        <p><strong>Test files:</strong> {{totalTestCases}}</p>
     </div>
 
-${testCases
-  .map(
-    (testCase) => `
+{{#each testCases}}
+
     <div class="test-case">
         <div class="test-header">
-            <h3 class="test-title">${testCase.title}</h3>
-            <p class="test-name">test/data/syntax/${testCase.file}</p>
+            <h3 class="test-title">{{titleCase name}}</h3>
+            <p class="test-name">test/data/syntax/{{file}}</p>
         </div>
         <div class="test-content">
             <div class="content-header">Syntax Highlighted Content</div>
-            <pre class="content">${highlightLedgerSyntax(testCase.content)}</pre>
+            <pre class="content">{{{highlightSyntaxForLedger content}}}</pre>
         </div>
     </div>
-`,
-  )
-  .join("")}
+{{/each}}
 
 </body>
-</html>`;
-
-  const outputFile = path.join(outputDir, "syntax.html");
-  fs.writeFileSync(outputFile, html, "utf8");
-  return { name: "Syntax", testCases: testCases.length, outputFile };
-}
-
-if (require.main === module) {
-  const testDataDir = process.argv[2] || path.join(__dirname, "../data/syntax");
-  const outputDir = process.argv[3] || path.join(__dirname, "../preview");
-
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  const result = generateSyntaxHTML(testDataDir, outputDir);
-  console.log(
-    `Generated ${result.name}: ${result.testCases} test cases -> ${result.outputFile}`,
-  );
-}
+</html>
