@@ -1,0 +1,5 @@
+{
+  "cursorLine": 8,
+  "cursorColumn": 22,
+  "description": "Should use the last instance of the pattern (with amounts from that instance) even though earlier instances exist"
+}

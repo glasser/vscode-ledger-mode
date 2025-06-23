@@ -158,7 +158,7 @@
             <li><strong>Cursor positioning</strong>: Tests work with different cursor positions</li>
             <li><strong>Exact formatting</strong>: Preserves whitespace and newlines precisely</li>
         </ul>
-        <p><strong>Test cases:</strong> 4</p>
+        <p><strong>Test cases:</strong> 7</p>
     </div>
 
 
@@ -314,6 +314,161 @@
                 <div class="content config-content">
                     <div class="config-description">Complete transaction from cleared (*) template - should create unreconciled postings</div>
                     <div class="config-item"><strong>Cursor Position:</strong> Line 8, Column 20</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Use Last Instance Multiple Patterns</h3>
+            <p class="test-name">test/data/transaction-completion/use-last-instance-multiple-patterns/</p>
+        </div>
+        <div class="test-content">
+            <div class="column input-column">
+                <div class="column-header">Input</div>
+                <pre class="content"><span class="date">2024-01-01</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$100.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$100.00</span>
+
+<span class="date">2024-01-05</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$150.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$150.00</span>
+
+<span class="date">2024-01-10</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$75.00</span>
+    <span class="account">Expenses:Household</span>       <span class="amount">$25.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$100.00</span>
+
+<span class="date">2024-01-15</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$200.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$200.00</span>
+
+<span class="date">2024-01-20</span> Grocery Store<span class="cursor">|</span></pre>
+            </div>
+            <div class="column expected-column">
+                <div class="column-header">Expected After Completion</div>
+                <pre class="content"><span class="date">2024-01-01</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$100.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$100.00</span>
+
+<span class="date">2024-01-05</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$150.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$150.00</span>
+
+<span class="date">2024-01-10</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$75.00</span>
+    <span class="account">Expenses:Household</span>       <span class="amount">$25.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$100.00</span>
+
+<span class="date">2024-01-15</span> * Grocery Store
+    <span class="account">Expenses:Food</span>            <span class="amount">$200.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$200.00</span>
+
+<span class="date">2024-01-20</span> Grocery Store
+ <span class="account">Expenses:Food</span>                                    <span class="amount">$200.00</span>
+ <span class="account">Assets:Checking</span>                                  -<span class="amount">$200.00</span>
+</pre>
+            </div>
+            <div class="column config-column">
+                <div class="column-header">Configuration</div>
+                <div class="content config-content">
+                    <div class="config-description">Should use the last instance of the most frequent pattern, with exact amounts from that last instance</div>
+                    <div class="config-item"><strong>Cursor Position:</strong> Line 17, Column 24</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Use Last Instance Single Pattern</h3>
+            <p class="test-name">test/data/transaction-completion/use-last-instance-single-pattern/</p>
+        </div>
+        <div class="test-content">
+            <div class="column input-column">
+                <div class="column-header">Input</div>
+                <pre class="content"><span class="date">2024-01-01</span> * Coffee Shop
+    <span class="account">Expenses:Dining</span>          <span class="amount">$5.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$5.00</span>
+
+<span class="date">2024-01-15</span> * Coffee Shop
+    <span class="account">Expenses:Dining</span>          <span class="amount">$8.50</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$8.50</span>
+
+<span class="date">2024-01-28</span> Coffee Shop<span class="cursor">|</span></pre>
+            </div>
+            <div class="column expected-column">
+                <div class="column-header">Expected After Completion</div>
+                <pre class="content"><span class="date">2024-01-01</span> * Coffee Shop
+    <span class="account">Expenses:Dining</span>          <span class="amount">$5.00</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$5.00</span>
+
+<span class="date">2024-01-15</span> * Coffee Shop
+    <span class="account">Expenses:Dining</span>          <span class="amount">$8.50</span>
+    <span class="account">Assets:Checking</span>         -<span class="amount">$8.50</span>
+
+<span class="date">2024-01-28</span> Coffee Shop
+ <span class="account">Expenses:Dining</span>                                  <span class="amount">$8.50</span>
+ <span class="account">Assets:Checking</span>                                  -<span class="amount">$8.50</span>
+</pre>
+            </div>
+            <div class="column config-column">
+                <div class="column-header">Configuration</div>
+                <div class="content config-content">
+                    <div class="config-description">Should use the last instance of the pattern (with amounts from that instance) even though earlier instances exist</div>
+                    <div class="config-item"><strong>Cursor Position:</strong> Line 8, Column 22</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Use Last Instance Varying Amounts</h3>
+            <p class="test-name">test/data/transaction-completion/use-last-instance-varying-amounts/</p>
+        </div>
+        <div class="test-content">
+            <div class="column input-column">
+                <div class="column-header">Input</div>
+                <pre class="content"><span class="date">2024-01-01</span> * Gas Station
+    <span class="account">Expenses:Auto:Fuel</span>       <span class="amount">$20</span>
+    <span class="account">Assets:Checking</span>          -<span class="amount">$20</span>
+
+<span class="date">2024-01-10</span> * Gas Station
+    <span class="account">Expenses:Auto:Fuel</span>       <span class="amount">$45.50</span>
+    <span class="account">Assets:Checking</span>          -<span class="amount">$45.50</span>
+
+<span class="date">2024-01-20</span> * Gas Station
+    <span class="account">Expenses:Auto:Fuel</span>       <span class="amount">$67.89</span>
+    <span class="account">Assets:Checking</span>          -<span class="amount">$67.89</span>
+
+<span class="date">2024-01-25</span> Gas Station<span class="cursor">|</span></pre>
+            </div>
+            <div class="column expected-column">
+                <div class="column-header">Expected After Completion</div>
+                <pre class="content"><span class="date">2024-01-01</span> * Gas Station
+    <span class="account">Expenses:Auto:Fuel</span>       <span class="amount">$20</span>
+    <span class="account">Assets:Checking</span>          -<span class="amount">$20</span>
+
+<span class="date">2024-01-10</span> * Gas Station
+    <span class="account">Expenses:Auto:Fuel</span>       <span class="amount">$45.50</span>
+    <span class="account">Assets:Checking</span>          -<span class="amount">$45.50</span>
+
+<span class="date">2024-01-20</span> * Gas Station
+    <span class="account">Expenses:Auto:Fuel</span>       <span class="amount">$67.89</span>
+    <span class="account">Assets:Checking</span>          -<span class="amount">$67.89</span>
+
+<span class="date">2024-01-25</span> Gas Station
+ <span class="account">Expenses:Auto:Fuel</span>                               <span class="amount">$67.89</span>
+ <span class="account">Assets:Checking</span>                                  -<span class="amount">$67.89</span>
+</pre>
+            </div>
+            <div class="column config-column">
+                <div class="column-header">Configuration</div>
+                <div class="content config-content">
+                    <div class="config-description">Should copy exact amounts and account names from the last instance, including decimal precision and currency symbols</div>
+                    <div class="config-item"><strong>Cursor Position:</strong> Line 12, Column 22</div>
                 </div>
             </div>
         </div>

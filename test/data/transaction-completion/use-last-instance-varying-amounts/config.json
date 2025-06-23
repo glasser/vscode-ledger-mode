@@ -1,0 +1,5 @@
+{
+  "cursorLine": 12,
+  "cursorColumn": 22,
+  "description": "Should copy exact amounts and account names from the last instance, including decimal precision and currency symbols"
+}
