@@ -41,7 +41,8 @@ const templateConfigs: TemplateConfig[] = [
   {
     name: "balance-report-ansi-colors",
     title: "Balance Report ANSI Colors",
-    description: "ANSI color code conversion from ledger balance reports to HTML",
+    description:
+      "ANSI color code conversion from ledger balance reports to HTML",
     dataDir: "balance-report-ansi-colors",
   },
   {
@@ -77,31 +78,36 @@ const templateConfigs: TemplateConfig[] = [
   {
     name: "transaction-completion",
     title: "Transaction Completion",
-    description: "Transaction completion test cases with input, expected output, and configuration",
+    description:
+      "Transaction completion test cases with input, expected output, and configuration",
     dataDir: "transaction-completion",
   },
   {
     name: "ledger-cli",
     title: "Ledger CLI",
-    description: "Ledger CLI validation test cases with files and expected error outputs",
+    description:
+      "Ledger CLI validation test cases with files and expected error outputs",
     dataDir: "ledger-cli",
   },
   {
     name: "toggle-reconciliation",
     title: "Toggle Reconciliation",
-    description: "Reconciliation toggle test cases with cursor positioning and expected changes",
+    description:
+      "Reconciliation toggle test cases with cursor positioning and expected changes",
     dataDir: "toggle-reconciliation",
   },
   {
     name: "tokenization",
     title: "Tokenization",
-    description: "Transaction and posting parsing test cases with input/expected pairs",
+    description:
+      "Transaction and posting parsing test cases with input/expected pairs",
     dataDir: "tokenization",
   },
   {
     name: "nowMarker",
     title: "Now Marker",
-    description: "Test files for 'jump to now' functionality with expected cursor positions",
+    description:
+      "Test files for 'jump to now' functionality with expected cursor positions",
     dataDir: "nowMarker",
   },
 ];

@@ -4,12 +4,18 @@
 // Provides difference highlighting for input vs expected content
 
 export function gt(a: number, b: number): string {
-  return a > b ? 'multi-expected' : '';
+  return a > b ? "multi-expected" : "";
 }
 
-export function getExpectedResults(testCase: any): Array<{lineNumber: number, fileName: string, content: string}> {
-  const results: Array<{lineNumber: number, fileName: string, content: string}> = [];
-  
+export function getExpectedResults(
+  testCase: any,
+): Array<{ lineNumber: number; fileName: string; content: string }> {
+  const results: Array<{
+    lineNumber: number;
+    fileName: string;
+    content: string;
+  }> = [];
+
   // Look for properties that match expected-line{number} pattern
   for (const key in testCase) {
     const match = key.match(/^expected-line(\d+)$/);
@@ -17,18 +23,18 @@ export function getExpectedResults(testCase: any): Array<{lineNumber: number, fi
       const lineNumber = parseInt(match[1], 10);
       const fileName = `${key}.ledger`;
       const content = testCase[key];
-      
+
       results.push({
         lineNumber,
         fileName,
-        content
+        content,
       });
     }
   }
-  
+
   // Sort by line number
   results.sort((a, b) => a.lineNumber - b.lineNumber);
-  
+
   return results;
 }
 
@@ -36,22 +42,22 @@ export function highlightDifferences(
   input: string,
   expected: string,
   cursorLine: number,
-  mode: string
+  mode: string,
 ): string {
-  const inputLines = input.split('\n');
-  const expectedLines = expected.split('\n');
+  const inputLines = input.split("\n");
+  const expectedLines = expected.split("\n");
 
   // Find which lines changed
   const changedLines = new Set<number>();
   for (let i = 0; i < Math.max(inputLines.length, expectedLines.length); i++) {
-    const inputLine = inputLines[i] || '';
-    const expectedLine = expectedLines[i] || '';
+    const inputLine = inputLines[i] || "";
+    const expectedLine = expectedLines[i] || "";
     if (inputLine !== expectedLine) {
       changedLines.add(i);
     }
   }
 
-  if (mode === 'input') {
+  if (mode === "input") {
     // Generate HTML with highlighting for input - let CSS handle line display
     return inputLines
       .map((line, index) => {
@@ -66,7 +72,7 @@ export function highlightDifferences(
         }
         return `<span class="normal-line">${escaped}</span>`;
       })
-      .join('');
+      .join("");
   } else {
     // Generate HTML with highlighting for expected
     return expectedLines
@@ -82,6 +88,6 @@ export function highlightDifferences(
         }
         return `<span class="normal-line">${escaped}</span>`;
       })
-      .join('');
+      .join("");
   }
 }

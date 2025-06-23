@@ -36,9 +36,9 @@ suite("Now Marker Data-Driven Tests", () => {
       await vscode.window.showTextDocument(document);
       nowMarkerProvider.jumpToNow();
       assert.equal(
-        // Add one because humans (and VSCode's display) thinks in 1-based lines.
-        vscode.window.activeTextEditor.selection.active.line + 1,
-        expectedLine,
+        vscode.window.activeTextEditor?.selection.active.line,
+        // Subtract one because humans (and VSCode's display) thinks in 1-based lines.
+        expectedLine - 1,
       );
     });
   });

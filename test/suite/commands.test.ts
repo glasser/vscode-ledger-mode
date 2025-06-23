@@ -72,25 +72,8 @@ suite("Commands Tests", () => {
     const document = await vscode.workspace.openTextDocument(samplePath);
     await vscode.window.showTextDocument(document);
 
-    try {
-      // Execute the transaction completion command (currently just shows info message)
-      await vscode.commands.executeCommand("ledger.completeTransaction");
-      assert.ok(true);
-    } catch (error) {
-      // Command may not be available in test environment
-      if (
-        error
-          .toString()
-          .includes("command 'ledger.completeTransaction' not found")
-      ) {
-        // console.log('Transaction completion command not available in test environment');
-        assert.ok(true);
-      } else {
-        assert.fail(
-          `Transaction completion command should not throw: ${error}`,
-        );
-      }
-    }
+    // Execute the transaction completion command (currently just shows info message)
+    await vscode.commands.executeCommand("ledger.completeTransaction");
   });
 
   test("Sort file command should be registered", async () => {
@@ -106,19 +89,8 @@ suite("Commands Tests", () => {
     const document = await vscode.workspace.openTextDocument(samplePath);
     await vscode.window.showTextDocument(document);
 
-    try {
-      // Execute the sort file command
-      await vscode.commands.executeCommand("ledger.sortFile");
-      assert.ok(true);
-    } catch (error) {
-      // Command may not be available in test environment
-      if (error.toString().includes("command 'ledger.sortFile' not found")) {
-        // console.log('Sort file command not available in test environment');
-        assert.ok(true);
-      } else {
-        assert.fail(`Sort file command should not throw: ${error}`);
-      }
-    }
+    // Execute the sort file command
+    await vscode.commands.executeCommand("ledger.sortFile");
   });
 
   test("Jump to now command should be registered", async () => {
@@ -134,18 +106,7 @@ suite("Commands Tests", () => {
     const document = await vscode.workspace.openTextDocument(samplePath);
     await vscode.window.showTextDocument(document);
 
-    try {
-      // Execute the jump to now command
-      await vscode.commands.executeCommand("ledger.jumpToNow");
-      assert.ok(true);
-    } catch (error) {
-      // Command may not be available in test environment
-      if (error.toString().includes("command 'ledger.jumpToNow' not found")) {
-        // console.log('Jump to now command not available in test environment');
-        assert.ok(true);
-      } else {
-        assert.fail(`Jump to now command should not throw: ${error}`);
-      }
-    }
+    // Execute the jump to now command
+    await vscode.commands.executeCommand("ledger.jumpToNow");
   });
 });

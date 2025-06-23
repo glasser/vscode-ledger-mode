@@ -3,7 +3,7 @@
 // Helper functions for completion-provider template
 // Ported from test/generators/completion-provider.ts
 
-import * as yaml from 'js-yaml';
+import * as yaml from "js-yaml";
 
 // Provides ledger syntax highlighting, YAML formatting, and test organization
 
@@ -63,7 +63,9 @@ export function highlightLedgerSyntax(
 }
 
 export function formatYamlConfig(config: any): string {
-  if (!config) return '';
+  if (!config) {
+    return "";
+  }
   return yaml.dump(config, {
     quotingType: '"',
     forceQuotes: false,
@@ -83,12 +85,11 @@ export function getNegativeAssertions(testCase: any): string[] {
   return assertions;
 }
 
-
 export function generateToc(testCases: any[]): string {
   if (!Array.isArray(testCases)) {
-    return '';
+    return "";
   }
-  
+
   const grouped = testCases.reduce(
     (acc: { [key: string]: any[] }, testCase) => {
       const category = testCase.name.split("-")[0];
@@ -110,7 +111,9 @@ export function generateToc(testCases: any[]): string {
         ${(cases as any[])
           .map(
             (testCase) =>
-              `<li><a href="#${testCase.name}">${testCase.name}</a> - ${(testCase.config?.description || "No description")
+              `<li><a href="#${testCase.name}">${testCase.name}</a> - ${(
+                testCase.config?.description || "No description"
+              )
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")

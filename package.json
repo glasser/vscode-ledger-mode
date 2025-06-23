@@ -31,7 +31,7 @@
     "url": "https://github.com/glasser/vscode-ledger-mode/issues"
   },
   "license": "GPL-3.0",
-  "main": "./out/extension.js",
+  "main": "./out/src/extension.js",
   "activationEvents": [],
   "contributes": {
     "languages": [
@@ -136,11 +136,10 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "compile-tests": "tsc -p ./test",
     "watch": "tsc -watch -p ./",
     "test": "npm run test:mocha && npm run test:syntax",
     "posttest": "npm run lint",
-    "pretest:mocha": "npm run compile && npm run compile-tests",
+    "pretest:mocha": "npm run compile",
     "test:mocha": "vscode-test",
     "test:syntax": "vscode-tmgrammar-test 'test/data/syntax/**/*.test.ledger'",
     "test:coverage": "npm run test:mocha -- --coverage",

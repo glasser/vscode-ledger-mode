@@ -3,8 +3,8 @@
 // Helper functions for ledger-cli template
 // Ported from test/generators/ledger-cli.ts
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // Provides ledger file reading, syntax highlighting, and error processing
 
@@ -76,19 +76,19 @@ export function highlightLedgerSyntax(
 // Helper to read ledger file content based on the file path in config
 export function readLedgerFile(testCase: any): string {
   if (!testCase.file) {
-    return '';
+    return "";
   }
-  
+
   // The config files are in test/data/ledger-cli/ and reference ../../fixtures/file.ledger
-  // So we need to resolve relative to the config file location  
+  // So we need to resolve relative to the config file location
   // Since we know the structure, resolve relative to test/data/ledger-cli
   const testDataDir = path.join(__dirname);
   const ledgerFilePath = path.resolve(testDataDir, testCase.file);
-  
+
   if (fs.existsSync(ledgerFilePath)) {
-    return fs.readFileSync(ledgerFilePath, 'utf8');
+    return fs.readFileSync(ledgerFilePath, "utf8");
   }
-  
+
   return `File not found: ${ledgerFilePath}`;
 }
 
@@ -97,9 +97,8 @@ export function getErrorLines(expectedErrors: any[]): number[] {
   if (!Array.isArray(expectedErrors)) {
     return [];
   }
-  
-  return expectedErrors
-    .map(error => error.line + 1) // Convert from 0-based to 1-based
-    .filter(line => line !== undefined && typeof line === 'number');
-}
 
+  return expectedErrors
+    .map((error) => error.line + 1) // Convert from 0-based to 1-based
+    .filter((line) => line !== undefined && typeof line === "number");
+}

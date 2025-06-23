@@ -3,8 +3,8 @@
 // Helper functions for nowMarker template
 // Ported from test/generators/nowMarker.ts
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // Loads ledger files and highlights expected cursor positions
 
@@ -46,9 +46,7 @@ export function loadNowMarkerFiles(): NowMarkerFile[] {
         if (expectedLine && lineNumber === expectedLine) {
           // For blank lines, show a visible placeholder
           const displayContent =
-            escaped.trim() === ""
-              ? "⌐ (expected cursor position)"
-              : escaped;
+            escaped.trim() === "" ? "⌐ (expected cursor position)" : escaped;
           return `<span class="highlighted-line">${displayContent}</span>`;
         }
         return `<span class="normal-line">${escaped}</span>`;
@@ -60,7 +58,7 @@ export function loadNowMarkerFiles(): NowMarkerFile[] {
       content,
       expectedLine,
       testName,
-      highlightedContent
+      highlightedContent,
     };
   });
 }
