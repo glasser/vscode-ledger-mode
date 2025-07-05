@@ -1,0 +1,17 @@
+; price-db: prices
+
+2024-01-05 Grocery Shopping
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking
+
+2024-01-12 Grocery Shopping
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking
+
+2024-01-19 Grocery Shopping
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking
+
+2024-01-26 Grocery Shopping  ; RECUR:1w
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking

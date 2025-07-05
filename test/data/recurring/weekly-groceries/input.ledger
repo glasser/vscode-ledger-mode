@@ -1,0 +1,5 @@
+; price-db: prices
+
+2024-01-05 Grocery Shopping  ; RECUR:1w
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking

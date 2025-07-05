@@ -1,0 +1,3 @@
+2024-01-01 Monthly Rent Payment  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking

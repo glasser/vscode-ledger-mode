@@ -41,14 +41,18 @@ suite("Transaction Completion Data-Driven Tests", () => {
       // Execute the completion command
       if (config.hasQuickPick) {
         // For tests that expect a QuickPick, handle it
-        const completionPromise = vscode.commands.executeCommand("ledger.completeTransaction");
-        
+        const completionPromise = vscode.commands.executeCommand(
+          "ledger.completeTransaction",
+        );
+
         // Give the QuickPick a moment to appear
         await new Promise((resolve) => setTimeout(resolve, 100));
-        
+
         // Select the first item in the QuickPick and accept it
-        await vscode.commands.executeCommand("workbench.action.acceptSelectedQuickOpenItem");
-        
+        await vscode.commands.executeCommand(
+          "workbench.action.acceptSelectedQuickOpenItem",
+        );
+
         // Wait for completion to finish
         await completionPromise;
       } else {

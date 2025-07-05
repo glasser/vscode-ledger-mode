@@ -1,0 +1,15 @@
+2024-01-01 * Opening Balance
+    Assets:Checking                    $10,000.00
+    Equity:Opening Balance
+
+2024-01-05 Electric Bill  ; RECUR:1m
+    Expenses:Utilities:Electric            $85.00
+    Assets:Checking
+
+2024-01-10 Internet Service  ; RECUR:1m
+    Expenses:Utilities:Internet            $60.00
+    Assets:Checking
+
+2024-01-15 Regular Transaction
+    Expenses:Coffee                         $5.00
+    Assets:Cash

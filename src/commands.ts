@@ -8,6 +8,7 @@ import { LedgerOrganizer } from "./ledgerOrganizer";
 import { NowMarkerProvider } from "./nowMarker";
 import { ReconciliationToggler } from "./reconciliationToggler";
 const chrono = require("chrono-node");
+import { RecurringTransactionProcessor } from "./recurringTransactions";
 
 export function formatDateForLedger(date?: Date): string {
   const today = date || new Date();
@@ -339,6 +340,108 @@ export function registerCommands(
     },
   );
 
+  // Register recurring transactions command
+  const recurringTransactionsCommand = vscode.commands.registerCommand(
+    "ledger.generateRecurringTransactions",
+    async () => {
+      const activeEditor = vscode.window.activeTextEditor;
+      if (!activeEditor || activeEditor.document.languageId !== "ledger") {
+        vscode.window.showErrorMessage("No active Ledger file");
+        return;
+      }
+
+      try {
+        // Prompt user for target date (similar to insertDate)
+        const dateInput = await vscode.window.showInputBox({
+          prompt:
+            "Generate recurring transactions up to date (natural language supported: 'next month', '2024-12-31') or press Enter for one month from today",
+          placeHolder: "one month from today",
+          validateInput: (value: string) => {
+            // If empty, show one month from today preview as info
+            if (!value || value.trim() === "") {
+              const oneMonthFromToday = new Date();
+              oneMonthFromToday.setMonth(oneMonthFromToday.getMonth() + 1);
+              const dayName = oneMonthFromToday.toLocaleDateString("en-US", {
+                weekday: "long",
+              });
+              return {
+                severity: vscode.InputBoxValidationSeverity.Info,
+                message: `Will generate up to: ${formatDateForLedger(oneMonthFromToday).trim()} (${dayName})`,
+              };
+            }
+
+            const parsed = parseDateString(value);
+            if (!parsed) {
+              return {
+                severity: vscode.InputBoxValidationSeverity.Error,
+                message:
+                  "Invalid date format. Try natural language like 'next month', 'end of year', or specific dates like '2024-12-31'",
+              };
+            }
+
+            // Show preview for valid dates as info
+            const dayName = parsed.toLocaleDateString("en-US", {
+              weekday: "long",
+            });
+            return {
+              severity: vscode.InputBoxValidationSeverity.Info,
+              message: `Will generate up to: ${formatDateForLedger(parsed).trim()} (${dayName})`,
+            };
+          },
+        });
+
+        if (dateInput === undefined) {
+          // User cancelled
+          return;
+        }
+
+        // If empty input, default to one month from today
+        let targetDate: Date;
+        if (!dateInput || dateInput.trim() === "") {
+          targetDate = new Date();
+          targetDate.setMonth(targetDate.getMonth() + 1);
+        } else {
+          const parsed = parseDateString(dateInput);
+          if (!parsed) {
+            vscode.window.showErrorMessage("Invalid date format");
+            return;
+          }
+          targetDate = parsed;
+        }
+
+        const content = activeEditor.document.getText();
+        const processor = new RecurringTransactionProcessor();
+        const result = await processor.processRecurringTransactions(
+          content,
+          targetDate,
+        );
+
+        if (result !== content) {
+          const fullRange = new vscode.Range(
+            activeEditor.document.positionAt(0),
+            activeEditor.document.positionAt(content.length),
+          );
+
+          await activeEditor.edit((editBuilder) => {
+            editBuilder.replace(fullRange, result);
+          });
+
+          vscode.window.showInformationMessage(
+            "Recurring transactions generated successfully",
+          );
+        } else {
+          vscode.window.showInformationMessage(
+            "No recurring transactions found or all are already up to date",
+          );
+        }
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Failed to generate recurring transactions: ${error}`,
+        );
+      }
+    },
+  );
+
   context.subscriptions.push(
     balanceCommand,
     transactionCompletionCommand,
@@ -346,5 +449,6 @@ export function registerCommands(
     sortFileCommand,
     jumpToNowCommand,
     toggleReconciliationCommand,
+    recurringTransactionsCommand,
   );
 }

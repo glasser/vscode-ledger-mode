@@ -79,6 +79,10 @@
       {
         "command": "ledger.completeTransaction",
         "title": "Ledger: Complete Transaction"
+      },
+      {
+        "command": "ledger.generateRecurringTransactions",
+        "title": "Ledger: Generate Recurring Transactions"
       }
     ],
     "keybindings": [

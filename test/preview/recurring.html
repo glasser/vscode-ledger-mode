@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recurring Transactions</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case { 
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        h2 {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .description {
+            padding: 15px;
+            margin: 0;
+            background-color: #e8f4f8;
+            border-bottom: 1px solid #ddd;
+        }
+        .target-date {
+            padding: 0 15px 15px 15px;
+            background-color: #e8f4f8;
+            margin: 0;
+        }
+        .test-row { 
+            display: flex;
+        }
+        .test-input, .test-output { 
+            flex: 1; 
+            padding: 15px;
+        }
+        .test-input { 
+            background-color: #fafafa; 
+            border-right: 1px solid #ddd;
+        }
+        .test-output { 
+            background-color: #f0f8f0; 
+        }
+        h3 {
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0;
+            overflow-x: auto;
+        }
+        code {
+            font-family: inherit;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recurring Transactions</h1>
+    
+    <div class="summary">
+        <p>Tests for generating recurring transactions from RECUR comments. Each test shows how transactions with <code>; RECUR:period</code> comments are expanded up to a target date.</p>
+        <p><strong>Test cases:</strong> 5</p>
+    </div>
+    
+    <div class="test-case">
+        <h2>monthly-rent</h2>
+        <p class="description">Generate monthly recurring transaction up to 2024-02-15</p>
+        <p class="target-date">Target Date: <code>2024-02-15</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2023-12-01 Monthly Rent Payment  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2023-12-01 Monthly Rent Payment
+    Expenses:Rent                         $1,000.00
+    Assets:Checking
+
+2024-01-01 Monthly Rent Payment
+    Expenses:Rent                         $1,000.00
+    Assets:Checking
+
+2024-02-01 Monthly Rent Payment  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <h2>multiple-recurring</h2>
+        <p class="description">Multiple recurring transactions with non-recurring mixed in</p>
+        <p class="target-date">Target Date: <code>2024-02-20</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2024-01-01 * Opening Balance
+    Assets:Checking                    $10,000.00
+    Equity:Opening Balance
+
+2024-01-05 Electric Bill  ; RECUR:1m
+    Expenses:Utilities:Electric            $85.00
+    Assets:Checking
+
+2024-01-10 Internet Service  ; RECUR:1m
+    Expenses:Utilities:Internet            $60.00
+    Assets:Checking
+
+2024-01-15 Regular Transaction
+    Expenses:Coffee                         $5.00
+    Assets:Cash</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2024-01-01 * Opening Balance
+    Assets:Checking                    $10,000.00
+    Equity:Opening Balance
+
+2024-01-05 Electric Bill
+    Expenses:Utilities:Electric            $85.00
+    Assets:Checking
+
+2024-01-10 Internet Service
+    Expenses:Utilities:Internet            $60.00
+    Assets:Checking
+
+2024-01-15 Regular Transaction
+    Expenses:Coffee                         $5.00
+    Assets:Cash
+
+2024-02-05 Electric Bill  ; RECUR:1m
+    Expenses:Utilities:Electric            $85.00
+    Assets:Checking
+
+2024-02-10 Internet Service  ; RECUR:1m
+    Expenses:Utilities:Internet            $60.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <h2>no-generation-needed</h2>
+        <p class="description">No generation needed when target date is before next occurrence</p>
+        <p class="target-date">Target Date: <code>2024-01-15</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2024-01-01 Monthly Rent Payment  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2024-01-01 Monthly Rent Payment  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <h2>weekly-groceries</h2>
+        <p class="description">Generate weekly recurring transaction with preamble preservation</p>
+        <p class="target-date">Target Date: <code>2024-01-31</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>; price-db: prices
+
+2024-01-05 Grocery Shopping  ; RECUR:1w
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>; price-db: prices
+
+2024-01-05 Grocery Shopping
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking
+
+2024-01-12 Grocery Shopping
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking
+
+2024-01-19 Grocery Shopping
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking
+
+2024-01-26 Grocery Shopping  ; RECUR:1w
+    Expenses:Food:Groceries               $150.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <h2>yearly-insurance</h2>
+        <p class="description">Yearly recurring with leap year handling (Feb 29 -&gt; Feb 28)</p>
+        <p class="target-date">Target Date: <code>2026-12-31</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2024-02-29 Annual Insurance Payment  ; RECUR:1y
+    Expenses:Insurance                    $1,200.00
+    Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2024-02-29 Annual Insurance Payment
+    Expenses:Insurance                    $1,200.00
+    Assets:Checking
+
+2025-02-28 Annual Insurance Payment
+    Expenses:Insurance                    $1,200.00
+    Assets:Checking
+
+2026-02-28 Annual Insurance Payment  ; RECUR:1y
+    Expenses:Insurance                    $1,200.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

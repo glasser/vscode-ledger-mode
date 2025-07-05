@@ -1,0 +1,2 @@
+description: "Yearly recurring with leap year handling (Feb 29 -> Feb 28)"
+targetDate: "2026-12-31"

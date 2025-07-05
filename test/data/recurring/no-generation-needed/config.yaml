@@ -1,0 +1,2 @@
+description: "No generation needed when target date is before next occurrence"
+targetDate: "2024-01-15"

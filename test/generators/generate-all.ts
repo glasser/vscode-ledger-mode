@@ -110,6 +110,13 @@ const templateConfigs: TemplateConfig[] = [
       "Test files for 'jump to now' functionality with expected cursor positions",
     dataDir: "nowMarker",
   },
+  {
+    name: "recurring",
+    title: "Recurring Transactions",
+    description:
+      "Recurring transaction generation from RECUR comments with various periods",
+    dataDir: "recurring",
+  },
 ];
 
 function hasTemplate(dataDir: string): boolean {

@@ -1,0 +1,11 @@
+2024-02-29 Annual Insurance Payment
+    Expenses:Insurance                    $1,200.00
+    Assets:Checking
+
+2025-02-28 Annual Insurance Payment
+    Expenses:Insurance                    $1,200.00
+    Assets:Checking
+
+2026-02-28 Annual Insurance Payment  ; RECUR:1y
+    Expenses:Insurance                    $1,200.00
+    Assets:Checking
