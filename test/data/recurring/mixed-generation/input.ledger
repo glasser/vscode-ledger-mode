@@ -1,0 +1,7 @@
+2024-01-01 Monthly Rent  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking
+
+2024-02-05 Weekly Grocery  ; RECUR:1w
+    Expenses:Food                           $150.00
+    Assets:Checking

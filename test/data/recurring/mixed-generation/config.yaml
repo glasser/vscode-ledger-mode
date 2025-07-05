@@ -1,0 +1,2 @@
+description: "Generate monthly (due 2/1) but not weekly (next due 2/12)"
+targetDate: "2024-02-05"

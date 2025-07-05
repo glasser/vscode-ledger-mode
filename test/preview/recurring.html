@@ -88,9 +88,42 @@
     
     <div class="summary">
         <p>Tests for generating recurring transactions from RECUR comments. Each test shows how transactions with <code>; RECUR:period</code> comments are expanded up to a target date.</p>
-        <p><strong>Test cases:</strong> 5</p>
+        <p><strong>Test cases:</strong> 6</p>
     </div>
     
+    <div class="test-case">
+        <h2>mixed-generation</h2>
+        <p class="description">Generate monthly (due 2/1) but not weekly (next due 2/12)</p>
+        <p class="target-date">Target Date: <code>2024-02-05</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2024-01-01 Monthly Rent  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking
+
+2024-02-05 Weekly Grocery  ; RECUR:1w
+    Expenses:Food                           $150.00
+    Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2024-01-01 Monthly Rent
+    Expenses:Rent                         $1,000.00
+    Assets:Checking
+
+2024-02-05 Weekly Grocery  ; RECUR:1w
+    Expenses:Food                           $150.00
+    Assets:Checking
+
+2024-02-01 Monthly Rent  ; RECUR:1m
+    Expenses:Rent                         $1,000.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
     <div class="test-case">
         <h2>monthly-rent</h2>
         <p class="description">Generate monthly recurring transaction up to 2024-02-15</p>
