@@ -201,7 +201,6 @@ export class RecurringTransactionProcessor {
   }
 
   private addPeriod(date: Date, period: ParsedPeriod): Date {
-    // Work with year/month/day directly to avoid timezone issues
     const year = date.getFullYear();
     const month = date.getMonth();
     const day = date.getDate();
@@ -212,37 +211,21 @@ export class RecurringTransactionProcessor {
       case "w":
         return new Date(year, month, day + period.value * 7);
       case "m": {
-        // Add months, handling month-end edge cases
-        let newMonth = month + period.value;
-        let newYear = year;
+        // JavaScript Date constructor handles month overflow automatically
+        const result = new Date(year, month + period.value, day);
 
-        // Handle year rollover
-        while (newMonth > 11) {
-          newMonth -= 12;
-          newYear++;
-        }
-        while (newMonth < 0) {
-          newMonth += 12;
-          newYear--;
-        }
-
-        // Try to create date with same day
-        const result = new Date(newYear, newMonth, day);
-
-        // If the day rolled over (e.g., Jan 31 -> Mar 3), go to last day of target month
-        if (result.getMonth() !== newMonth) {
-          return new Date(newYear, newMonth + 1, 0); // Last day of target month
+        // If the day rolled over (e.g., Jan 31 + 1 month = Mar 3),
+        // go to last day of target month
+        if (result.getDate() !== day) {
+          return new Date(year, month + period.value + 1, 0); // Last day of target month
         }
 
         return result;
       }
       case "y": {
-        // Add years, handle leap year edge case
-        const newYear = year + period.value;
-
         // Special case: Feb 29 in leap year -> Feb 28 in non-leap year
         if (month === 1 && day === 29) {
-          // Check if new year is leap year
+          const newYear = year + period.value;
           const isLeapYear =
             (newYear % 4 === 0 && newYear % 100 !== 0) || newYear % 400 === 0;
           if (!isLeapYear) {
@@ -250,7 +233,7 @@ export class RecurringTransactionProcessor {
           }
         }
 
-        return new Date(newYear, month, day);
+        return new Date(year + period.value, month, day);
       }
       default:
         throw new Error(`Unknown period unit: ${period.unit}`);
