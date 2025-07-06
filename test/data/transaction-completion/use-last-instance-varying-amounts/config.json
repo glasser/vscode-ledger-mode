@@ -1,5 +1,9 @@
 {
   "cursorLine": 12,
   "cursorColumn": 22,
-  "description": "Should copy exact amounts and account names from the last instance, including decimal precision and currency symbols"
+  "description": "Should copy exact amounts and account names from the last instance, including decimal precision and currency symbols",
+  "expectedSelection": {
+    "start": { "line": 13, "column": 51 },
+    "end": { "line": 13, "column": 56 }
+  }
 }

@@ -2,5 +2,15 @@
   "cursorLine": 17,
   "cursorColumn": 24,
   "description": "Should use the last instance of the most frequent pattern, with exact amounts from that last instance",
-  "hasQuickPick": true
+  "hasQuickPick": true,
+  "expectedSelection": {
+    "start": {
+      "line": 18,
+      "column": 51
+    },
+    "end": {
+      "line": 18,
+      "column": 57
+    }
+  }
 }

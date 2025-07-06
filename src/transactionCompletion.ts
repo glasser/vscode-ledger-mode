@@ -282,6 +282,9 @@ export class TransactionCompleter {
       this.buildPostingLine(posting),
     );
 
+    let firstDollarPosition: vscode.Position | null = null;
+    let amountEndPosition: vscode.Position | null = null;
+
     if (postingLines.length > 0) {
       const transactionLine = document.lineAt(position.line);
       const insertPosition = new vscode.Position(
@@ -297,9 +300,49 @@ export class TransactionCompleter {
       const postingText =
         "\n" + postingLines.join("\n") + (hasNextLineContent ? "" : "\n");
       edit.insert(document.uri, insertPosition, postingText);
+
+      // Find the first dollar sign position in the posting lines
+      for (let i = 0; i < postingLines.length; i++) {
+        const dollarIndex = postingLines[i].indexOf("$");
+        if (dollarIndex !== -1 && firstDollarPosition === null) {
+          // Calculate the position after the edit
+          const lineNumber = position.line + 1 + i;
+          const columnNumber = dollarIndex + 1; // Position after the $
+          firstDollarPosition = new vscode.Position(lineNumber, columnNumber);
+
+          // Find the end of the amount (number after $)
+          const amountMatch = postingLines[i]
+            .substring(dollarIndex + 1)
+            .match(/^[\d,.-]+/);
+          if (amountMatch) {
+            amountEndPosition = new vscode.Position(
+              lineNumber,
+              columnNumber + amountMatch[0].length,
+            );
+          }
+          break;
+        }
+      }
     }
 
-    return vscode.workspace.applyEdit(edit);
+    const success = await vscode.workspace.applyEdit(edit);
+
+    // If we found a dollar amount, select the number part after applying the edit
+    if (success && firstDollarPosition && amountEndPosition) {
+      const editor = vscode.window.activeTextEditor;
+      if (editor) {
+        editor.selection = new vscode.Selection(
+          firstDollarPosition,
+          amountEndPosition,
+        );
+        editor.revealRange(
+          new vscode.Range(firstDollarPosition, amountEndPosition),
+          vscode.TextEditorRevealType.InCenter,
+        );
+      }
+    }
+
+    return success;
   }
 
   private static buildTransactionLine(

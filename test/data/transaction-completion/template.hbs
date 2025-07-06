@@ -122,6 +122,13 @@
             border-radius: 2px;
         }
         
+        .selection {
+            background-color: #4a90e2;
+            color: white;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        
         @keyframes blink {
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0.3; }
@@ -175,13 +182,16 @@
             </div>
             <div class="column expected-column">
                 <div class="column-header">Expected After Completion</div>
-                <pre class="content">{{{highlightLedgerSyntax expected}}}</pre>
+                <pre class="content">{{{highlightLedgerSyntax expected null null config.expectedSelection.start config.expectedSelection.end}}}</pre>
             </div>
             <div class="column config-column">
                 <div class="column-header">Configuration</div>
                 <div class="content config-content">
                     <div class="config-description">{{config.description}}</div>
                     <div class="config-item"><strong>Cursor Position:</strong> Line {{config.cursorLine}}, Column {{config.cursorColumn}}</div>
+                    {{#if config.expectedSelection}}
+                    <div class="config-item"><strong>Expected Selection:</strong> Line {{config.expectedSelection.start.line}}, Col {{config.expectedSelection.start.column}} to Line {{config.expectedSelection.end.line}}, Col {{config.expectedSelection.end.column}}</div>
+                    {{/if}}
                 </div>
             </div>
         </div>

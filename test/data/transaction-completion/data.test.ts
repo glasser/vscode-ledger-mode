@@ -70,6 +70,39 @@ suite("Transaction Completion Data-Driven Tests", () => {
         `Test case ${testCase} failed.\nExpected:\n${JSON.stringify(expectedContent)}\nActual:\n${JSON.stringify(result)}`,
       );
 
+      // Check selection if specified in config
+      if (config.expectedSelection) {
+        const selection = editor.selection;
+        const expectedStart = new vscode.Position(
+          config.expectedSelection.start.line,
+          config.expectedSelection.start.column,
+        );
+        const expectedEnd = new vscode.Position(
+          config.expectedSelection.end.line,
+          config.expectedSelection.end.column,
+        );
+        assert.strictEqual(
+          selection.start.line,
+          expectedStart.line,
+          `Selection start line mismatch in ${testCase}`,
+        );
+        assert.strictEqual(
+          selection.start.character,
+          expectedStart.character,
+          `Selection start column mismatch in ${testCase}`,
+        );
+        assert.strictEqual(
+          selection.end.line,
+          expectedEnd.line,
+          `Selection end line mismatch in ${testCase}`,
+        );
+        assert.strictEqual(
+          selection.end.character,
+          expectedEnd.character,
+          `Selection end column mismatch in ${testCase}`,
+        );
+      }
+
       // Close the document
       await vscode.commands.executeCommand(
         "workbench.action.closeActiveEditor",

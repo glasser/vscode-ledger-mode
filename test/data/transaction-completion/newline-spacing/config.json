@@ -1,5 +1,15 @@
 {
   "cursorLine": 4,
   "cursorColumn": 20,
-  "description": "Complete transaction with comment following - should show newline spacing"
+  "description": "Complete transaction with comment following - should show newline spacing",
+  "expectedSelection": {
+    "start": {
+      "line": 5,
+      "column": 51
+    },
+    "end": {
+      "line": 5,
+      "column": 56
+    }
+  }
 }

@@ -1,5 +1,15 @@
 {
   "cursorLine": 8,
   "cursorColumn": 15,
-  "description": "Complete transaction from pending (!) template - should create unreconciled postings"
+  "description": "Complete transaction from pending (!) template - should create unreconciled postings",
+  "expectedSelection": {
+    "start": {
+      "line": 9,
+      "column": 51
+    },
+    "end": {
+      "line": 9,
+      "column": 56
+    }
+  }
 }

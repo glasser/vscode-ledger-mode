@@ -1,5 +1,15 @@
 {
   "cursorLine": 8,
   "cursorColumn": 22,
-  "description": "Should use the last instance of the pattern (with amounts from that instance) even though earlier instances exist"
+  "description": "Should use the last instance of the pattern (with amounts from that instance) even though earlier instances exist",
+  "expectedSelection": {
+    "start": {
+      "line": 9,
+      "column": 51
+    },
+    "end": {
+      "line": 9,
+      "column": 55
+    }
+  }
 }
