@@ -7,6 +7,7 @@ import { registerDiagnosticProvider } from "./diagnosticProvider";
 import { registerCommands } from "./commands";
 import { registerDocumentFormatter } from "./documentFormatter";
 import { NowMarkerProvider } from "./nowMarker";
+import { registerIndentationProvider } from "./indentationProvider";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Ledger extension is now active");
@@ -26,6 +27,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register document formatter (enables format-on-save)
   registerDocumentFormatter(context);
+
+  // Register indentation provider for automatic spacing
+  registerIndentationProvider(context);
 }
 
 export function deactivate() {}

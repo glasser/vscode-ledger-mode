@@ -83,6 +83,10 @@
       {
         "command": "ledger.generateRecurringTransactions",
         "title": "Ledger: Generate Recurring Transactions"
+      },
+      {
+        "command": "ledger.handleEnter",
+        "title": "Ledger: Handle Enter with Indentation"
       }
     ],
     "keybindings": [
@@ -100,9 +104,20 @@
         "command": "ledger.toggleReconciliation",
         "key": "ctrl+c ctrl+c",
         "when": "editorTextFocus && editorLangId == ledger"
+      },
+      {
+        "command": "ledger.handleEnter",
+        "key": "enter",
+        "when": "editorTextFocus && editorLangId == ledger"
       }
     ],
     "configurationDefaults": {
+      "[ledger]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 1,
+        "editor.indentSize": 1,
+        "editor.autoIndent": "full"
+      },
       "editor.tokenColorCustomizations": {
         "textMateRules": [
           {
@@ -141,12 +156,11 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "test": "npm run test:mocha && npm run test:syntax",
-    "posttest": "npm run lint",
-    "pretest:mocha": "npm run compile",
-    "test:mocha": "vscode-test",
+    "pretest": "npm run compile",
+    "test": "vscode-test",
+    "posttest": "npm run test:syntax && npm run lint",
     "test:syntax": "vscode-tmgrammar-test 'test/data/syntax/**/*.test.ledger'",
-    "test:coverage": "npm run test:mocha -- --coverage",
+    "test:coverage": "npm run test -- --coverage",
     "validate-coverage": "node scripts/validate-coverage.js",
     "eslint": "eslint src test --ext ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

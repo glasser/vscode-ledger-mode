@@ -117,6 +117,13 @@ const templateConfigs: TemplateConfig[] = [
       "Recurring transaction generation from RECUR comments with various periods",
     dataDir: "recurring",
   },
+  {
+    name: "indentation",
+    title: "Indentation",
+    description:
+      "Automatic indentation behavior when pressing Enter on transaction lines",
+    dataDir: "indentation",
+  },
 ];
 
 function hasTemplate(dataDir: string): boolean {
