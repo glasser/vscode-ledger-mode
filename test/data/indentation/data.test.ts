@@ -42,8 +42,8 @@ suite("Indentation Data-Driven Tests", () => {
       console.log("Language ID:", document.languageId);
       console.log("Line text:", document.lineAt(config.cursorLine).text);
 
-      // Use our custom Enter command that adds indentation
-      await vscode.commands.executeCommand("ledger.handleEnter");
+      // Trigger default Enter behavior which should use language configuration
+      await vscode.commands.executeCommand("type", { text: "\n" });
 
       // Get the result
       const result = document.getText();

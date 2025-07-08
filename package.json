@@ -83,10 +83,6 @@
       {
         "command": "ledger.generateRecurringTransactions",
         "title": "Ledger: Generate Recurring Transactions"
-      },
-      {
-        "command": "ledger.handleEnter",
-        "title": "Ledger: Handle Enter with Indentation"
       }
     ],
     "keybindings": [
@@ -103,11 +99,6 @@
       {
         "command": "ledger.toggleReconciliation",
         "key": "ctrl+c ctrl+c",
-        "when": "editorTextFocus && editorLangId == ledger"
-      },
-      {
-        "command": "ledger.handleEnter",
-        "key": "enter",
         "when": "editorTextFocus && editorLangId == ledger"
       }
     ],
