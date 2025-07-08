@@ -32,6 +32,42 @@
       "patterns": [
         {
           "name": "meta.transaction.pending.ledger",
+          "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(!)\\s*(?:\\(([^)]+)\\)\\s*)?([^;]*?)\\s*(;.*)$",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.numeric.date.ledger"
+            },
+            "2": {
+              "name": "keyword.operator.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.date.effective.ledger"
+            },
+            "4": {
+              "name": "markup.bold token.warn-token"
+            },
+            "5": {
+              "name": "constant.other.code.ledger"
+            },
+            "6": {
+              "name": "markup.bold token.warn-token"
+            },
+            "7": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          },
+          "end": "^(?=\\S)",
+          "patterns": [
+            {
+              "include": "#posting-pending"
+            },
+            {
+              "include": "#comment"
+            }
+          ]
+        },
+        {
+          "name": "meta.transaction.pending.ledger",
           "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(!)\\s*(?:\\(([^)]+)\\)\\s*)?(.*)$",
           "beginCaptures": {
             "1": {
@@ -65,6 +101,42 @@
         },
         {
           "name": "meta.transaction.cleared.ledger",
+          "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(\\*)\\s*(?:\\(([^)]+)\\)\\s*)?([^;]*?)\\s*(;.*)$",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.numeric.date.ledger"
+            },
+            "2": {
+              "name": "keyword.operator.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.date.effective.ledger"
+            },
+            "4": {
+              "name": "invalid.illegal.ledger"
+            },
+            "5": {
+              "name": "constant.other.code.ledger"
+            },
+            "6": {
+              "name": "entity.name.merchant.cleared.ledger"
+            },
+            "7": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          },
+          "end": "^(?=\\S)",
+          "patterns": [
+            {
+              "include": "#posting-cleared"
+            },
+            {
+              "include": "#comment"
+            }
+          ]
+        },
+        {
+          "name": "meta.transaction.cleared.ledger",
           "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(\\*)\\s*(?:\\(([^)]+)\\)\\s*)?(.*)$",
           "beginCaptures": {
             "1": {
@@ -90,6 +162,39 @@
           "patterns": [
             {
               "include": "#posting-cleared"
+            },
+            {
+              "include": "#comment"
+            }
+          ]
+        },
+        {
+          "name": "meta.transaction.ledger",
+          "begin": "^(\\d{4}[/-]\\d{2}[/-]\\d{2})(?:(=)(\\d{4}[/-]\\d{2}[/-]\\d{2}))?\\s*(?:\\(([^)]+)\\)\\s*)?([^;]*?)\\s*(;.*)$",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.numeric.date.ledger"
+            },
+            "2": {
+              "name": "keyword.operator.ledger"
+            },
+            "3": {
+              "name": "constant.numeric.date.effective.ledger"
+            },
+            "4": {
+              "name": "constant.other.code.ledger"
+            },
+            "5": {
+              "name": "entity.name.merchant.uncleared.ledger"
+            },
+            "6": {
+              "name": "comment.line.semicolon.ledger"
+            }
+          },
+          "end": "^(?=\\S)",
+          "patterns": [
+            {
+              "include": "#posting"
             },
             {
               "include": "#comment"

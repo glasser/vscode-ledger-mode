@@ -12,7 +12,27 @@
 ;          ^ markup.bold token.warn-token
 ;            ^^^^^^^^^^^ markup.bold token.warn-token
 
+; Test pending transaction with inline comment
+2024-01-19 ! Restaurant  ; dinner with friends
+; <---------- constant.numeric.date.ledger
+;          ^ markup.bold token.warn-token
+;            ^^^^^^^^^^ markup.bold token.warn-token
+;                        ^^^^^^^^^^^^^^^^^^^^^ comment.line.semicolon.ledger
+
 ; Test uncleared transaction  
 2024-01-17 Coffee Shop
 ; <---------- constant.numeric.date.ledger
 ;          ^^^^^^^^^^^ entity.name.merchant.uncleared.ledger
+
+; Test uncleared transaction with inline comment
+2024-01-20 Bookstore  ; bought novels
+; <---------- constant.numeric.date.ledger
+;          ^^^^^^^^^ entity.name.merchant.uncleared.ledger
+;                     ^^^^^^^^^^^^^^ comment.line.semicolon.ledger
+
+; Test transaction with inline comment
+2024-01-18 * Supermarket  ; bought groceries
+; <---------- constant.numeric.date.ledger
+;          ^ invalid.illegal.ledger
+;            ^^^^^^^^^^^ entity.name.merchant.cleared.ledger
+;                         ^^^^^^^^^^^^^^^^^^ comment.line.semicolon.ledger
