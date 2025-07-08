@@ -203,7 +203,7 @@ class AccountCompletionProvider implements vscode.CompletionItemProvider {
           vscode.CompletionItemKind.Module,
         );
         item.detail = "Account";
-        item.insertText = account;
+        item.insertText = account + "  ";
 
         // If there's already some text, replace it
         if (currentAccount.length > 0) {
