@@ -219,14 +219,14 @@ export class TransactionCompleter {
       selectedTemplate = templates[0];
     } else {
       // Show quick pick for multiple options
-      const items = templates.map((template, index) => ({
-        label: `Pattern ${index + 1} (${template.frequency} times)`,
-        detail: template.postings
+      const items = templates.map((template) => ({
+        label: template.postings
           .map(
             (p) =>
               `${p.account}${p.amount ? ` ${p.amount}` : /* c8 ignore next */ ""}`,
           )
           .join(", "),
+        detail: `Used ${template.frequency} times`,
         template,
       }));
 
