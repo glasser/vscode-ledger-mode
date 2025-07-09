@@ -1,0 +1,11 @@
+description: Test single integer parsing from July 8th, 2025 (real-world scenario)
+referenceDate: "2025-07-08T15:00:00-07:00"  # July 8th, 2025 at 3PM PDT
+testCases:
+  - input: "4"
+    expected: "2025-07-04"  # July 4th (past day in current month)
+  - input: "8"
+    expected: "2025-07-08"  # July 8th (today)
+  - input: "25"
+    expected: "2025-06-25"  # June 25th (future day goes to previous month)
+  - input: "30"
+    expected: "2025-06-30"  # June 30th (future day goes to previous month)

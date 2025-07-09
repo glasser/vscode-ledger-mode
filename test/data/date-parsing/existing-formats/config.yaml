@@ -1,0 +1,23 @@
+description: Ensure existing date formats still work (regression test)
+referenceDate: "2024-06-15T12:00:00-07:00"
+testCases:
+  - input: "2024-01-15"
+    expected: "2024-01-15"
+  - input: "01/15/2024"
+    expected: "2024-01-15"
+  - input: "01-15-2024"
+    expected: "2024-01-15"
+  - input: "today"
+    expected: "2024-06-15"
+  - input: "yesterday"
+    expected: "2024-06-14"
+  - input: "tomorrow"
+    expected: "2024-06-16"
+  - input: "01/15"
+    expected: "2024-01-15"
+  - input: "last monday"
+    expected: "2024-06-10"  # Last Monday from Saturday June 15th
+  - input: ""
+    expected: null
+  - input: "completely invalid"
+    expected: null

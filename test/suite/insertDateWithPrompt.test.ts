@@ -3,84 +3,9 @@
 
 import * as assert from "assert";
 import * as vscode from "vscode";
-import { findDatePosition, parseDateString } from "../../src/commands";
+import { findDatePosition } from "../../src/commands";
 
 suite("Enhanced Date Insertion Tests", () => {
-  suite("parseDateString Unit Tests", () => {
-    // Use a fixed reference date for deterministic testing
-    const referenceDate = new Date("2024-06-15T12:00:00Z"); // Saturday
-
-    test("Should parse YYYY-MM-DD format", () => {
-      const result = parseDateString("2024-01-15", referenceDate);
-      assert.strictEqual(result?.getFullYear(), 2024);
-      assert.strictEqual(result?.getMonth(), 0); // January is 0
-      assert.strictEqual(result?.getDate(), 15);
-    });
-
-    test("Should parse MM/DD/YYYY format", () => {
-      const result = parseDateString("01/15/2024", referenceDate);
-      assert.strictEqual(result?.getFullYear(), 2024);
-      assert.strictEqual(result?.getMonth(), 0);
-      assert.strictEqual(result?.getDate(), 15);
-    });
-
-    test("Should parse MM-DD-YYYY format", () => {
-      const result = parseDateString("01-15-2024", referenceDate);
-      assert.strictEqual(result?.getFullYear(), 2024);
-      assert.strictEqual(result?.getMonth(), 0);
-      assert.strictEqual(result?.getDate(), 15);
-    });
-
-    test("Should parse relative dates like 'today'", () => {
-      const result = parseDateString("today", referenceDate);
-      assert.strictEqual(result?.getDate(), 15);
-      assert.strictEqual(result?.getMonth(), 5); // June is 5
-      assert.strictEqual(result?.getFullYear(), 2024);
-    });
-
-    test("Should parse relative dates like 'yesterday'", () => {
-      const result = parseDateString("yesterday", referenceDate);
-      assert.strictEqual(result?.getDate(), 14);
-      assert.strictEqual(result?.getMonth(), 5); // June is 5
-      assert.strictEqual(result?.getFullYear(), 2024);
-    });
-
-    test("Should parse relative dates like 'tomorrow'", () => {
-      const result = parseDateString("tomorrow", referenceDate);
-      assert.strictEqual(result?.getDate(), 16);
-      assert.strictEqual(result?.getMonth(), 5); // June is 5
-      assert.strictEqual(result?.getFullYear(), 2024);
-    });
-
-    test("Should parse natural language dates like 'last monday'", () => {
-      const result = parseDateString("last monday", referenceDate);
-      assert.ok(result instanceof Date);
-      assert.strictEqual(result.getDay(), 1); // Monday is 1
-      // Last Monday from 2024-06-15 (Saturday) should be 2024-06-10
-      assert.strictEqual(result.getDate(), 10);
-      assert.strictEqual(result.getMonth(), 5); // June is 5
-    });
-
-    test("Should parse dates without year and assume current year", () => {
-      const result = parseDateString("01/15", referenceDate);
-      assert.strictEqual(result?.getFullYear(), 2024);
-      assert.strictEqual(result?.getMonth(), 0); // January is 0
-      assert.strictEqual(result?.getDate(), 15);
-    });
-
-    test("Should return null for invalid date strings", () => {
-      assert.strictEqual(
-        parseDateString("completely invalid nonsense", referenceDate),
-        null,
-      );
-    });
-
-    test("Should allow empty input (will default to today in command)", () => {
-      // Empty input is handled at the command level, not the parser level
-      assert.strictEqual(parseDateString("", referenceDate), null);
-    });
-  });
-
   suite("findDatePosition Unit Tests", () => {
     test("Should find position between past and future dates", () => {
       const content = `2024-01-01 Past transaction

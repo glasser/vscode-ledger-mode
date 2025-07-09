@@ -1,0 +1,9 @@
+description: Parse day 31 correctly when current month doesn't have 31 days
+referenceDate: "2024-03-15T12:00:00-07:00"
+testCases:
+  - input: "31"
+    expected: "2024-01-31"  # Skips February which has no 31st
+  - input: "29"
+    expected: "2024-02-29"  # 2024 is a leap year
+  - input: "30"
+    expected: "2024-01-30"  # February has no 30th either

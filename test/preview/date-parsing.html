@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Date Parsing Test Cases</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-case {
+            background-color: white;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .test-case h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .reference-date {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .input {
+            font-family: monospace;
+            background-color: #f9f9f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .expected-null {
+            color: #999;
+            font-style: italic;
+        }
+        .expected-date {
+            color: #0066cc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Date Parsing Test Cases</h1>
+    <p>This page shows test cases for the date parsing functionality, including the new single integer parsing feature.</p>
+    
+    <div class="test-case">
+        <h3>existing-formats</h3>
+        <div class="description">Ensure existing date formats still work (regression test)</div>
+        <div class="reference-date">Reference Date: 2024-06-15</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Expected Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="input">"2024-01-15"</span></td>
+                    <td>
+                            <span class="expected-date">2024-01-15</span>
+                    </td>
+                    <td>
+                            
+                            ISO date format
+                            
+                            
+                            
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"01/15/2024"</span></td>
+                    <td>
+                            <span class="expected-date">2024-01-15</span>
+                    </td>
+                    <td>
+                            Standard date format
+                            
+                            
+                            
+                            
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"01-15-2024"</span></td>
+                    <td>
+                            <span class="expected-date">2024-01-15</span>
+                    </td>
+                    <td>
+                            
+                            ISO date format
+                            
+                            
+                            
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"today"</span></td>
+                    <td>
+                            <span class="expected-date">2024-06-15</span>
+                    </td>
+                    <td>
+                            
+                            
+                            Natural language
+                            
+                            
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"yesterday"</span></td>
+                    <td>
+                            <span class="expected-date">2024-06-14</span>
+                    </td>
+                    <td>
+                            
+                            
+                            
+                            Natural language
+                            
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"tomorrow"</span></td>
+                    <td>
+                            <span class="expected-date">2024-06-16</span>
+                    </td>
+                    <td>
+                            
+                            
+                            
+                            
+                            Natural language
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"01/15"</span></td>
+                    <td>
+                            <span class="expected-date">2024-01-15</span>
+                    </td>
+                    <td>
+                            Standard date format
+                            
+                            
+                            
+                            
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"last monday"</span></td>
+                    <td>
+                            <span class="expected-date">2024-06-10</span>
+                    </td>
+                    <td>
+                            
+                            
+                            
+                            
+                            
+                                            </td>
+                </tr>
+                <tr>
+                    <td><span class="input">""</span></td>
+                    <td>
+                            <span class="expected-null">null</span>
+                    </td>
+                    <td>
+                            Invalid input
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"completely invalid"</span></td>
+                    <td>
+                            <span class="expected-null">null</span>
+                    </td>
+                    <td>
+                            Invalid input
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="test-case">
+        <h3>single-integer-current-month</h3>
+        <div class="description">Parse single integers as most recent day of month (current/previous month)</div>
+        <div class="reference-date">Reference Date: 2024-06-20</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Expected Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="input">"15"</span></td>
+                    <td>
+                            <span class="expected-date">2024-06-15</span>
+                    </td>
+                    <td>
+                            Day 15 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"5"</span></td>
+                    <td>
+                            <span class="expected-date">2024-06-05</span>
+                    </td>
+                    <td>
+                            Day 5 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"20"</span></td>
+                    <td>
+                            <span class="expected-date">2024-06-20</span>
+                    </td>
+                    <td>
+                            Day 20 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"25"</span></td>
+                    <td>
+                            <span class="expected-date">2024-05-25</span>
+                    </td>
+                    <td>
+                            Day 25 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"30"</span></td>
+                    <td>
+                            <span class="expected-date">2024-05-30</span>
+                    </td>
+                    <td>
+                            Day 30 → most recent occurrence
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="test-case">
+        <h3>single-integer-february-31</h3>
+        <div class="description">Parse day 31 correctly when current month doesn&#x27;t have 31 days</div>
+        <div class="reference-date">Reference Date: 2024-03-15</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Expected Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="input">"31"</span></td>
+                    <td>
+                            <span class="expected-date">2024-01-31</span>
+                    </td>
+                    <td>
+                            Day 31 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"29"</span></td>
+                    <td>
+                            <span class="expected-date">2024-02-29</span>
+                    </td>
+                    <td>
+                            Day 29 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"30"</span></td>
+                    <td>
+                            <span class="expected-date">2024-01-30</span>
+                    </td>
+                    <td>
+                            Day 30 → most recent occurrence
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="test-case">
+        <h3>single-integer-invalid</h3>
+        <div class="description">Reject invalid day numbers</div>
+        <div class="reference-date">Reference Date: 2024-06-20</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Expected Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="input">"0"</span></td>
+                    <td>
+                            <span class="expected-null">null</span>
+                    </td>
+                    <td>
+                            Invalid input
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"32"</span></td>
+                    <td>
+                            <span class="expected-null">null</span>
+                    </td>
+                    <td>
+                            Invalid input
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"99"</span></td>
+                    <td>
+                            <span class="expected-null">null</span>
+                    </td>
+                    <td>
+                            Invalid input
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"100"</span></td>
+                    <td>
+                            <span class="expected-null">null</span>
+                    </td>
+                    <td>
+                            Invalid input
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="test-case">
+        <h3>single-integer-january</h3>
+        <div class="description">Parse single integers in January (should go to December of previous year)</div>
+        <div class="reference-date">Reference Date: 2024-01-10</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Expected Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="input">"5"</span></td>
+                    <td>
+                            <span class="expected-date">2024-01-05</span>
+                    </td>
+                    <td>
+                            Day 5 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"15"</span></td>
+                    <td>
+                            <span class="expected-date">2023-12-15</span>
+                    </td>
+                    <td>
+                            Day 15 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"25"</span></td>
+                    <td>
+                            <span class="expected-date">2023-12-25</span>
+                    </td>
+                    <td>
+                            Day 25 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"31"</span></td>
+                    <td>
+                            <span class="expected-date">2023-12-31</span>
+                    </td>
+                    <td>
+                            Day 31 → most recent occurrence
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

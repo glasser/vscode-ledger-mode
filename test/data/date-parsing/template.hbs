@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Date Parsing Test Cases</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-case {
+            background-color: white;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .test-case h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .reference-date {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .input {
+            font-family: monospace;
+            background-color: #f9f9f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .expected-null {
+            color: #999;
+            font-style: italic;
+        }
+        .expected-date {
+            color: #0066cc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Date Parsing Test Cases</h1>
+    <p>This page shows test cases for the date parsing functionality, including the new single integer parsing feature.</p>
+    
+    {{#each testCases}}
+    <div class="test-case">
+        <h3>{{name}}</h3>
+        <div class="description">{{config.description}}</div>
+        <div class="reference-date">Reference Date: {{config.referenceDate}}</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Expected Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each config.testCases}}
+                <tr>
+                    <td><span class="input">"{{input}}"</span></td>
+                    <td>
+                        {{#if expected}}
+                            <span class="expected-date">{{expected}}</span>
+                        {{else}}
+                            <span class="expected-null">null</span>
+                        {{/if}}
+                    </td>
+                    <td>
+                        {{#if (and (isNumeric input) expected)}}
+                            Day {{input}} → most recent occurrence
+                        {{else if (not expected)}}
+                            Invalid input
+                        {{else}}
+                            {{#if (includes input "/")}}Standard date format{{/if}}
+                            {{#if (includes input "-")}}ISO date format{{/if}}
+                            {{#if (eq input "today")}}Natural language{{/if}}
+                            {{#if (eq input "yesterday")}}Natural language{{/if}}
+                            {{#if (eq input "tomorrow")}}Natural language{{/if}}
+                        {{/if}}
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{/each}}
+</body>
+</html>

@@ -1,0 +1,11 @@
+description: Parse single integers in January (should go to December of previous year)
+referenceDate: "2024-01-10T12:00:00-08:00"
+testCases:
+  - input: "5"
+    expected: "2024-01-05"
+  - input: "15"
+    expected: "2023-12-15"  # Future day goes to December
+  - input: "25"
+    expected: "2023-12-25"  # Future day goes to December
+  - input: "31"
+    expected: "2023-12-31"  # Future day goes to December

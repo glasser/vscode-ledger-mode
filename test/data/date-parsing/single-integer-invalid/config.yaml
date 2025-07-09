@@ -1,0 +1,11 @@
+description: Reject invalid day numbers
+referenceDate: "2024-06-20T12:00:00-07:00"
+testCases:
+  - input: "0"
+    expected: null
+  - input: "32"
+    expected: null
+  - input: "99"
+    expected: null
+  - input: "100"
+    expected: null  # Three digits should not be parsed as day

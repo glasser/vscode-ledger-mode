@@ -124,6 +124,13 @@ const templateConfigs: TemplateConfig[] = [
       "Automatic indentation behavior when pressing Enter on transaction lines",
     dataDir: "indentation",
   },
+  {
+    name: "date-parsing",
+    title: "Date Parsing",
+    description:
+      "Date parsing test cases including single integer parsing as most recent day of month",
+    dataDir: "date-parsing",
+  },
 ];
 
 function hasTemplate(dataDir: string): boolean {

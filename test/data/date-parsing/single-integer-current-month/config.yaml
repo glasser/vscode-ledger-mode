@@ -1,0 +1,13 @@
+description: Parse single integers as most recent day of month (current/previous month)
+referenceDate: "2024-06-20T12:00:00-07:00"
+testCases:
+  - input: "15"
+    expected: "2024-06-15"
+  - input: "5"
+    expected: "2024-06-05"
+  - input: "20"
+    expected: "2024-06-20"  # Exactly today
+  - input: "25"
+    expected: "2024-05-25"  # Future day goes to previous month
+  - input: "30"
+    expected: "2024-05-30"  # Future day goes to previous month

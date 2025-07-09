@@ -28,6 +28,52 @@ export function parseDateString(
 
   const trimmed = input.trim();
 
+  // Check if input is a single integer (day of month)
+  if (/^\d{1,2}$/.test(trimmed)) {
+    const dayOfMonth = parseInt(trimmed, 10);
+
+    // Validate day is in valid range
+    if (dayOfMonth >= 1 && dayOfMonth <= 31) {
+      const today = referenceDate || new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth();
+
+      // Find the most recent occurrence of this day
+      let candidateYear = currentYear;
+      let candidateMonth = currentMonth;
+
+      // First try current month
+      let candidateDate = new Date(candidateYear, candidateMonth, dayOfMonth);
+
+      // If the day is in the future this month, or if the day doesn't exist (overflow), go back
+      // Use date-only comparison to avoid time-of-day issues
+      const todayDate = today.getDate();
+      if (dayOfMonth > todayDate || candidateDate.getDate() !== dayOfMonth) {
+        candidateMonth--;
+        candidateDate = new Date(candidateYear, candidateMonth, dayOfMonth);
+      }
+
+      // Keep going back until we find a valid month with this day
+      let attempts = 0;
+      while (candidateDate.getDate() !== dayOfMonth && attempts < 12) {
+        candidateMonth--;
+        if (candidateMonth < 0) {
+          candidateMonth = 11;
+          candidateYear--;
+        }
+        candidateDate = new Date(candidateYear, candidateMonth, dayOfMonth);
+        attempts++;
+      }
+
+      // If we couldn't find the day after 12 attempts, return null (invalid day)
+      if (candidateDate.getDate() !== dayOfMonth) {
+        return null;
+      }
+
+      return candidateDate;
+    }
+  }
+
   // Use chrono-node for natural language date parsing
   const results = chrono.parseDate(trimmed, referenceDate);
 
@@ -145,7 +191,7 @@ export function registerCommands(
         // Prompt user for date input
         const dateInput = await vscode.window.showInputBox({
           prompt:
-            "Enter date (natural language supported: 'last wednesday', '3 days ago', '2024-01-15') or press Enter for today",
+            "Enter date (natural language supported: 'last wednesday', '3 days ago', '2024-01-15', or just '15' for most recent 15th) or press Enter for today",
           placeHolder: "today",
           validateInput: (value: string) => {
             // If empty, show today preview as info
