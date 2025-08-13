@@ -1,0 +1,11 @@
+2024-02-01 ! Pending Electric Bill
+    Expenses:Utilities:Electric          $125.00
+    Assets:Checking
+
+2024-03-01 Pending Electric Bill
+    Expenses:Utilities:Electric          $125.00
+    Assets:Checking
+
+2024-04-01 Pending Electric Bill  ; RECUR:1m
+    Expenses:Utilities:Electric          $125.00
+    Assets:Checking

@@ -129,9 +129,9 @@ export class RecurringTransactionProcessor {
 
     for (const transaction of recurringTransactions) {
       const lineIndex = transaction.lineIndex;
-      // Replace the RECUR comment and its leading spaces
+      // Replace the RECUR comment and its leading/trailing spaces
       updatedLines[lineIndex] = updatedLines[lineIndex].replace(
-        /\s*;\s*RECUR:\d+[ymwd]/g,
+        /\s*;\s*RECUR:\d+[ymwd]\s*/g,
         "",
       );
     }
@@ -161,12 +161,24 @@ export class RecurringTransactionProcessor {
           break;
         }
 
-        // Create new transaction with updated date
+        // Create new transaction with updated date and remove reconciliation markers
         const newLines = [...transaction.originalLines];
         const dateStr = this.formatDate(currentDate);
-        // Remove any existing RECUR comment first
-        newLines[0] = newLines[0].replace(/\s*;\s*RECUR:\d+[ymwd]/g, "");
+
+        // Process first line: update date, remove RECUR comment and reconciliation marker
+        newLines[0] = newLines[0].replace(/\s*;\s*RECUR:\d+[ymwd]\s*/g, "");
         newLines[0] = newLines[0].replace(this.DATE_PATTERN, dateStr);
+        // Remove transaction-level reconciliation markers (* or !)
+        newLines[0] = newLines[0].replace(
+          /^(\d{4}-\d{2}-\d{2})\s+[*!]\s+/,
+          "$1 ",
+        );
+
+        // Remove posting-level reconciliation markers from all other lines
+        for (let i = 1; i < newLines.length; i++) {
+          // Remove leading * or ! from posting lines (with optional spaces)
+          newLines[i] = newLines[i].replace(/^(\s*)[*!]\s+/, "$1");
+        }
 
         generatedForThisTransaction.push(newLines);
       }

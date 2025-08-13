@@ -26,8 +26,24 @@ function escapeHtml(text: string): string {
     .replace(/'/g, "&#039;");
 }
 
+// Helper function to make trailing spaces visible
+function showTrailingSpaces(text: string): string {
+  // First escape HTML
+  const escaped = escapeHtml(text);
+  // Split into lines to handle each line separately
+  return escaped.split('\n').map(line => {
+    // Replace trailing spaces with visible marker
+    return line.replace(/( +)$/g, (match) => {
+      return '<span style="background-color: #ffcccc; border: 1px solid #ff6666;">·' + '·'.repeat(match.length - 1) + '</span>';
+    });
+  }).join('\n');
+}
+
 // Register common Handlebars helpers that are used across multiple templates
 Handlebars.registerHelper("escapeHtml", escapeHtml);
+Handlebars.registerHelper("showTrailingSpaces", (text: string) => {
+  return new Handlebars.SafeString(showTrailingSpaces(text));
+});
 Handlebars.registerHelper("raw", (content: string) => {
   return new Handlebars.SafeString(content || "");
 });

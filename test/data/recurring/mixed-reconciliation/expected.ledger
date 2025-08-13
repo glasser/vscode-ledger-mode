@@ -1,0 +1,15 @@
+2024-01-05 * Phone Bill
+    Expenses:Utilities:Phone                $45.00
+    Assets:Checking
+
+2024-01-10 Cable TV
+    ! Expenses:Entertainment:Cable          $75.00
+    * Assets:Checking
+
+2024-02-05 Phone Bill  ; RECUR:1m
+    Expenses:Utilities:Phone                $45.00
+    Assets:Checking
+
+2024-02-10 Cable TV  ; RECUR:1m
+    Expenses:Entertainment:Cable          $75.00
+    Assets:Checking

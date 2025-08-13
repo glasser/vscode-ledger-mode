@@ -63,7 +63,7 @@
     <div class="test-case">
         <h3>existing-formats</h3>
         <div class="description">Ensure existing date formats still work (regression test)</div>
-        <div class="reference-date">Reference Date: 2024-06-15</div>
+        <div class="reference-date">Reference Date: 2024-06-15T12:00:00-07:00</div>
         
         <table>
             <thead>
@@ -202,7 +202,7 @@
     <div class="test-case">
         <h3>single-integer-current-month</h3>
         <div class="description">Parse single integers as most recent day of month (current/previous month)</div>
-        <div class="reference-date">Reference Date: 2024-06-20</div>
+        <div class="reference-date">Reference Date: 2024-06-20T12:00:00-07:00</div>
         
         <table>
             <thead>
@@ -264,7 +264,7 @@
     <div class="test-case">
         <h3>single-integer-february-31</h3>
         <div class="description">Parse day 31 correctly when current month doesn&#x27;t have 31 days</div>
-        <div class="reference-date">Reference Date: 2024-03-15</div>
+        <div class="reference-date">Reference Date: 2024-03-15T12:00:00-07:00</div>
         
         <table>
             <thead>
@@ -308,7 +308,7 @@
     <div class="test-case">
         <h3>single-integer-invalid</h3>
         <div class="description">Reject invalid day numbers</div>
-        <div class="reference-date">Reference Date: 2024-06-20</div>
+        <div class="reference-date">Reference Date: 2024-06-20T12:00:00-07:00</div>
         
         <table>
             <thead>
@@ -361,7 +361,7 @@
     <div class="test-case">
         <h3>single-integer-january</h3>
         <div class="description">Parse single integers in January (should go to December of previous year)</div>
-        <div class="reference-date">Reference Date: 2024-01-10</div>
+        <div class="reference-date">Reference Date: 2024-01-10T12:00:00-08:00</div>
         
         <table>
             <thead>
@@ -406,6 +406,59 @@
                     </td>
                     <td>
                             Day 31 → most recent occurrence
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="test-case">
+        <h3>single-integer-july-8th-2025</h3>
+        <div class="description">Test single integer parsing from July 8th, 2025 (real-world scenario)</div>
+        <div class="reference-date">Reference Date: 2025-07-08T15:00:00-07:00</div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Expected Result</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="input">"4"</span></td>
+                    <td>
+                            <span class="expected-date">2025-07-04</span>
+                    </td>
+                    <td>
+                            Day 4 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"8"</span></td>
+                    <td>
+                            <span class="expected-date">2025-07-08</span>
+                    </td>
+                    <td>
+                            Day 8 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"25"</span></td>
+                    <td>
+                            <span class="expected-date">2025-06-25</span>
+                    </td>
+                    <td>
+                            Day 25 → most recent occurrence
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="input">"30"</span></td>
+                    <td>
+                            <span class="expected-date">2025-06-30</span>
+                    </td>
+                    <td>
+                            Day 30 → most recent occurrence
                     </td>
                 </tr>
             </tbody>

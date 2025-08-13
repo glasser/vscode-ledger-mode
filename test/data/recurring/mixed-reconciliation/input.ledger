@@ -1,0 +1,7 @@
+2024-01-05 * Phone Bill  ; RECUR:1m
+    Expenses:Utilities:Phone                $45.00
+    Assets:Checking
+
+2024-01-10 Cable TV  ; RECUR:1m  
+    ! Expenses:Entertainment:Cable          $75.00
+    * Assets:Checking

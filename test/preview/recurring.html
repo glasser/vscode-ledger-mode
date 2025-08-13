@@ -88,7 +88,7 @@
     
     <div class="summary">
         <p>Tests for generating recurring transactions from RECUR comments. Each test shows how transactions with <code>; RECUR:period</code> comments are expanded up to a target date.</p>
-        <p><strong>Test cases:</strong> 6</p>
+        <p><strong>Test cases:</strong> 9</p>
     </div>
     
     <div class="test-case">
@@ -120,6 +120,43 @@
 
 2024-02-01 Monthly Rent  ; RECUR:1m
     Expenses:Rent                         $1,000.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <h2>mixed-reconciliation</h2>
+        <p class="description">Generate unreconciled transactions from mixed reconciliation states</p>
+        <p class="target-date">Target Date: <code>2024-02-15</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2024-01-05 * Phone Bill  ; RECUR:1m
+    Expenses:Utilities:Phone                $45.00
+    Assets:Checking
+
+2024-01-10 Cable TV  ; RECUR:1m<span style="background-color: #ffcccc; border: 1px solid #ff6666;">··</span>
+    ! Expenses:Entertainment:Cable          $75.00
+    * Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2024-01-05 * Phone Bill
+    Expenses:Utilities:Phone                $45.00
+    Assets:Checking
+
+2024-01-10 Cable TV
+    ! Expenses:Entertainment:Cable          $75.00
+    * Assets:Checking
+
+2024-02-05 Phone Bill  ; RECUR:1m
+    Expenses:Utilities:Phone                $45.00
+    Assets:Checking
+
+2024-02-10 Cable TV  ; RECUR:1m
+    Expenses:Entertainment:Cable          $75.00
     Assets:Checking</code></pre>
             </div>
         </div>
@@ -223,6 +260,64 @@
                 <h3>Expected Output</h3>
                 <pre><code>2024-01-01 Monthly Rent Payment  ; RECUR:1m
     Expenses:Rent                         $1,000.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <h2>pending-source</h2>
+        <p class="description">Generate unreconciled transactions from pending source</p>
+        <p class="target-date">Target Date: <code>2024-04-10</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2024-02-01 ! Pending Electric Bill  ; RECUR:1m
+    Expenses:Utilities:Electric          $125.00
+    Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2024-02-01 ! Pending Electric Bill
+    Expenses:Utilities:Electric          $125.00
+    Assets:Checking
+
+2024-03-01 Pending Electric Bill
+    Expenses:Utilities:Electric          $125.00
+    Assets:Checking
+
+2024-04-01 Pending Electric Bill  ; RECUR:1m
+    Expenses:Utilities:Electric          $125.00
+    Assets:Checking</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <h2>reconciled-source</h2>
+        <p class="description">Generate unreconciled transactions from reconciled source</p>
+        <p class="target-date">Target Date: <code>2024-03-20</code></p>
+        
+        <div class="test-row">
+            <div class="test-input">
+                <h3>Input</h3>
+                <pre><code>2024-01-15 * Reconciled Rent Payment  ; RECUR:1m
+    Expenses:Rent                         $1,500.00
+    Assets:Checking</code></pre>
+            </div>
+            
+            <div class="test-output">
+                <h3>Expected Output</h3>
+                <pre><code>2024-01-15 * Reconciled Rent Payment
+    Expenses:Rent                         $1,500.00
+    Assets:Checking
+
+2024-02-15 Reconciled Rent Payment
+    Expenses:Rent                         $1,500.00
+    Assets:Checking
+
+2024-03-15 Reconciled Rent Payment  ; RECUR:1m
+    Expenses:Rent                         $1,500.00
     Assets:Checking</code></pre>
             </div>
         </div>
