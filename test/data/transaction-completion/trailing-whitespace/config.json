@@ -1,0 +1,9 @@
+{
+  "cursorLine": 0,
+  "cursorColumn": 14,
+  "description": "Should complete transaction including postings with trailing whitespace",
+  "expectedSelection": {
+    "start": { "line": 1, "column": 51 },
+    "end": { "line": 1, "column": 56 }
+  }
+}

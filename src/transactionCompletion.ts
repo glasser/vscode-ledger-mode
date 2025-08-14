@@ -82,8 +82,9 @@ export class TransactionParser {
 
   static parsePosting(line: string): ParsedPosting | null {
     // Match posting line: whitespace + optional state + account + optional amount + optional comment
+    // Allow optional trailing whitespace at end of line
     const match = line.match(
-      /^\s+([*!]?)?\s*([^\s;]+(?:\s+[^\s;]+)*?)(?:\s{2,}([^;]+?))?(?:\s*(;.*))?$/,
+      /^\s+([*!]?)?\s*([^\s;]+(?:\s+[^\s;]+)*?)(?:\s{2,}([^;]+?))?(?:\s*(;.*))?\s*$/,
     );
     if (!match) {
       return null;

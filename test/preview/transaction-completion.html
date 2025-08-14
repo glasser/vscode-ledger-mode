@@ -165,7 +165,7 @@
             <li><strong>Cursor positioning</strong>: Tests work with different cursor positions</li>
             <li><strong>Exact formatting</strong>: Preserves whitespace and newlines precisely</li>
         </ul>
-        <p><strong>Test cases:</strong> 8</p>
+        <p><strong>Test cases:</strong> 9</p>
     </div>
 
 
@@ -290,7 +290,7 @@
     * Expenses:Food:Groceries    <span class="amount">$45.67</span>
     * Assets:Bank:Checking      -<span class="amount">$45.67</span>
 
-<span class="date">2024-01-05</span> ! Gas Station  
+<span class="date">2024-01-05</span> ! Gas Station<span style="background-color: #ffcccc; border: 1px solid #ff6666;">··</span>
     ! Expenses:Transportation:Gas    <span class="amount">$35.00</span>
     ! Assets:Bank:Checking          -<span class="amount">$35.00</span>
 
@@ -302,7 +302,7 @@
     * Expenses:Food:Groceries    <span class="amount">$45.67</span>
     * Assets:Bank:Checking      -<span class="amount">$45.67</span>
 
-<span class="date">2024-01-05</span> ! Gas Station  
+<span class="date">2024-01-05</span> ! Gas Station<span style="background-color: #ffcccc; border: 1px solid #ff6666;">··</span>
     ! Expenses:Transportation:Gas    <span class="amount">$35.00</span>
     ! Assets:Bank:Checking          -<span class="amount">$35.00</span>
 
@@ -334,7 +334,7 @@
     * Expenses:Food:Groceries    <span class="amount">$45.67</span>
     * Assets:Bank:Checking      -<span class="amount">$45.67</span>
 
-<span class="date">2024-01-05</span> ! Gas Station  
+<span class="date">2024-01-05</span> ! Gas Station<span style="background-color: #ffcccc; border: 1px solid #ff6666;">··</span>
     ! Expenses:Transportation:Gas    <span class="amount">$35.00</span>
     ! Assets:Bank:Checking          -<span class="amount">$35.00</span>
 
@@ -346,7 +346,7 @@
     * Expenses:Food:Groceries    <span class="amount">$45.67</span>
     * Assets:Bank:Checking      -<span class="amount">$45.67</span>
 
-<span class="date">2024-01-05</span> ! Gas Station  
+<span class="date">2024-01-05</span> ! Gas Station<span style="background-color: #ffcccc; border: 1px solid #ff6666;">··</span>
     ! Expenses:Transportation:Gas    <span class="amount">$35.00</span>
     ! Assets:Bank:Checking          -<span class="amount">$35.00</span>
 
@@ -361,6 +361,44 @@
                     <div class="config-description">Complete transaction from cleared (*) template - should create unreconciled postings</div>
                     <div class="config-item"><strong>Cursor Position:</strong> Line 8, Column 20</div>
                     <div class="config-item"><strong>Expected Selection:</strong> Line 9, Col 51 to Line 9, Col 56</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Trailing Whitespace</h3>
+            <p class="test-name">test/data/transaction-completion/trailing-whitespace/</p>
+        </div>
+        <div class="test-content">
+            <div class="column input-column">
+                <div class="column-header">Input</div>
+                <pre class="content"><span class="date">2025-07-27</span> Bla<span class="cursor">|</span>
+
+<span class="date">2025-07-28</span> Bla
+ <span class="account">Expenses:Category</span>                                <span class="amount">$29.34</span>
+ <span class="account">CC:Credit</span> Card<span style="background-color: #ffcccc; border: 1px solid #ff6666;">··</span>
+</pre>
+            </div>
+            <div class="column expected-column">
+                <div class="column-header">Expected After Completion</div>
+                <pre class="content"><span class="date">2025-07-27</span> Bla
+ <span class="account">Expenses:Category</span>                                $<span class="selection">29.34</span>
+ <span class="account">CC:Credit</span> Card
+
+
+<span class="date">2025-07-28</span> Bla
+ <span class="account">Expenses:Category</span>                                <span class="amount">$29.34</span>
+ <span class="account">CC:Credit</span> Card<span style="background-color: #ffcccc; border: 1px solid #ff6666;">··</span>
+</pre>
+            </div>
+            <div class="column config-column">
+                <div class="column-header">Configuration</div>
+                <div class="content config-content">
+                    <div class="config-description">Should complete transaction including postings with trailing whitespace</div>
+                    <div class="config-item"><strong>Cursor Position:</strong> Line 0, Column 14</div>
+                    <div class="config-item"><strong>Expected Selection:</strong> Line 1, Col 51 to Line 1, Col 56</div>
                 </div>
             </div>
         </div>

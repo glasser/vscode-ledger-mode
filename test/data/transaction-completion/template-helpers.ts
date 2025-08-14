@@ -105,6 +105,11 @@ export function highlightLedgerSyntax(
       // Apply syntax highlighting
       processedLine = applySyntaxHighlighting(processedLine);
 
+      // Add trailing space visualization
+      processedLine = processedLine.replace(/( +)$/g, (match) => {
+        return '<span style="background-color: #ffcccc; border: 1px solid #ff6666;">·' + '·'.repeat(match.length - 1) + '</span>';
+      });
+
       return processedLine;
     })
     .join("\n");
