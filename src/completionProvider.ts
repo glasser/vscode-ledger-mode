@@ -2,7 +2,7 @@
 // Uses error-tolerant parsing that works even when files have syntax errors
 
 import * as vscode from "vscode";
-import { TransactionParser } from "./transactionCompletion";
+import { CompletionCache } from "./completionCache";
 
 export function registerCompletionProviders(context: vscode.ExtensionContext) {
   // Register merchant/payee completion provider with more trigger characters
@@ -76,16 +76,8 @@ class PayeeCompletionProvider implements vscode.CompletionItemProvider {
       return [];
     }
 
-    // Extract payees from the document using error-tolerant parsing
-    const transactions = TransactionParser.getAllTransactions(document);
-    const payees = new Map<string, number>(); // Map of payee -> frequency
-
-    for (const transaction of transactions) {
-      if (transaction.payee) {
-        const count = payees.get(transaction.payee) || 0;
-        payees.set(transaction.payee, count + 1);
-      }
-    }
+    // Extract payees from the document using cached parsing
+    const payees = CompletionCache.getPayees(document);
 
     const currentText = lineText
       .substring(prefixLength, position.character)
@@ -140,27 +132,21 @@ class AccountCompletionProvider implements vscode.CompletionItemProvider {
 
     // Get the account text so far
     const beforeCursor = lineText.substring(0, position.character);
-    const accountMatch = beforeCursor.match(/^\s+([^\s;]*(?:\s+[^\s;]*)*)$/);
-    /* c8 ignore start */
+    // Extract potential account text - everything after initial whitespace
+    const accountMatch = beforeCursor.match(/^\s+(.*)$/);
     if (!accountMatch) {
       return [];
     }
-    /* c8 ignore stop */
-
+    
     const currentAccount = accountMatch[1];
-
-    // Extract accounts from the document using error-tolerant parsing
-    const transactions = TransactionParser.getAllTransactions(document);
-    const accounts = new Map<string, number>(); // Map of account -> frequency
-
-    for (const transaction of transactions) {
-      for (const posting of transaction.postings) {
-        if (posting.account) {
-          const count = accounts.get(posting.account) || 0;
-          accounts.set(posting.account, count + 1);
-        }
-      }
+    
+    // Don't provide completions if we've hit multiple spaces (amount area) or semicolon (comment)
+    if (/\s{2,}|\;/.test(currentAccount)) {
+      return [];
     }
+
+    // Extract accounts from the document using cached parsing
+    const accounts = CompletionCache.getAccounts(document);
 
     // Convert to array with frequency info
     const accountsArray = Array.from(accounts.entries()).map(
