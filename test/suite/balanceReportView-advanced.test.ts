@@ -116,6 +116,65 @@ suite("Balance Report View Advanced Tests", () => {
   });
 
   suite("File Watcher Event Handling", () => {
+    test("Should watch price database file for changes", async () => {
+      // Mock file system operations
+      const fs = require("fs");
+      sandbox
+        .stub(fs, "readFileSync")
+        .returns("; price-db: prices\n2024/01/01 Account\n  Asset  $100");
+      sandbox.stub(fs, "existsSync").returns(true);
+
+      let changeCallbacks: Function[] = [];
+      let watcherPaths: string[] = [];
+
+      // Track watcher creation
+      (vscode.workspace.createFileSystemWatcher as any).restore();
+      sandbox
+        .stub(vscode.workspace, "createFileSystemWatcher")
+        .callsFake((globPattern: vscode.GlobPattern) => {
+          // Extract path from glob pattern
+          const path =
+            typeof globPattern === "string"
+              ? globPattern
+              : (globPattern as any).fsPath || String(globPattern);
+          watcherPaths.push(path);
+          const watcher = {
+            onDidChange: sandbox.stub().callsFake((callback: Function) => {
+              changeCallbacks.push(callback);
+            }),
+            onDidCreate: sandbox.stub(),
+            onDidDelete: sandbox.stub(),
+            dispose: sandbox.stub(),
+            ignoreCreateEvents: false,
+            ignoreChangeEvents: false,
+            ignoreDeleteEvents: false,
+          };
+          return watcher as any;
+        });
+
+      // Set up call counting
+      let callCount = 0;
+      mockBalanceReporter.getBalanceReport = async () => {
+        callCount++;
+        return `Report ${callCount}`;
+      };
+
+      await provider.show("/test/file.ledger");
+
+      // Should create watchers for both the ledger file and the price database
+      assert.strictEqual(watcherPaths.length, 2);
+      assert.ok(watcherPaths.includes("/test/file.ledger"));
+      assert.ok(watcherPaths.includes("/test/prices"));
+
+      // Simulate price database file change (second watcher)
+      if (changeCallbacks[1]) {
+        changeCallbacks[1]();
+      }
+
+      // Should trigger report update
+      assert.strictEqual(callCount, 2);
+    });
+
     test("Should handle file deletion event", async () => {
       let deleteCallback: Function;
       mockFileWatcher.onDidDelete.callsFake((callback: Function) => {

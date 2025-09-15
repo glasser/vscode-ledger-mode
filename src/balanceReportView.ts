@@ -4,6 +4,7 @@
 import * as vscode from "vscode";
 import { LedgerCli, BalanceReporter, LedgerCommandError } from "./ledgerCli";
 import * as path from "path";
+import * as fs from "fs";
 import { ERROR_FORMATTING_CSS } from "./errorFormattingCss";
 import { ANSI_COLORS_CSS } from "./ansiColorsCss";
 
@@ -12,6 +13,7 @@ export class BalanceReportViewProvider {
   private balanceReporter: BalanceReporter;
   private currentFilePath: string | undefined;
   private fileWatcher: vscode.FileSystemWatcher | undefined;
+  private priceDbWatcher: vscode.FileSystemWatcher | undefined;
 
   constructor(
     private context: vscode.ExtensionContext,
@@ -22,6 +24,9 @@ export class BalanceReportViewProvider {
 
   async show(filePath: string) {
     this.currentFilePath = filePath;
+
+    // Extract price database path before setting up watchers
+    const priceDbPath = await this.extractPriceDbPath(filePath);
 
     if (!this.panel) {
       this.panel = vscode.window.createWebviewPanel(
@@ -58,17 +63,17 @@ export class BalanceReportViewProvider {
     }
 
     // Set up file watcher for auto-updates
-    this.setupFileWatcher(filePath);
+    this.setupFileWatcher(filePath, priceDbPath);
 
     // Initial update
     await this.updateReport();
   }
 
-  private setupFileWatcher(filePath: string) {
-    // Dispose existing watcher
+  private setupFileWatcher(filePath: string, priceDbPath: string) {
+    // Dispose existing watchers
     this.disposeWatcher();
 
-    // Create new watcher for the specific file
+    // Create new watcher for the ledger file
     const uri = vscode.Uri.file(filePath);
     this.fileWatcher = vscode.workspace.createFileSystemWatcher(uri.fsPath);
 
@@ -82,12 +87,31 @@ export class BalanceReportViewProvider {
     });
 
     this.context.subscriptions.push(this.fileWatcher);
+
+    // Also watch the price database file if it exists
+    if (priceDbPath && fs.existsSync(priceDbPath)) {
+      const priceDbUri = vscode.Uri.file(priceDbPath);
+      this.priceDbWatcher = vscode.workspace.createFileSystemWatcher(
+        priceDbUri.fsPath,
+      );
+
+      // Watch for changes to the price database
+      this.priceDbWatcher.onDidChange(() => this.updateReport());
+      this.priceDbWatcher.onDidCreate(() => this.updateReport());
+      this.priceDbWatcher.onDidDelete(() => this.updateReport());
+
+      this.context.subscriptions.push(this.priceDbWatcher);
+    }
   }
 
   private disposeWatcher() {
     if (this.fileWatcher) {
       this.fileWatcher.dispose();
       this.fileWatcher = undefined;
+    }
+    if (this.priceDbWatcher) {
+      this.priceDbWatcher.dispose();
+      this.priceDbWatcher = undefined;
     }
   }
 
@@ -404,5 +428,31 @@ ${ERROR_FORMATTING_CSS}
     map['"'] = "&quot;";
     map["'"] = "&#039;";
     return text.replace(/[&<>"']/g, (m) => map[m]);
+  }
+
+  private async extractPriceDbPath(filePath: string): Promise<string> {
+    try {
+      const content = fs.readFileSync(filePath, "utf8");
+      const lines = content.split("\n");
+
+      // Look for comment directive: ; price-db: path/to/prices
+      for (const line of lines.slice(0, 20)) {
+        // Check first 20 lines
+        const match = line.match(/^\s*;\s*price-db:\s*(.+)$/);
+        if (match) {
+          const priceDb = match[1].trim();
+          // Resolve relative paths relative to the ledger file directory
+          return path.isAbsolute(priceDb)
+            ? priceDb
+            : path.resolve(path.dirname(filePath), priceDb);
+        }
+      }
+
+      // Default to 'prices' in the same directory as the ledger file
+      return path.join(path.dirname(filePath), "prices");
+    } catch (error) {
+      // If we can't read the file, return default
+      return path.join(path.dirname(filePath), "prices");
+    }
   }
 }
