@@ -1,0 +1,3 @@
+description: "Large balance error should not get rounding fix"
+diagnostic: "Transaction does not balance (off by $5.00)"
+expectQuickFix: false

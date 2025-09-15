@@ -39,6 +39,13 @@ interface TemplateConfig {
 // Define template configurations with their descriptions
 const templateConfigs: TemplateConfig[] = [
   {
+    name: "balance-quick-fix",
+    title: "Balance Quick Fix",
+    description:
+      "Quick fix functionality for small balance errors that adds rounding postings",
+    dataDir: "balance-quick-fix",
+  },
+  {
     name: "balance-report-ansi-colors",
     title: "Balance Report ANSI Colors",
     description:

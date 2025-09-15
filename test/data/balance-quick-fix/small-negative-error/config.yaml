@@ -1,0 +1,3 @@
+description: "Small negative balance error should get rounding fix"
+diagnostic: "Transaction does not balance (off by -$0.25)"
+expectQuickFix: true

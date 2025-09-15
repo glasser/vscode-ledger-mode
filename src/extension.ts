@@ -7,6 +7,7 @@ import { registerDiagnosticProvider } from "./diagnosticProvider";
 import { registerCommands } from "./commands";
 import { registerDocumentFormatter } from "./documentFormatter";
 import { NowMarkerProvider } from "./nowMarker";
+import { BalanceQuickFixProvider } from "./balanceQuickFix";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Ledger extension is now active");
@@ -16,6 +17,16 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register diagnostic provider for ledger errors
   registerDiagnosticProvider(context);
+
+  // Register quick fix provider for balance errors
+  const quickFixProvider = vscode.languages.registerCodeActionsProvider(
+    "ledger",
+    new BalanceQuickFixProvider(),
+    {
+      providedCodeActionKinds: BalanceQuickFixProvider.providedCodeActionKinds,
+    },
+  );
+  context.subscriptions.push(quickFixProvider);
 
   // Create and register the now marker provider
   const nowMarkerProvider = new NowMarkerProvider();
