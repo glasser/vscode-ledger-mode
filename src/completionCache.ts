@@ -14,15 +14,19 @@ interface CacheEntry {
 
 export class CompletionCache {
   // LRU cache with max 10 entries and 10-second TTL
-  private static cache = new LRUCache<string, CacheEntry>({
-    max: 10, // Max 10 documents cached
-    ttl: 10000, // 10 seconds time-to-live
-  });
+  private cache: LRUCache<string, CacheEntry>;
 
-  static getTransactions(document: vscode.TextDocument): ParsedTransaction[] {
+  constructor(ttl: number = 10000, max: number = 10) {
+    this.cache = new LRUCache<string, CacheEntry>({
+      max, // Max documents cached
+      ttl, // Time-to-live in milliseconds
+    });
+  }
+
+  getTransactions(document: vscode.TextDocument): ParsedTransaction[] {
     const uri = document.uri.toString();
 
-    // Check if we have a recent cache entry (within 10 seconds)
+    // Check if we have a recent cache entry (within TTL)
     const cached = this.cache.get(uri);
     if (cached) {
       return cached.transactions;
@@ -34,10 +38,10 @@ export class CompletionCache {
     return transactions;
   }
 
-  static getPayees(document: vscode.TextDocument): Map<string, number> {
+  getPayees(document: vscode.TextDocument): Map<string, number> {
     const uri = document.uri.toString();
 
-    // Check if we have a recent cache entry (within 10 seconds)
+    // Check if we have a recent cache entry (within TTL)
     const cached = this.cache.get(uri);
     if (cached && cached.payees) {
       return cached.payees;
@@ -65,10 +69,10 @@ export class CompletionCache {
     return payees;
   }
 
-  static getAccounts(document: vscode.TextDocument): Map<string, number> {
+  getAccounts(document: vscode.TextDocument): Map<string, number> {
     const uri = document.uri.toString();
 
-    // Check if we have a recent cache entry (within 10 seconds)
+    // Check if we have a recent cache entry (within TTL)
     const cached = this.cache.get(uri);
     if (cached && cached.accounts) {
       return cached.accounts;
@@ -98,10 +102,7 @@ export class CompletionCache {
     return accounts;
   }
 
-  private static updateCache(
-    uri: string,
-    transactions: ParsedTransaction[],
-  ): void {
+  private updateCache(uri: string, transactions: ParsedTransaction[]): void {
     // Extract payees and accounts while we have the transactions
     const payees = new Map<string, number>();
     const accounts = new Map<string, number>();
@@ -129,20 +130,23 @@ export class CompletionCache {
   }
 
   // Clear cache for a specific document (useful for testing)
-  static clearDocument(document: vscode.TextDocument): void {
+  clearDocument(document: vscode.TextDocument): void {
     this.cache.delete(document.uri.toString());
   }
 
   // Clear all cache (useful for testing)
-  static clearAll(): void {
+  clearAll(): void {
     this.cache.clear();
   }
 
   // Get cache stats (useful for debugging)
-  static getCacheStats(): { size: number; calculatedSize: number } {
+  getCacheStats(): { size: number; calculatedSize: number } {
     return {
       size: this.cache.size,
       calculatedSize: this.cache.calculatedSize,
     };
   }
 }
+
+// Singleton instance for production use
+export const completionCache = new CompletionCache();

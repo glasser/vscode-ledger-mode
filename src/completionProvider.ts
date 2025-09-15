@@ -2,7 +2,7 @@
 // Uses error-tolerant parsing that works even when files have syntax errors
 
 import * as vscode from "vscode";
-import { CompletionCache } from "./completionCache";
+import { completionCache } from "./completionCache";
 
 export function registerCompletionProviders(context: vscode.ExtensionContext) {
   // Register merchant/payee completion provider with more trigger characters
@@ -77,7 +77,7 @@ class PayeeCompletionProvider implements vscode.CompletionItemProvider {
     }
 
     // Extract payees from the document using cached parsing
-    const payees = CompletionCache.getPayees(document);
+    const payees = completionCache.getPayees(document);
 
     const currentText = lineText
       .substring(prefixLength, position.character)
@@ -146,7 +146,7 @@ class AccountCompletionProvider implements vscode.CompletionItemProvider {
     }
 
     // Extract accounts from the document using cached parsing
-    const accounts = CompletionCache.getAccounts(document);
+    const accounts = completionCache.getAccounts(document);
 
     // Convert to array with frequency info
     const accountsArray = Array.from(accounts.entries()).map(

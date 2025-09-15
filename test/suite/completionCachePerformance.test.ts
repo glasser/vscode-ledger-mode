@@ -7,11 +7,14 @@ import { CompletionCache } from "../../src/completionCache";
 
 suite("Completion Cache Performance Tests", () => {
   let document: vscode.TextDocument;
+  let cache: CompletionCache;
+
+  setup(() => {
+    // Create a fresh cache instance for each test
+    cache = new CompletionCache();
+  });
 
   teardown(async () => {
-    // Clean up cache after each test
-    CompletionCache.clearAll();
-
     // Close any open documents
     if (document) {
       await vscode.commands.executeCommand(
@@ -38,12 +41,12 @@ suite("Completion Cache Performance Tests", () => {
 
     // First call should parse
     const start1 = process.hrtime.bigint();
-    const payees1 = CompletionCache.getPayees(document);
+    const payees1 = cache.getPayees(document);
     const time1 = Number(process.hrtime.bigint() - start1) / 1000000;
 
     // Second call within 10 seconds should use cache (much faster)
     const start2 = process.hrtime.bigint();
-    const payees2 = CompletionCache.getPayees(document);
+    const payees2 = cache.getPayees(document);
     const time2 = Number(process.hrtime.bigint() - start2) / 1000000;
 
     // Results should be identical
@@ -68,7 +71,7 @@ suite("Completion Cache Performance Tests", () => {
     await new Promise((resolve) => setTimeout(resolve, 11000));
 
     const start3 = process.hrtime.bigint();
-    const payees3 = CompletionCache.getPayees(document);
+    const payees3 = cache.getPayees(document);
     const time3 = Number(process.hrtime.bigint() - start3) / 1000000;
 
     // Should be slow again (cache expired)
@@ -97,12 +100,12 @@ suite("Completion Cache Performance Tests", () => {
 
     // Get payees first (should parse and cache)
     const start1 = process.hrtime.bigint();
-    const payees = CompletionCache.getPayees(document);
+    const payees = cache.getPayees(document);
     const time1 = Number(process.hrtime.bigint() - start1) / 1000000;
 
     // Get accounts immediately after (should reuse parsed transactions)
     const start2 = process.hrtime.bigint();
-    const accounts = CompletionCache.getAccounts(document);
+    const accounts = cache.getAccounts(document);
     const time2 = Number(process.hrtime.bigint() - start2) / 1000000;
 
     assert.strictEqual(payees.size, 1, "Should have 1 payee");
@@ -138,8 +141,8 @@ suite("Completion Cache Performance Tests", () => {
     });
 
     // Cache both documents
-    const payees1 = CompletionCache.getPayees(doc1);
-    const payees2 = CompletionCache.getPayees(doc2);
+    const payees1 = cache.getPayees(doc1);
+    const payees2 = cache.getPayees(doc2);
 
     // Should be different results
     assert.strictEqual(payees1.size, 1);
@@ -187,7 +190,7 @@ suite("Completion Cache Performance Tests", () => {
     const times: number[] = [];
     for (let i = 0; i < 10; i++) {
       const start = process.hrtime.bigint();
-      const payees = CompletionCache.getPayees(document);
+      const payees = cache.getPayees(document);
       const time = Number(process.hrtime.bigint() - start) / 1000000;
       times.push(time);
 
