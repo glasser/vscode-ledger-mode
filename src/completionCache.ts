@@ -18,42 +18,42 @@ export class CompletionCache {
     max: 10, // Max 10 documents cached
     ttl: 10000, // 10 seconds time-to-live
   });
-  
+
   static getTransactions(document: vscode.TextDocument): ParsedTransaction[] {
     const uri = document.uri.toString();
-    
+
     // Check if we have a recent cache entry (within 10 seconds)
     const cached = this.cache.get(uri);
     if (cached) {
       return cached.transactions;
     }
-    
+
     // Parse and cache
     const transactions = TransactionParser.getAllTransactions(document);
     this.updateCache(uri, transactions);
     return transactions;
   }
-  
+
   static getPayees(document: vscode.TextDocument): Map<string, number> {
     const uri = document.uri.toString();
-    
+
     // Check if we have a recent cache entry (within 10 seconds)
     const cached = this.cache.get(uri);
     if (cached && cached.payees) {
       return cached.payees;
     }
-    
+
     // Parse and extract payees
     const transactions = this.getTransactions(document);
     const payees = new Map<string, number>();
-    
+
     for (const transaction of transactions) {
       if (transaction.payee) {
         const count = payees.get(transaction.payee) || 0;
         payees.set(transaction.payee, count + 1);
       }
     }
-    
+
     // Update cache with payees
     const entry = this.cache.get(uri);
     if (entry) {
@@ -61,23 +61,23 @@ export class CompletionCache {
       // Re-set to refresh TTL
       this.cache.set(uri, entry);
     }
-    
+
     return payees;
   }
-  
+
   static getAccounts(document: vscode.TextDocument): Map<string, number> {
     const uri = document.uri.toString();
-    
+
     // Check if we have a recent cache entry (within 10 seconds)
     const cached = this.cache.get(uri);
     if (cached && cached.accounts) {
       return cached.accounts;
     }
-    
+
     // Parse and extract accounts
     const transactions = this.getTransactions(document);
     const accounts = new Map<string, number>();
-    
+
     for (const transaction of transactions) {
       for (const posting of transaction.postings) {
         if (posting.account) {
@@ -86,7 +86,7 @@ export class CompletionCache {
         }
       }
     }
-    
+
     // Update cache with accounts
     const entry = this.cache.get(uri);
     if (entry) {
@@ -94,24 +94,24 @@ export class CompletionCache {
       // Re-set to refresh TTL
       this.cache.set(uri, entry);
     }
-    
+
     return accounts;
   }
-  
+
   private static updateCache(
     uri: string,
-    transactions: ParsedTransaction[]
+    transactions: ParsedTransaction[],
   ): void {
     // Extract payees and accounts while we have the transactions
     const payees = new Map<string, number>();
     const accounts = new Map<string, number>();
-    
+
     for (const transaction of transactions) {
       if (transaction.payee) {
         const count = payees.get(transaction.payee) || 0;
         payees.set(transaction.payee, count + 1);
       }
-      
+
       for (const posting of transaction.postings) {
         if (posting.account) {
           const count = accounts.get(posting.account) || 0;
@@ -119,7 +119,7 @@ export class CompletionCache {
         }
       }
     }
-    
+
     // LRU cache handles TTL and size limits automatically
     this.cache.set(uri, {
       transactions,
@@ -127,17 +127,17 @@ export class CompletionCache {
       accounts,
     });
   }
-  
+
   // Clear cache for a specific document (useful for testing)
   static clearDocument(document: vscode.TextDocument): void {
     this.cache.delete(document.uri.toString());
   }
-  
+
   // Clear all cache (useful for testing)
   static clearAll(): void {
     this.cache.clear();
   }
-  
+
   // Get cache stats (useful for debugging)
   static getCacheStats(): { size: number; calculatedSize: number } {
     return {

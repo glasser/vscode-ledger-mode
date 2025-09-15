@@ -137,9 +137,9 @@ class AccountCompletionProvider implements vscode.CompletionItemProvider {
     if (!accountMatch) {
       return [];
     }
-    
+
     const currentAccount = accountMatch[1];
-    
+
     // Don't provide completions if we've hit multiple spaces (amount area) or semicolon (comment)
     if (/\s{2,}|\;/.test(currentAccount)) {
       return [];

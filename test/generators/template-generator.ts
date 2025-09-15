@@ -31,12 +31,19 @@ function showTrailingSpaces(text: string): string {
   // First escape HTML
   const escaped = escapeHtml(text);
   // Split into lines to handle each line separately
-  return escaped.split('\n').map(line => {
-    // Replace trailing spaces with visible marker
-    return line.replace(/( +)$/g, (match) => {
-      return '<span style="background-color: #ffcccc; border: 1px solid #ff6666;">·' + '·'.repeat(match.length - 1) + '</span>';
-    });
-  }).join('\n');
+  return escaped
+    .split("\n")
+    .map((line) => {
+      // Replace trailing spaces with visible marker
+      return line.replace(/( +)$/g, (match) => {
+        return (
+          '<span style="background-color: #ffcccc; border: 1px solid #ff6666;">·' +
+          "·".repeat(match.length - 1) +
+          "</span>"
+        );
+      });
+    })
+    .join("\n");
 }
 
 // Register common Handlebars helpers that are used across multiple templates
