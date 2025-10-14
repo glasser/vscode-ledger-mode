@@ -22,8 +22,9 @@ export class BalanceQuickFixProvider implements vscode.CodeActionProvider {
 
     for (const diagnostic of diagnostics) {
       // Check if this is a balance error with an amount
+      // Handles formats like: $0.50, -$0.25, $-0.05
       const match = diagnostic.message.match(
-        /Transaction does not balance \(off by ([+-]?\$?[\d,]+\.?\d*)\)/,
+        /Transaction does not balance \(off by ((?:[+-]?\$[+-]?|\$?[+-])[\d,]+\.?\d*)\)/,
       );
 
       if (match) {
