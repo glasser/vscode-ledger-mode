@@ -2,7 +2,7 @@
 
 ; Comment before first transaction
 2024-01-01 Test Transaction
- Expenses:Test                                           $10.00
+ Expenses:Test                                             $10.00
  Assets:Checking
 
 ; Comment between transactions

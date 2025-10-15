@@ -105,7 +105,7 @@
             <li><strong>Comment preservation</strong>: Comments are maintained in correct positions</li>
             <li><strong>Reconciliation markers</strong>: Status markers are normalized</li>
         </ul>
-        <p><strong>Test cases:</strong> 6</p>
+        <p><strong>Test cases:</strong> 7</p>
     </div>
 
 
@@ -128,12 +128,12 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">2024-01-15 Grocery Store
- Expenses:Food                                           $45.67
- Assets:Checking                                        -$45.67
+ Expenses:Food                                             $45.67
+ Assets:Checking                                          -$45.67
 
 2024-01-16 Gas Station
- Expenses:Gas                                            $30.00
- Assets:Checking                                        -$30.00
+ Expenses:Gas                                              $30.00
+ Assets:Checking                                          -$30.00
 </pre>
             </div>
         </div>
@@ -160,13 +160,13 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">2024-01-15 Earlier transaction
- Expenses:Food                                           $45.67
+ Expenses:Food                                             $45.67
  Assets:Checking
 
 ; Important comment about this transaction
 ; Another line
 2024-01-20 Transaction with comments
- Expenses:Test                                           $10.00
+ Expenses:Test                                             $10.00
  Assets:Checking
 </pre>
             </div>
@@ -196,16 +196,43 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">2024-01-15 Past Transaction
- Expenses:Food                                           $45.67
+ Expenses:Food                                             $45.67
  Assets:Checking
 
 2024-01-18 Middle Transaction
- Expenses:Gas                                            $30.00
+ Expenses:Gas                                              $30.00
  Assets:Checking
 
 2024-01-20 Future Transaction
- Expenses:Test                                           $10.00
+ Expenses:Test                                             $10.00
  Assets:Checking
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Decimal Point Alignment</h3>
+            <p class="test-name">test/data/organize-ledger/decimal-point-alignment/</p>
+        </div>
+        <div class="comparison">
+            <div class="column before">
+                <div class="column-header">Input (Unformatted)</div>
+                <pre class="content input-content">2024-01-15 Test various amount widths
+    Expenses:Small    $5.00
+    Expenses:Medium  $100.00
+    Expenses:Large   $1234.56
+    Assets:Checking  -$1339.56
+</pre>
+            </div>
+            <div class="column after">
+                <div class="column-header">Expected Output (Formatted)</div>
+                <pre class="content styled-content">2024-01-15 Test various amount widths
+ Expenses:Small                                             $5.00
+ Expenses:Medium                                          $100.00
+ Expenses:Large                                          $1234.56
+ Assets:Checking                                        -$1339.56
 </pre>
             </div>
         </div>
@@ -248,9 +275,9 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">2024-06-15 Test Mixed Indentation
- Expenses:Food                                           $25.00
- Expenses:Gas                                            $40.00
- Assets:Checking                                        -$65.00
+ Expenses:Food                                             $25.00
+ Expenses:Gas                                              $40.00
+ Assets:Checking                                          -$65.00
 
 2024-06-16 Another Transaction
  Income:Salary                                           $2000.00
@@ -282,8 +309,8 @@
                 <pre class="content styled-content">; Header comment
 
 2024-01-01 Transaction
- Assets:Test                                             $10.00
- Income:Test                                            -$10.00
+ Assets:Test                                               $10.00
+ Income:Test                                              -$10.00
 
 ; End comment about totals
 ; Final summary line

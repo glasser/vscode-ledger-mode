@@ -161,7 +161,7 @@ export class LedgerOrganizer {
     // Force 1-space indentation (normalize all indentation)
     const ACCOUNT_ALIGNMENT_COLUMN = 1;
 
-    const AMOUNT_ALIGNMENT_COLUMN = 57; // Position where $ should appear (0-based)
+    const DECIMAL_ALIGNMENT_COLUMN = 62; // Position where decimal point should appear (0-based)
 
     const alignedPostings: string[] = [];
 
@@ -194,11 +194,14 @@ export class LedgerOrganizer {
 
           if (amountPart) {
             const accountEndColumn = alignedLine.length;
-            let targetColumn = AMOUNT_ALIGNMENT_COLUMN;
 
-            // Align negative amounts one character earlier
-            if (amountPart.startsWith("-")) {
-              targetColumn = AMOUNT_ALIGNMENT_COLUMN - 1;
+            // Find decimal point position in amount to align on it
+            const decimalIndex = amountPart.indexOf(".");
+            let targetColumn = DECIMAL_ALIGNMENT_COLUMN;
+
+            if (decimalIndex >= 0) {
+              // Align so the decimal point appears at DECIMAL_ALIGNMENT_COLUMN
+              targetColumn = DECIMAL_ALIGNMENT_COLUMN - decimalIndex;
             }
 
             let spacesNeeded;

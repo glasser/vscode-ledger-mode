@@ -1,7 +1,7 @@
 2024-06-15 Test Mixed Indentation
- Expenses:Food                                           $25.00
- Expenses:Gas                                            $40.00
- Assets:Checking                                        -$65.00
+ Expenses:Food                                             $25.00
+ Expenses:Gas                                              $40.00
+ Assets:Checking                                          -$65.00
 
 2024-06-16 Another Transaction
  Income:Salary                                           $2000.00

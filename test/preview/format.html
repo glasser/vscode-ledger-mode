@@ -128,11 +128,11 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">1999-12-01 Test Transaction
- Expenses:Test                                           $10.00
+ Expenses:Test                                             $10.00
  Assets:Checking
 
 1999-01-01 Earlier Transaction
- Expenses:Food                                           $5.00
+ Expenses:Food                                              $5.00
  Assets:Checking
 </pre>
             </div>
@@ -162,7 +162,7 @@
  Assets:Cash
 
 2024-01-02 Regular Account
- Expenses:Food                                           $10.00
+ Expenses:Food                                             $10.00
  Assets:Cash
 </pre>
             </div>
@@ -188,12 +188,12 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">2024-01-01 Withdrawal
- Assets:Checking                                        -$100.00
- Expenses:Cash                                           $100.00
+ Assets:Checking                                         -$100.00
+ Expenses:Cash                                            $100.00
 
 2024-01-02 Transfer
- Assets:Checking                                        -$50.00
- Assets:Savings                                          $50.00
+ Assets:Checking                                          -$50.00
+ Assets:Savings                                            $50.00
 </pre>
             </div>
         </div>
@@ -226,7 +226,7 @@
 
 ; Comment before first transaction
 2024-01-01 Test Transaction
- Expenses:Test                                           $10.00
+ Expenses:Test                                             $10.00
  Assets:Checking
 
 ; Comment between transactions
@@ -262,15 +262,15 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">2024-06-20 Future Transaction
- Assets:Future                                           $100.00
+ Assets:Future                                            $100.00
  Income:Test
 
 2024-01-01 Past Transaction
- Expenses:Past                                           $50.00
+ Expenses:Past                                             $50.00
  Assets:Past
 
 2024-06-15 Middle Transaction
- Assets:Middle                                           $25.00
+ Assets:Middle                                             $25.00
  Income:Middle
 </pre>
             </div>
@@ -300,16 +300,16 @@
             <div class="column after">
                 <div class="column-header">Expected Output (Formatted)</div>
                 <pre class="content styled-content">2024-01-15 * Grocery Store
- Expenses:Groceries                                      $50.00
- Assets:Checking                                        -$50.00
+ Expenses:Groceries                                        $50.00
+ Assets:Checking                                          -$50.00
 
 2024-01-16 Gas Station
- Expenses:Fuel                                           $30.00
- Assets:Checking                                        -$30.00
+ Expenses:Fuel                                             $30.00
+ Assets:Checking                                          -$30.00
 
 2024-01-17 ! Coffee Shop
- Expenses:Coffee                                         $5.00
- Assets:Checking                                        -$5.00
+ Expenses:Coffee                                            $5.00
+ Assets:Checking                                           -$5.00
 </pre>
             </div>
         </div>
