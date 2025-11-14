@@ -400,19 +400,19 @@ export function registerCommands(
         // Prompt user for target date (similar to insertDate)
         const dateInput = await vscode.window.showInputBox({
           prompt:
-            "Generate recurring transactions up to date (natural language supported: 'next month', '2024-12-31') or press Enter for one month from today",
-          placeHolder: "one month from today",
+            "Generate recurring transactions up to date (natural language supported: 'next month', '2024-12-31') or press Enter for two months from today",
+          placeHolder: "two months from today",
           validateInput: (value: string) => {
-            // If empty, show one month from today preview as info
+            // If empty, show two months from today preview as info
             if (!value || value.trim() === "") {
-              const oneMonthFromToday = new Date();
-              oneMonthFromToday.setMonth(oneMonthFromToday.getMonth() + 1);
-              const dayName = oneMonthFromToday.toLocaleDateString("en-US", {
+              const twoMonthsFromToday = new Date();
+              twoMonthsFromToday.setMonth(twoMonthsFromToday.getMonth() + 2);
+              const dayName = twoMonthsFromToday.toLocaleDateString("en-US", {
                 weekday: "long",
               });
               return {
                 severity: vscode.InputBoxValidationSeverity.Info,
-                message: `Will generate up to: ${formatDateForLedger(oneMonthFromToday).trim()} (${dayName})`,
+                message: `Will generate up to: ${formatDateForLedger(twoMonthsFromToday).trim()} (${dayName})`,
               };
             }
 
@@ -441,11 +441,11 @@ export function registerCommands(
           return;
         }
 
-        // If empty input, default to one month from today
+        // If empty input, default to two months from today
         let targetDate: Date;
         if (!dateInput || dateInput.trim() === "") {
           targetDate = new Date();
-          targetDate.setMonth(targetDate.getMonth() + 1);
+          targetDate.setMonth(targetDate.getMonth() + 2);
         } else {
           const parsed = parseDateString(dateInput);
           if (!parsed) {
