@@ -3,6 +3,46 @@
 
 import * as vscode from "vscode";
 
+/**
+ * Process a comment by stripping patterns from it.
+ * Returns undefined if the comment becomes empty (only whitespace after semicolon).
+ */
+export function processComment(
+  comment: string | undefined,
+  stripPatterns: string[],
+): string | undefined {
+  if (comment === undefined) {
+    return undefined;
+  }
+
+  if (stripPatterns.length === 0) {
+    return comment;
+  }
+
+  let result = comment;
+  for (const pattern of stripPatterns) {
+    const regex = new RegExp(pattern, "g");
+    result = result.replace(regex, "");
+  }
+
+  // Normalize whitespace: collapse multiple spaces to single space
+  result = result.replace(/\s+/g, " ").trim();
+
+  // Check if comment is now empty (just semicolon and whitespace)
+  // A comment starts with ; so we check if there's anything after it
+  const contentAfterSemicolon = result.replace(/^;\s*/, "");
+  if (contentAfterSemicolon === "") {
+    // Preserve bare semicolon if it was in the original
+    if (comment.trim() === ";") {
+      return ";";
+    }
+    return undefined;
+  }
+
+  // Reconstruct the comment with proper spacing after semicolon
+  return `; ${contentAfterSemicolon}`;
+}
+
 export interface ParsedTransaction {
   date: string;
   effectiveDate?: string;
@@ -278,9 +318,16 @@ export class TransactionCompleter {
     );
     edit.replace(document.uri, transactionRange, newTransactionLine);
 
+    // Get comment stripping patterns from config
+    const config = vscode.workspace.getConfiguration("ledger");
+    const stripPatterns = config.get<string[]>(
+      "completionCommentStripPatterns",
+      ["<<(.+?)>>"],
+    );
+
     // Add posting lines
     const postingLines = template.postings.map((posting) =>
-      this.buildPostingLine(posting),
+      this.buildPostingLine(posting, stripPatterns),
     );
 
     let firstDollarPosition: vscode.Position | null = null;
@@ -374,7 +421,10 @@ export class TransactionCompleter {
     return line;
   }
 
-  private static buildPostingLine(posting: ParsedPosting): string {
+  private static buildPostingLine(
+    posting: ParsedPosting,
+    stripPatterns: string[],
+  ): string {
     // Always create unreconciled postings (ignore posting.state)
     // New transactions should start unreconciled regardless of template
     let line = ` ${posting.account}`;
@@ -385,8 +435,9 @@ export class TransactionCompleter {
       line += " ".repeat(padding) + posting.amount;
     }
 
-    if (posting.comment) {
-      line += `  ${posting.comment}`;
+    const processedComment = processComment(posting.comment, stripPatterns);
+    if (processedComment) {
+      line += `  ${processedComment}`;
     }
 
     return line;

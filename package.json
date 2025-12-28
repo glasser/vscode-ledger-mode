@@ -102,6 +102,19 @@
         "when": "editorTextFocus && editorLangId == ledger"
       }
     ],
+    "configuration": {
+      "title": "Ledger Mode",
+      "properties": {
+        "ledger.completionCommentStripPatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["<<(.+?)>>"],
+          "description": "Regular expressions to strip from comments when inserting transactions with C-c TAB. If a comment contains only whitespace after stripping, the entire comment is removed."
+        }
+      }
+    },
     "configurationDefaults": {
       "[ledger]": {
         "editor.insertSpaces": true,

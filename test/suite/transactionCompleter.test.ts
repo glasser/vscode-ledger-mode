@@ -441,11 +441,14 @@ suite("TransactionCompleter Tests", () => {
 
   suite("buildPostingLine()", () => {
     test("Should build account-only posting", async () => {
-      const result = TransactionCompleter["buildPostingLine"]({
-        account: "Assets:Checking",
-        amount: undefined,
-        comment: undefined,
-      });
+      const result = TransactionCompleter["buildPostingLine"](
+        {
+          account: "Assets:Checking",
+          amount: undefined,
+          comment: undefined,
+        },
+        [],
+      );
 
       assert.ok(
         result.trim().includes("Assets:Checking"),
@@ -455,11 +458,14 @@ suite("TransactionCompleter Tests", () => {
     });
 
     test("Should build posting with amount", async () => {
-      const result = TransactionCompleter["buildPostingLine"]({
-        account: "Assets:Checking",
-        amount: "$100.00",
-        comment: undefined,
-      });
+      const result = TransactionCompleter["buildPostingLine"](
+        {
+          account: "Assets:Checking",
+          amount: "$100.00",
+          comment: undefined,
+        },
+        [],
+      );
 
       assert.ok(result.includes("Assets:Checking"), "Should include account");
       assert.ok(result.includes("$100.00"), "Should include amount");
@@ -470,22 +476,28 @@ suite("TransactionCompleter Tests", () => {
     });
 
     test("Should build posting with comment", async () => {
-      const result = TransactionCompleter["buildPostingLine"]({
-        account: "Assets:Checking",
-        amount: undefined,
-        comment: "; Test comment",
-      });
+      const result = TransactionCompleter["buildPostingLine"](
+        {
+          account: "Assets:Checking",
+          amount: undefined,
+          comment: "; Test comment",
+        },
+        [],
+      );
 
       assert.ok(result.includes("Assets:Checking"), "Should include account");
       assert.ok(result.includes("; Test comment"), "Should include comment");
     });
 
     test("Should build posting with amount and comment", async () => {
-      const result = TransactionCompleter["buildPostingLine"]({
-        account: "Assets:Checking",
-        amount: "$100.00",
-        comment: "; Test comment",
-      });
+      const result = TransactionCompleter["buildPostingLine"](
+        {
+          account: "Assets:Checking",
+          amount: "$100.00",
+          comment: "; Test comment",
+        },
+        [],
+      );
 
       assert.ok(result.includes("Assets:Checking"), "Should include account");
       assert.ok(result.includes("$100.00"), "Should include amount");
@@ -501,11 +513,14 @@ suite("TransactionCompleter Tests", () => {
     });
 
     test("Should handle proper alignment spacing", async () => {
-      const result = TransactionCompleter["buildPostingLine"]({
-        account: "Assets:VeryLongAccountName",
-        amount: "$1.00",
-        comment: undefined,
-      });
+      const result = TransactionCompleter["buildPostingLine"](
+        {
+          account: "Assets:VeryLongAccountName",
+          amount: "$1.00",
+          comment: undefined,
+        },
+        [],
+      );
 
       // Should have appropriate spacing for alignment
       assert.ok(
@@ -517,6 +532,43 @@ suite("TransactionCompleter Tests", () => {
       // Check that there's whitespace between account and amount
       const parts = result.split(/\s+/);
       assert.ok(parts.length >= 2, "Should have whitespace separation");
+    });
+
+    test("Should strip patterns from comments", async () => {
+      const result = TransactionCompleter["buildPostingLine"](
+        {
+          account: "Assets:Checking",
+          amount: "$100.00",
+          comment: "; groceries <<food>>",
+        },
+        ["<<(.+?)>>"],
+      );
+
+      assert.ok(result.includes("Assets:Checking"), "Should include account");
+      assert.ok(result.includes("$100.00"), "Should include amount");
+      assert.ok(
+        result.includes("; groceries"),
+        "Should include stripped comment",
+      );
+      assert.ok(
+        !result.includes("<<food>>"),
+        "Should not include stripped pattern",
+      );
+    });
+
+    test("Should remove comment entirely when only pattern remains", async () => {
+      const result = TransactionCompleter["buildPostingLine"](
+        {
+          account: "Assets:Checking",
+          amount: "$100.00",
+          comment: "; <<remove-me>>",
+        },
+        ["<<(.+?)>>"],
+      );
+
+      assert.ok(result.includes("Assets:Checking"), "Should include account");
+      assert.ok(result.includes("$100.00"), "Should include amount");
+      assert.ok(!result.includes(";"), "Should not include empty comment");
     });
   });
 
