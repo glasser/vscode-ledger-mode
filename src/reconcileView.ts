@@ -453,14 +453,8 @@ export class ReconcileViewProvider {
             background-color: var(--vscode-editor-inactiveSelectionBackground);
             font-weight: bold;
         }
-        tr:hover {
-            background-color: var(--vscode-list-hoverBackground);
-        }
         tr.pending {
             background-color: var(--vscode-diffEditor-insertedTextBackground);
-        }
-        tr.pending:hover {
-            background-color: var(--vscode-diffEditor-insertedLineBackground);
         }
         .status {
             width: 20px;
@@ -505,11 +499,8 @@ export class ReconcileViewProvider {
             outline-offset: -2px;
         }
         tr.selected {
-            background-color: var(--vscode-list-activeSelectionBackground);
-            color: var(--vscode-list-activeSelectionForeground);
-        }
-        tr.selected.pending {
-            background-color: var(--vscode-list-activeSelectionBackground);
+            outline: 2px solid var(--vscode-focusBorder);
+            outline-offset: -2px;
         }
     </style>
 </head>
