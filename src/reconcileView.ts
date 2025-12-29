@@ -15,6 +15,8 @@ interface ReconcileState {
   transactions: ReconciliationEntry[];
   clearedPendingBalance: string;
   filePath: string;
+  reverseOrder: boolean;
+  selectedLineNumber: number | null;
 }
 
 /* c8 ignore start - WebView UI code that requires interactive testing */
@@ -54,6 +56,8 @@ export class ReconcileViewProvider {
       transactions: [],
       clearedPendingBalance: "$0.00",
       filePath,
+      reverseOrder: false,
+      selectedLineNumber: null,
     };
 
     // Create or reveal panel
@@ -152,6 +156,7 @@ export class ReconcileViewProvider {
         const lineNumber = message.lineNumber as number;
         const currentStatus = message.currentStatus as "" | "!" | "*";
         const newStatus = currentStatus === "" ? "!" : "";
+        const selectedIndex = message.selectedIndex as number;
 
         const editor = new ReconcileFileEditor(this.state.filePath);
         const success = editor.updatePostingsStatus(
@@ -162,6 +167,21 @@ export class ReconcileViewProvider {
 
         if (!success) {
           vscode.window.showErrorMessage("Failed to toggle posting status");
+        } else {
+          // Calculate the next row's line number to select after refresh
+          const displayTransactions = this.state.reverseOrder
+            ? [...this.state.transactions].reverse()
+            : this.state.transactions;
+          const allPostings = displayTransactions.flatMap((tx) =>
+            tx.accountPostings.map((p) => p.lineNumber),
+          );
+          const nextIndex = selectedIndex + 1;
+          if (nextIndex < allPostings.length) {
+            this.state.selectedLineNumber = allPostings[nextIndex];
+          } else {
+            // Stay on current if at end
+            this.state.selectedLineNumber = lineNumber;
+          }
         }
         // File watcher will trigger refresh
         break;
@@ -244,6 +264,26 @@ export class ReconcileViewProvider {
         break;
       }
 
+      case "scrollToLine": {
+        // Scroll editor to show line without taking focus from webview
+        const lineNumber = message.lineNumber as number;
+        const uri = vscode.Uri.file(this.state.filePath);
+        const document = await vscode.workspace.openTextDocument(uri);
+        // Use preserveFocus to keep focus in the webview
+        const editorView = await vscode.window.showTextDocument(document, {
+          viewColumn: vscode.ViewColumn.One,
+          preserveFocus: true,
+        });
+
+        const position = new vscode.Position(lineNumber - 1, 0);
+        editorView.selection = new vscode.Selection(position, position);
+        editorView.revealRange(
+          new vscode.Range(position, position),
+          vscode.TextEditorRevealType.InCenter,
+        );
+        break;
+      }
+
       case "setTarget": {
         const input = await vscode.window.showInputBox({
           prompt: "Enter target balance (e.g., $1,234.56)",
@@ -283,6 +323,15 @@ export class ReconcileViewProvider {
       case "refresh":
         await this.refresh();
         break;
+
+      case "toggleSort":
+        this.state.reverseOrder = !this.state.reverseOrder;
+        this.panel!.webview.html = this.getHtml();
+        break;
+
+      case "selectionChanged":
+        this.state.selectedLineNumber = message.lineNumber as number;
+        break;
     }
   }
 
@@ -305,15 +354,18 @@ export class ReconcileViewProvider {
       deltaHtml = `<span class="${deltaClass}">Delta: ${deltaFormatted}</span>`;
     }
 
-    // Build transaction rows
-    const rows = transactions
+    // Build transaction rows (optionally in reverse order)
+    const displayTransactions = this.state.reverseOrder
+      ? [...transactions].reverse()
+      : transactions;
+    const rows = displayTransactions
       .map((tx) => {
         return tx.accountPostings
           .map((posting) => {
             const statusIcon = posting.status === "!" ? "!" : "·";
             const rowClass = posting.status === "!" ? "pending" : "";
             return `
-            <tr class="${rowClass}" data-line="${posting.lineNumber}" data-status="${posting.status}">
+            <tr class="${rowClass}" data-line="${posting.lineNumber}" data-status="${posting.status}" tabindex="0">
               <td class="status">${statusIcon}</td>
               <td class="line">${tx.lineNumber}</td>
               <td class="date">${tx.date}</td>
@@ -426,6 +478,17 @@ export class ReconcileViewProvider {
         .clickable {
             cursor: pointer;
         }
+        tr:focus {
+            outline: 2px solid var(--vscode-focusBorder);
+            outline-offset: -2px;
+        }
+        tr.selected {
+            background-color: var(--vscode-list-activeSelectionBackground);
+            color: var(--vscode-list-activeSelectionForeground);
+        }
+        tr.selected.pending {
+            background-color: var(--vscode-list-activeSelectionBackground);
+        }
     </style>
 </head>
 <body>
@@ -460,32 +523,82 @@ export class ReconcileViewProvider {
         <button onclick="toggleAll()">! Toggle All</button>
         <button onclick="reconcileAll()">C Clear All !</button>
         <button onclick="setTarget()">T Set Target</button>
+        <button onclick="toggleSort()">S Reverse Sort</button>
         <button onclick="switchAccount()">A Switch Account</button>
         <button onclick="refresh()">R Refresh</button>
     </div>
 
     <script>
         const vscode = acquireVsCodeApi();
+        const rows = Array.from(document.querySelectorAll('tbody tr'));
+        let selectedIndex = -1;
 
-        document.querySelectorAll('tbody tr').forEach(row => {
-            row.addEventListener('click', (e) => {
+        function selectRow(index) {
+            // Remove selection from previous row
+            if (selectedIndex >= 0 && selectedIndex < rows.length) {
+                rows[selectedIndex].classList.remove('selected');
+            }
+
+            // Select new row
+            selectedIndex = index;
+            if (selectedIndex >= 0 && selectedIndex < rows.length) {
+                rows[selectedIndex].classList.add('selected');
+                rows[selectedIndex].focus();
+                rows[selectedIndex].scrollIntoView({ block: 'nearest' });
+                // Notify extension and scroll editor to show line (without taking focus)
+                const lineNumber = parseInt(rows[selectedIndex].dataset.line);
+                vscode.postMessage({
+                    command: 'selectionChanged',
+                    lineNumber: lineNumber
+                });
+                vscode.postMessage({
+                    command: 'scrollToLine',
+                    lineNumber: lineNumber
+                });
+            }
+        }
+
+        function toggleCurrentRow() {
+            if (selectedIndex >= 0 && selectedIndex < rows.length) {
+                const row = rows[selectedIndex];
                 const lineNumber = parseInt(row.dataset.line);
+                const currentStatus = row.dataset.status;
+                vscode.postMessage({
+                    command: 'toggle',
+                    lineNumber: lineNumber,
+                    currentStatus: currentStatus,
+                    selectedIndex: selectedIndex
+                });
+            }
+        }
+
+        function openCurrentRowInEditor() {
+            if (selectedIndex >= 0 && selectedIndex < rows.length) {
+                const row = rows[selectedIndex];
+                const lineNumber = parseInt(row.dataset.line);
+                vscode.postMessage({
+                    command: 'openInEditor',
+                    lineNumber: lineNumber
+                });
+            }
+        }
+
+        rows.forEach((row, index) => {
+            row.addEventListener('click', (e) => {
+                selectRow(index);
                 const currentStatus = row.dataset.status;
 
                 if (e.target.classList.contains('status')) {
                     // Toggle status
+                    const lineNumber = parseInt(row.dataset.line);
                     vscode.postMessage({
                         command: 'toggle',
                         lineNumber: lineNumber,
-                        currentStatus: currentStatus
-                    });
-                } else {
-                    // Open in editor
-                    vscode.postMessage({
-                        command: 'openInEditor',
-                        lineNumber: lineNumber
+                        currentStatus: currentStatus,
+                        selectedIndex: index
                     });
                 }
+                // Otherwise just select (scrollToLine is sent by selectRow)
             });
         });
 
@@ -509,14 +622,57 @@ export class ReconcileViewProvider {
             vscode.postMessage({ command: 'refresh' });
         }
 
+        function toggleSort() {
+            vscode.postMessage({ command: 'toggleSort' });
+        }
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.key === '!') toggleAll();
+            // Navigation
+            if (e.key === 'ArrowDown' || e.key === 'j') {
+                e.preventDefault();
+                if (selectedIndex < rows.length - 1) {
+                    selectRow(selectedIndex + 1);
+                } else if (selectedIndex === -1 && rows.length > 0) {
+                    selectRow(0);
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'k') {
+                e.preventDefault();
+                if (selectedIndex > 0) {
+                    selectRow(selectedIndex - 1);
+                } else if (selectedIndex === -1 && rows.length > 0) {
+                    selectRow(rows.length - 1);
+                }
+            } else if (e.key === ' ') {
+                // Space to toggle current row
+                e.preventDefault();
+                toggleCurrentRow();
+            } else if (e.key === 'Enter') {
+                // Enter to open in editor
+                e.preventDefault();
+                openCurrentRowInEditor();
+            }
+            // Commands
+            else if (e.key === '!') toggleAll();
             else if (e.key === 'c' || e.key === 'C') reconcileAll();
             else if (e.key === 't' || e.key === 'T') setTarget();
+            else if (e.key === 's' || e.key === 'S') toggleSort();
             else if (e.key === 'a' || e.key === 'A') switchAccount();
             else if (e.key === 'r' || e.key === 'R') refresh();
         });
+
+        // Restore selection from state or select first row
+        const savedLineNumber = ${this.state.selectedLineNumber ?? "null"};
+        let initialIndex = 0;
+        if (savedLineNumber !== null) {
+            const idx = rows.findIndex(r => parseInt(r.dataset.line) === savedLineNumber);
+            if (idx >= 0) {
+                initialIndex = idx;
+            }
+        }
+        if (rows.length > 0) {
+            selectRow(initialIndex);
+        }
     </script>
 </body>
 </html>`;
