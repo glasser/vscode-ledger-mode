@@ -24,14 +24,30 @@ export class ReconcileViewProvider {
   private panel: vscode.WebviewPanel | undefined;
   private state: ReconcileState | undefined;
   private fileWatcher: vscode.FileSystemWatcher | undefined;
+  private cachedAccounts: string[] | undefined;
 
   constructor(private context: vscode.ExtensionContext) {}
+
+  private async getAccounts(filePath: string): Promise<string[]> {
+    if (!this.cachedAccounts) {
+      const ledgerInterface = new ReconcileLedgerInterface(filePath);
+      this.cachedAccounts = await ledgerInterface.getAccounts();
+    }
+    return this.cachedAccounts;
+  }
+
+  private refreshAccountCache(filePath: string): void {
+    // Fire-and-forget background refresh of account cache
+    const ledgerInterface = new ReconcileLedgerInterface(filePath);
+    ledgerInterface.getAccounts().then((accounts) => {
+      this.cachedAccounts = accounts;
+    });
+  }
 
   async show(filePath: string, account?: string) {
     // If no account provided, let user pick one
     if (!account) {
-      const ledgerInterface = new ReconcileLedgerInterface(filePath);
-      const accounts = await ledgerInterface.getAccounts();
+      const accounts = await this.getAccounts(filePath);
 
       if (accounts.length === 0) {
         vscode.window.showErrorMessage("No accounts found in ledger file");
@@ -47,6 +63,9 @@ export class ReconcileViewProvider {
       }
 
       account = selectedAccount;
+    } else {
+      // Pre-populate account cache in background for faster "switch account"
+      this.refreshAccountCache(filePath);
     }
 
     // Initialize state
@@ -101,8 +120,14 @@ export class ReconcileViewProvider {
     const uri = vscode.Uri.file(filePath);
     this.fileWatcher = vscode.workspace.createFileSystemWatcher(uri.fsPath);
 
-    this.fileWatcher.onDidChange(() => this.refresh());
-    this.fileWatcher.onDidCreate(() => this.refresh());
+    this.fileWatcher.onDidChange(() => {
+      this.refreshAccountCache(filePath);
+      this.refresh();
+    });
+    this.fileWatcher.onDidCreate(() => {
+      this.refreshAccountCache(filePath);
+      this.refresh();
+    });
     this.fileWatcher.onDidDelete(() => {
       if (this.panel) {
         this.panel.webview.html = this.getErrorHtml("Ledger file was deleted");
@@ -304,10 +329,7 @@ export class ReconcileViewProvider {
       }
 
       case "switchAccount": {
-        const ledgerInterface = new ReconcileLedgerInterface(
-          this.state.filePath,
-        );
-        const accounts = await ledgerInterface.getAccounts();
+        const accounts = await this.getAccounts(this.state.filePath);
         const selectedAccount = await vscode.window.showQuickPick(accounts, {
           placeHolder: "Select account to reconcile",
         });

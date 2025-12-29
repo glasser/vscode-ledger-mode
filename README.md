@@ -268,6 +268,10 @@ This extension is inspired by and builds upon concepts from [Emacs ledger-mode](
 - Inspired by [Emacs ledger-mode](https://github.com/ledger/ledger-mode)
 - Built for the [Ledger](https://ledger-cli.org/) accounting system
 
+## Limitations
+
+- **Single file per window**: The Balance Report and Reconcile views work with one ledger file at a time per VSCode window. If you have multiple ledger files open, these features operate on the currently active file when invoked.
+
 ## Troubleshooting
 
 ### Ledger CLI Not Found

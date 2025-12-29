@@ -82,6 +82,8 @@ Tests are organized by feature area with descriptive names. Format/organize test
 
 **Task Management**: Development tasks are tracked in `IDEAS.md` with a checkbox format. Work top-down through unchecked items using TDD. "CAMO" means "Commit and move on" - commit changes and move to the next unchecked item.
 
+**Committing**: Don't commit without asking first. David reviews diffs in VSCode before approving commits.
+
 **Test-Driven Development**: Always write tests first, ensure 100% coverage is maintained. Use `npm run test:coverage` and check the bottom output for coverage verification.
 
 **Code Comments**: When encountering seemingly incorrect behavior (like blank line handling), investigate thoroughly. Sometimes apparent bugs are actually intentional design decisions for specific use cases. Add clear explanatory comments rather than "fixing" working code.
@@ -93,3 +95,5 @@ Tests are organized by feature area with descriptive names. Format/organize test
 **Data-Driven Testing**: Prefer test case definitions defined by files in directories on disk over hardcoded test logic. Create reusable test data files when testing complex scenarios with multiple input/output pairs. This is especially important and useful when creating tests for functions that process text: so easy to represent in files!
 
 **Integration Testing**: Test actual VSCode integration, not just unit logic. Use real ledger CLI validation when possible rather than mocking.
+
+**Flaky Tests**: The vscode-test suite opens a real VSCode window on David's laptop. Tests can appear flaky if human activity interferes with the window. If a test just passed, trust that result.
