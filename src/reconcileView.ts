@@ -24,23 +24,32 @@ export class ReconcileViewProvider {
   private panel: vscode.WebviewPanel | undefined;
   private state: ReconcileState | undefined;
   private fileWatcher: vscode.FileSystemWatcher | undefined;
-  private cachedAccounts: string[] | undefined;
+  // Cache accounts per file path
+  private accountCacheByFile: Map<string, string[]> = new Map();
 
   constructor(private context: vscode.ExtensionContext) {}
 
+  // Warm the account cache in the background for faster first use
+  warmCache(filePath: string): void {
+    this.refreshAccountCache(filePath);
+  }
+
   private async getAccounts(filePath: string): Promise<string[]> {
-    if (!this.cachedAccounts) {
-      const ledgerInterface = new ReconcileLedgerInterface(filePath);
-      this.cachedAccounts = await ledgerInterface.getAccounts();
+    const cached = this.accountCacheByFile.get(filePath);
+    if (cached) {
+      return cached;
     }
-    return this.cachedAccounts;
+    const ledgerInterface = new ReconcileLedgerInterface(filePath);
+    const accounts = await ledgerInterface.getAccounts();
+    this.accountCacheByFile.set(filePath, accounts);
+    return accounts;
   }
 
   private refreshAccountCache(filePath: string): void {
     // Fire-and-forget background refresh of account cache
     const ledgerInterface = new ReconcileLedgerInterface(filePath);
     ledgerInterface.getAccounts().then((accounts) => {
-      this.cachedAccounts = accounts;
+      this.accountCacheByFile.set(filePath, accounts);
     });
   }
 

@@ -389,6 +389,14 @@ export function registerCommands(
 
   // Register reconcile view command
   const reconcileViewProvider = new ReconcileViewProvider(context);
+
+  // Warm the account cache for any already-open ledger files
+  for (const document of vscode.workspace.textDocuments) {
+    if (document.languageId === "ledger") {
+      reconcileViewProvider.warmCache(document.fileName);
+    }
+  }
+
   const reconcileViewCommand = vscode.commands.registerCommand(
     "ledger.reconcile",
     async () => {
