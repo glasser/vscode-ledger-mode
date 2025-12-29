@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reconcile Balance Parser Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-case.error-case {
+            border-color: #f44336;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-case.error-case .test-header {
+            background-color: #ffebee;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0 0 0;
+        }
+        .test-content {
+            padding: 15px;
+        }
+        .data-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .data-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+        }
+        .data-value {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #f8f8f8;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .error-value {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .error-badge {
+            display: inline-block;
+            background-color: #f44336;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reconcile Balance Parser Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for parsing and formatting currency values in the reconciliation view.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Parsing currency strings with dollar signs and commas</li>
+            <li>Handling negative amounts</li>
+            <li>Formatting numbers back to display strings with thousands separators</li>
+            <li>Error handling for malformed input</li>
+        </ul>
+        <p><strong>Test cases:</strong> {{totalTestCases}}</p>
+    </div>
+
+{{#each testCases}}
+    <div class="test-case {{#if config.expected.error}}error-case{{/if}}">
+        <div class="test-header">
+            <h3 class="test-title">{{title}}{{#if config.expected.error}}<span class="error-badge">Error Case</span>{{/if}}</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/{{name}}/</p>
+            {{#if config.description}}
+            <p class="test-description">{{config.description}}</p>
+            {{/if}}
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"{{config.input}}"</div>
+            </div>
+            {{#if config.expected.error}}
+            <div class="data-row">
+                <div class="data-label">Expected:</div>
+                <div class="data-value error-value">Error (throws BalanceParseError)</div>
+            </div>
+            {{else}}
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">{{config.expected.parsed_amount}}</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"{{config.expected.formatted_display}}"</div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+{{/each}}
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>S-Expression Parser Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-case.error-case {
+            border-color: #f44336;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-case.error-case .test-header {
+            background-color: #ffebee;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+        }
+        .column {
+            padding: 0;
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+        .error-content {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .error-badge {
+            display: inline-block;
+            background-color: #f44336;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <h1>S-Expression Parser Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for the S-expression parser used to parse ledger's "emacs" output format.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Parsing of atoms (strings, integers, nil)</li>
+            <li>Parsing of lists with nested structures</li>
+            <li>Handling of quoted strings with escape sequences</li>
+            <li>Error handling for malformed input</li>
+        </ul>
+        <p><strong>Test cases:</strong> {{totalTestCases}}</p>
+    </div>
+
+{{#each testCases}}
+    <div class="test-case {{#if (isErrorCase this)}}error-case{{/if}}">
+        <div class="test-header">
+            <h3 class="test-title">{{title}}{{#if (isErrorCase this)}}<span class="error-badge">Error Case</span>{{/if}}</h3>
+            <p class="test-name">test/data/sexp-parser/{{name}}/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">{{input}}</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">{{#if (isErrorCase this)}}Expected Error{{else}}Parsed Output{{/if}}</div>
+                <pre class="content {{#if (isErrorCase this)}}error-content{{/if}}">{{formatOutput output}}</pre>
+            </div>
+        </div>
+    </div>
+{{/each}}
+
+</body>
+</html>

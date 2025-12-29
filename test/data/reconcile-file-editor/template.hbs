@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reconcile File Editor Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-case.failure-case {
+            border-color: #ff9800;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-case.failure-case .test-header {
+            background-color: #fff3e0;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0 0 0;
+        }
+        .test-content {
+            padding: 15px;
+        }
+        .params {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .params-title {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+        .file-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .file-column {
+            padding: 0;
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 0;
+        }
+        .line-number {
+            display: inline-block;
+            width: 25px;
+            color: #999;
+            text-align: right;
+            margin-right: 10px;
+            user-select: none;
+        }
+        .target-line {
+            background-color: #fff3e0;
+            display: block;
+            margin: 0 -12px;
+            padding: 0 12px;
+            border-left: 3px solid #ff9800;
+        }
+        .changed-line {
+            background-color: #e8f5e9;
+            display: block;
+            margin: 0 -12px;
+            padding: 0 12px;
+            border-left: 3px solid #4caf50;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .failure-badge {
+            display: inline-block;
+            background-color: #ff9800;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+        .legend {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        .target-indicator {
+            background-color: #fff3e0;
+            padding: 2px 4px;
+            border-radius: 2px;
+            border-left: 3px solid #ff9800;
+        }
+        .changed-indicator {
+            background-color: #e8f5e9;
+            padding: 2px 4px;
+            border-radius: 2px;
+            border-left: 3px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reconcile File Editor Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for the file editor that updates reconciliation status markers in ledger files.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Updating posting statuses (uncleared → pending → cleared)</li>
+            <li>Smart normalization (using transaction headers when all postings have same status)</li>
+            <li>Precondition validation (checking expected current status before updating)</li>
+            <li>Error handling for invalid line numbers and edge cases</li>
+        </ul>
+        <div class="legend">
+            <strong>Legend:</strong>
+            <span class="target-indicator">Target posting lines</span> |
+            <span class="changed-indicator">Changed lines</span>
+        </div>
+        <p><strong>Test cases:</strong> {{totalTestCases}}</p>
+    </div>
+
+{{#each testCases}}
+    <div class="test-case {{#unless config.test_params.expected_result}}failure-case{{/unless}}">
+        <div class="test-header">
+            <h3 class="test-title">{{title}}{{#unless config.test_params.expected_result}}<span class="failure-badge">Expected Failure</span>{{/unless}}</h3>
+            <p class="test-name">test/data/reconcile-file-editor/{{name}}/</p>
+            {{#if config.description}}
+            <p class="test-description">{{config.description}}</p>
+            {{/if}}
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [{{join config.test_params.posting_line_numbers ", "}}]</div>
+                <div>expected_current_status: "{{config.test_params.expected_current_status}}"</div>
+                <div>new_status: "{{config.test_params.new_status}}"</div>
+                <div>expected_result: {{config.test_params.expected_result}}</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content">{{{highlightLines input config.test_params.posting_line_numbers "target"}}}</pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">{{{highlightDiff input expected config.test_params.posting_line_numbers}}}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/each}}
+
+</body>
+</html>

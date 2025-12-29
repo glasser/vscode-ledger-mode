@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reconcile Ledger Interface Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0 0 0;
+        }
+        .test-content {
+            padding: 15px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .content {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 0;
+        }
+        .expected-list {
+            background-color: #f8f8f8;
+            padding: 0;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        .expected-item {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .expected-item:last-child {
+            border-bottom: none;
+        }
+        .transaction-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .posting {
+            margin-left: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 4px 0;
+        }
+        .status-empty {
+            color: #666;
+        }
+        .status-pending {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        .status-cleared {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .line-num {
+            color: #999;
+            font-size: 11px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .account-badge {
+            display: inline-block;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+        .balance-section {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .accounts-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .account-tag {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reconcile Ledger Interface Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for the interface to the ledger CLI that extracts reconciliation data.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Getting list of accounts from ledger file</li>
+            <li>Getting uncleared/pending transactions for a specific account</li>
+            <li>Getting cleared+pending balance for reconciliation</li>
+            <li>Parsing ledger's "emacs" output format</li>
+        </ul>
+        <p><strong>Test cases:</strong> 8</p>
+    </div>
+
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Basic_transactions</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/basic_transactions/</p>
+            <p class="test-description">Basic transaction types with different statuses</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span>2024-01-01 Opening Balance
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span>    Assets:Checking              $1000.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>    Equity:Opening Balances
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>2024-01-02 * Cleared Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>    Expenses:Food                 $45.67
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">8</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">9</span>2024-01-03 ! Pending Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">10</span>    Expenses:Rent                $500.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">11</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">12</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">13</span>2024-01-04 Uncleared Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">14</span>    Expenses:Gas                  $35.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">15</span>    Assets:Checking</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Transactions (3 uncleared)</div>
+                <div class="expected-list">
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 1:</span>
+                            2024/01/01 Opening Balance
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L2</span>
+                            [ ]
+                            Assets:Checking $1000.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 9:</span>
+                            2024/01/03 Pending Transaction
+                        </div>
+                        <div class="posting status-pending">
+                            <span class="line-num">L11</span>
+                            [!]
+                            Assets:Checking $-500.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 13:</span>
+                            2024/01/04 Uncleared Transaction
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L15</span>
+                            [ ]
+                            Assets:Checking $-35.00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Cleared_and_pending_balance<span class="account-badge">Assets:Checking</span></h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/cleared_and_pending_balance/</p>
+            <p class="test-description">Test calculation of cleared and pending balance for reconciliation</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span>2024-01-01 Opening Balance
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span>    Assets:Checking              $2000.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>    Equity:Opening Balances
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>2024-01-02 * Cleared Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>    Expenses:Food                 $100.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">8</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">9</span>2024-01-03 ! Pending Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">10</span>    Expenses:Rent                $500.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">11</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">12</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">13</span>2024-01-04 Uncleared Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">14</span>    Expenses:Gas                  $50.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">15</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">16</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">17</span>2024-01-05 * Another Cleared Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">18</span>    Expenses:Utilities            $75.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">19</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">20</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">21</span>2024-01-06 ! Another Pending Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">22</span>    Expenses:Groceries           $125.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">23</span>    Assets:Checking</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Cleared+Pending Balance</div>
+                <div class="balance-section">$-800.00</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Fake_status_in_description</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/fake_status_in_description/</p>
+            <p class="test-description">Ensure status markers in descriptions are not treated as actual status</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span>2024-01-07 \! This is not a status marker
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span>    Expenses:Food                 $25.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>2024-01-08 \* This is also not a status marker
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>    Expenses:Gas                  $40.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">8</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">9</span>2024-01-09 ! Real pending transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">10</span>    Expenses:Rent                $100.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">11</span>    Assets:Checking</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Transactions (3 uncleared)</div>
+                <div class="expected-list">
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 1:</span>
+                            2024/01/07 \! This is not a status marker
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L3</span>
+                            [ ]
+                            Assets:Checking $-25.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 5:</span>
+                            2024/01/08 \* This is also not a status marker
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L7</span>
+                            [ ]
+                            Assets:Checking $-40.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 9:</span>
+                            2024/01/09 Real pending transaction
+                        </div>
+                        <div class="posting status-pending">
+                            <span class="line-num">L11</span>
+                            [!]
+                            Assets:Checking $-100.00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Get_accounts_test</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/get_accounts_test/</p>
+            <p class="test-description">Test get_accounts method including accounts with posting-level status markers</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span>2024/01/01 Opening Balance
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span>    Assets:Checking                 $1000.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>    Assets:Savings                   $500.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>    Income:Salary
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>2024/01/02 Grocery Shopping
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>    Expenses:Food                     $75.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">8</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">9</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">10</span>2024/01/03 Gas
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">11</span>    Expenses:Transportation           $40.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">12</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">13</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">14</span>2024/01/04 * Cleared Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">15</span>    Expenses:ClearedOnly              $25.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">16</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">17</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">18</span>2024/01/05 ! Pending Transaction  
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">19</span>    Expenses:PendingOnly              $30.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">20</span>    Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">21</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">22</span>2024/01/06 Transfer
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">23</span>    Assets:Savings                   $200.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">24</span>    Assets:Checking                 $-200.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">25</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">26</span>2024/01/07 Mixed Posting Status Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">27</span>    * Expenses:ClearedPostingOnly     $15.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">28</span>    ! Expenses:PendingPostingOnly     $10.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">29</span>    Assets:Checking                  $-25.00</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Transactions (9 uncleared)</div>
+                <div class="expected-list">
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line :</span>
+                             
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Line_numbers_with_comments_and_blanks</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/line_numbers_with_comments_and_blanks/</p>
+            <p class="test-description">Test that line numbers correctly map to the original file with comments and blank lines</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span># This is a comment on line 1
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span># Another comment on line 2
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>2024-01-01 Opening Balance
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>    Assets:Checking              $1000.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>    Equity:Opening Balances
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">8</span># Comment before second transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">9</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">10</span>2024-01-02 ! Grocery Store
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">11</span>    Expenses:Food                 $45.67
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">12</span>    CC:Visa                      -$45.67</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Transactions (1 uncleared)</div>
+                <div class="expected-list">
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 4:</span>
+                            2024/01/01 Opening Balance
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L5</span>
+                            [ ]
+                            Assets:Checking $1000.00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Mixed_status_filtering</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/mixed_status_filtering/</p>
+            <p class="test-description">Test filtering by account AND only returning uncleared transactions</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span>2024-01-01 Opening Balance
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span>    Assets:Checking              $1000.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>    Equity:Opening Balances
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>2024-01-02 ! Pending Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>    Assets:Checking               $100.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>    Expenses:Food
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">8</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">9</span>2024-01-03 * Fully Reconciled Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">10</span>    Assets:Checking               $200.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">11</span>    Expenses:Food
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">12</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">13</span>2024-01-04 Transaction for Different Account
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">14</span>    Assets:Savings                $300.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">15</span>    Expenses:Food
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">16</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">17</span>2024-01-05 Uncleared Transaction
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">18</span>    Assets:Checking               $400.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">19</span>    Expenses:Food</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Transactions (3 uncleared)</div>
+                <div class="expected-list">
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 1:</span>
+                            2024/01/01 Opening Balance
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L2</span>
+                            [ ]
+                            Assets:Checking $1000.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 5:</span>
+                            2024/01/02 Pending Transaction
+                        </div>
+                        <div class="posting status-pending">
+                            <span class="line-num">L6</span>
+                            [!]
+                            Assets:Checking $100.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 17:</span>
+                            2024/01/05 Uncleared Transaction
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L18</span>
+                            [ ]
+                            Assets:Checking $400.00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Multiple_transaction_line_numbers</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/multiple_transaction_line_numbers/</p>
+            <p class="test-description">Test line numbers for multiple transactions in sequence</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span>2024-01-01 Transaction One
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span>    Assets:Checking               $100.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>    Expenses:Test
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>2024-01-02 Transaction Two
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>    Assets:Checking               $200.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>    Expenses:Other
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">8</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">9</span>2024-01-03 Transaction Three
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">10</span>    Assets:Checking               $300.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">11</span>    Expenses:More</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Transactions (3 uncleared)</div>
+                <div class="expected-list">
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 1:</span>
+                            2024/01/01 Transaction One
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L2</span>
+                            [ ]
+                            Assets:Checking $100.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 5:</span>
+                            2024/01/02 Transaction Two
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L6</span>
+                            [ ]
+                            Assets:Checking $200.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 9:</span>
+                            2024/01/03 Transaction Three
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L10</span>
+                            [ ]
+                            Assets:Checking $300.00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">Posting_status</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/posting_status/</p>
+            <p class="test-description">Transactions with posting-level status markers</p>
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content"><span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">1</span>2024-01-05 Transaction with posting status
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">2</span>    * Expenses:Utilities          $75.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">3</span>    ! Assets:Checking
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">4</span>
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">5</span>2024-01-06 Mixed posting status
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">6</span>    * Expenses:Coffee             $5.00
+<span style="color: #999; display: inline-block; width: 25px; text-align: right; margin-right: 10px; user-select: none;">7</span>    Assets:Checking               $-5.00</pre>
+            </div>
+
+
+            <div class="section">
+                <div class="section-title">Expected Transactions (2 uncleared)</div>
+                <div class="expected-list">
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 1:</span>
+                            2024/01/05 Transaction with posting status
+                        </div>
+                        <div class="posting status-pending">
+                            <span class="line-num">L3</span>
+                            [!]
+                            Assets:Checking $-75.00
+                        </div>
+                    </div>
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line 5:</span>
+                            2024/01/06 Mixed posting status
+                        </div>
+                        <div class="posting status-empty">
+                            <span class="line-num">L7</span>
+                            [ ]
+                            Assets:Checking $-5.00
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

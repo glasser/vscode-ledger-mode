@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>S-Expression Parser Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-case.error-case {
+            border-color: #f44336;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-case.error-case .test-header {
+            background-color: #ffebee;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+        }
+        .column {
+            padding: 0;
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+        .error-content {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .error-badge {
+            display: inline-block;
+            background-color: #f44336;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <h1>S-Expression Parser Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for the S-expression parser used to parse ledger's "emacs" output format.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Parsing of atoms (strings, integers, nil)</li>
+            <li>Parsing of lists with nested structures</li>
+            <li>Handling of quoted strings with escape sequences</li>
+            <li>Error handling for malformed input</li>
+        </ul>
+        <p><strong>Test cases:</strong> 50</p>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Empty_string</h3>
+            <p class="test-name">test/data/sexp-parser/empty_string/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content"></pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">(no output)</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Error_list_expected_paren</h3>
+            <p class="test-name">test/data/sexp-parser/error_list_expected_paren/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">abc(123)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unexpected content after atom: (123)"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Error_truncate_long</h3>
+            <p class="test-name">test/data/sexp-parser/error_truncate_long/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;test&quot; this_is_a_very_long_extra_content_that_should_be_truncated</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unexpected content after string: this_is_a_very_long_..."</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Error_truncate_short</h3>
+            <p class="test-name">test/data/sexp-parser/error_truncate_short/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;test&quot; extra</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unexpected content after string: extra"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Error_unexpected_closing_paren</h3>
+            <p class="test-name">test/data/sexp-parser/error_unexpected_closing_paren/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">foo)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unexpected content after atom: )"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Error_unmatched_paren</h3>
+            <p class="test-name">test/data/sexp-parser/error_unmatched_paren/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(incomplete</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unclosed list - missing closing parenthesis"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Error_unterminated_string</h3>
+            <p class="test-name">test/data/sexp-parser/error_unterminated_string/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;unterminated</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unterminated quoted string: \"unterminated"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Extra_closing_paren</h3>
+            <p class="test-name">test/data/sexp-parser/extra_closing_paren/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(foo bar))</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unexpected content after list: )"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Integer_negative</h3>
+            <p class="test-name">test/data/sexp-parser/integer_negative/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">-42</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">-42</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Integer_positive</h3>
+            <p class="test-name">test/data/sexp-parser/integer_positive/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">42</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">42</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Ledger_transaction</h3>
+            <p class="test-name">test/data/sexp-parser/ledger_transaction/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(&quot;/path/to/file.ledger&quot; 123 (2024 1 15) nil &quot;Grocery Store&quot; ((account &quot;Expenses:Food&quot;) (amount &quot;$50.00&quot;) (status &quot;*&quot;)))</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  "/path/to/file.ledger",
+  123,
+  [
+    2024,
+    1,
+    15
+  ],
+  null,
+  "Grocery Store",
+  [
+    [
+      "account",
+      "Expenses:Food"
+    ],
+    [
+      "amount",
+      "$50.00"
+    ],
+    [
+      "status",
+      "*"
+    ]
+  ]
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_complex_mixed</h3>
+            <p class="test-name">test/data/sexp-parser/list_complex_mixed/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">((1 2) &quot;nested&quot; (foo bar))</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  [
+    1,
+    2
+  ],
+  "nested",
+  [
+    "foo",
+    "bar"
+  ]
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_deeply_nested</h3>
+            <p class="test-name">test/data/sexp-parser/list_deeply_nested/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(a (b (c d) e) f)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  "a",
+  [
+    "b",
+    [
+      "c",
+      "d"
+    ],
+    "e"
+  ],
+  "f"
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_empty</h3>
+            <p class="test-name">test/data/sexp-parser/list_empty/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">()</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_mixed_types</h3>
+            <p class="test-name">test/data/sexp-parser/list_mixed_types/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(1 &quot;two&quot; three)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  1,
+  "two",
+  "three"
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_multiple_ints</h3>
+            <p class="test-name">test/data/sexp-parser/list_multiple_ints/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(1 2 3)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  1,
+  2,
+  3
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_multiple_spaces</h3>
+            <p class="test-name">test/data/sexp-parser/list_multiple_spaces/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(a     b)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  "a",
+  "b"
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_nested_double</h3>
+            <p class="test-name">test/data/sexp-parser/list_nested_double/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">((1 2) (3 4))</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  [
+    1,
+    2
+  ],
+  [
+    3,
+    4
+  ]
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_nested_mixed</h3>
+            <p class="test-name">test/data/sexp-parser/list_nested_mixed/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(1 (2 3))</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  1,
+  [
+    2,
+    3
+  ]
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_nested_simple</h3>
+            <p class="test-name">test/data/sexp-parser/list_nested_simple/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">((1))</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  [
+    1
+  ]
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_single_int</h3>
+            <p class="test-name">test/data/sexp-parser/list_single_int/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(1)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  1
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_strings</h3>
+            <p class="test-name">test/data/sexp-parser/list_strings/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(&quot;hello&quot; &quot;world&quot;)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  "hello",
+  "world"
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_tokens</h3>
+            <p class="test-name">test/data/sexp-parser/list_tokens/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(foo bar)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  "foo",
+  "bar"
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_with_empty_string</h3>
+            <p class="test-name">test/data/sexp-parser/list_with_empty_string/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(&quot;&quot;)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  ""
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">List_with_nil</h3>
+            <p class="test-name">test/data/sexp-parser/list_with_nil/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(nil 42 &quot;string&quot;)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  null,
+  42,
+  "string"
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Nested_list_with_parens_in_string</h3>
+            <p class="test-name">test/data/sexp-parser/nested_list_with_parens_in_string/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(outer (inner &quot;string with ) paren&quot;))</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  "outer",
+  [
+    "inner",
+    "string with ) paren"
+  ]
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Nil</h3>
+            <p class="test-name">test/data/sexp-parser/nil/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">nil</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">(no output)</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_empty</h3>
+            <p class="test-name">test/data/sexp-parser/string_empty/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">(no output)</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_escaped_backslash</h3>
+            <p class="test-name">test/data/sexp-parser/string_escaped_backslash/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;back\\slash&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"back\\slash"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_escaped_carriage_return</h3>
+            <p class="test-name">test/data/sexp-parser/string_escaped_carriage_return/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;line1\rline2&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"line1\rline2"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_escaped_newline</h3>
+            <p class="test-name">test/data/sexp-parser/string_escaped_newline/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;line\nbreak&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"line\nbreak"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_escaped_quote</h3>
+            <p class="test-name">test/data/sexp-parser/string_escaped_quote/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;hello\&quot;world&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"hello\"world"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_escaped_tab</h3>
+            <p class="test-name">test/data/sexp-parser/string_escaped_tab/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;hello\tworld&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"hello\tworld"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_escaped_unknown</h3>
+            <p class="test-name">test/data/sexp-parser/string_escaped_unknown/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;test\xmore&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"testxmore"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_simple</h3>
+            <p class="test-name">test/data/sexp-parser/string_simple/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;hello&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"hello"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_unicode_cafe</h3>
+            <p class="test-name">test/data/sexp-parser/string_unicode_cafe/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;café&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"café"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_unicode_emoji</h3>
+            <p class="test-name">test/data/sexp-parser/string_unicode_emoji/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;emoji 😀&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"emoji 😀"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_unicode_japanese</h3>
+            <p class="test-name">test/data/sexp-parser/string_unicode_japanese/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;日本語&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"日本語"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_with_numbers</h3>
+            <p class="test-name">test/data/sexp-parser/string_with_numbers/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;with spaces and numbers 123&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"with spaces and numbers 123"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_with_parens</h3>
+            <p class="test-name">test/data/sexp-parser/string_with_parens/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(&quot;string with (parens)&quot;)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  "string with (parens)"
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">String_with_spaces</h3>
+            <p class="test-name">test/data/sexp-parser/string_with_spaces/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">&quot;hello world&quot;</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"hello world"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Token_kebab_case</h3>
+            <p class="test-name">test/data/sexp-parser/token_kebab_case/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">kebab-case</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"kebab-case"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Token_pending</h3>
+            <p class="test-name">test/data/sexp-parser/token_pending/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">pending</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"pending"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Token_simple</h3>
+            <p class="test-name">test/data/sexp-parser/token_simple/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">foo</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"foo"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Token_snake_case</h3>
+            <p class="test-name">test/data/sexp-parser/token_snake_case/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">snake_case</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"snake_case"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Token_with_numbers</h3>
+            <p class="test-name">test/data/sexp-parser/token_with_numbers/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">bar123</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"bar123"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Trailing_content</h3>
+            <p class="test-name">test/data/sexp-parser/trailing_content/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(foo bar) extra</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">"Unexpected content after list: extra"</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Whitespace_newlines</h3>
+            <p class="test-name">test/data/sexp-parser/whitespace_newlines/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(
+1
+2
+3
+)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  1,
+  2,
+  3
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Whitespace_spaces</h3>
+            <p class="test-name">test/data/sexp-parser/whitespace_spaces/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">  (  1   2   3  )  </pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  1,
+  2,
+  3
+]</pre>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Whitespace_tabs</h3>
+            <p class="test-name">test/data/sexp-parser/whitespace_tabs/</p>
+        </div>
+        <div class="test-content">
+            <div class="column">
+                <div class="column-header">Input S-expression</div>
+                <pre class="content">(	1	2	3	)</pre>
+            </div>
+            <div class="column">
+                <div class="column-header">Parsed Output</div>
+                <pre class="content ">[
+  1,
+  2,
+  3
+]</pre>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

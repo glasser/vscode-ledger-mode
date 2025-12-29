@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reconcile Balance Parser Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-case.error-case {
+            border-color: #f44336;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-case.error-case .test-header {
+            background-color: #ffebee;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0 0 0;
+        }
+        .test-content {
+            padding: 15px;
+        }
+        .data-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .data-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+        }
+        .data-value {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #f8f8f8;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .error-value {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .error-badge {
+            display: inline-block;
+            background-color: #f44336;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reconcile Balance Parser Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for parsing and formatting currency values in the reconciliation view.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Parsing currency strings with dollar signs and commas</li>
+            <li>Handling negative amounts</li>
+            <li>Formatting numbers back to display strings with thousands separators</li>
+            <li>Error handling for malformed input</li>
+        </ul>
+        <p><strong>Test cases:</strong> 14</p>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Comma_at_end</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/comma_at_end/</p>
+            <p class="test-description">Trailing comma after the number</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$1,234.56,"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Comma_at_start</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/comma_at_start/</p>
+            <p class="test-description">Leading comma before the number</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$,1234.56"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Comma_in_cents</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/comma_in_cents/</p>
+            <p class="test-description">Comma mistakenly placed in cents portion</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$1,234.5,6"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Decimal_precision</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/decimal_precision/</p>
+            <p class="test-description">Various decimal precision cases</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$100"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">100</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$100.00"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Excessive_commas</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/excessive_commas/</p>
+            <p class="test-description">Way too many commas everywhere</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$,1,2,3,4,5,6.7,8"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">123456.78</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$123,456.78"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Mixed_separators</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/mixed_separators/</p>
+            <p class="test-description">Spaces mixed with commas (common copy-paste from PDFs)</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$1, 234, 56.78"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">123456.78</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$123,456.78"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Multiple_commas</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/multiple_commas/</p>
+            <p class="test-description">Multiple commas in odd places</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$1,2,3,4.56"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Multiple_consecutive_commas</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/multiple_consecutive_commas/</p>
+            <p class="test-description">Multiple consecutive commas</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$1,,,234.56"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Negative_amount</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/negative_amount/</p>
+            <p class="test-description">Negative dollar amount</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"-$500.00"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">-500</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"-$500.00"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">No_dollar_sign</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/no_dollar_sign/</p>
+            <p class="test-description">Number without dollar sign</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"1234.56"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Simple_dollar_amount</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/simple_dollar_amount/</p>
+            <p class="test-description">Simple dollar amount parsing</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$1234.56"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Spaces_and_commas</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/spaces_and_commas/</p>
+            <p class="test-description">Spaces where they shouldn&#x27;t be (bad OCR or copy-paste)</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$ 1 , 2 3 4 . 5 6"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Whitespace_variations</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/whitespace_variations/</p>
+            <p class="test-description">Amount with surrounding whitespace</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"  $1,234.56  "</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">With_commas</h3>
+            <p class="test-name">test/data/reconcile-balance-parser/with_commas/</p>
+            <p class="test-description">Dollar amount with commas (copy-pasted from bank statements)</p>
+        </div>
+        <div class="test-content">
+            <div class="data-row">
+                <div class="data-label">Input:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Parsed Amount:</div>
+                <div class="data-value">1234.56</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Formatted Display:</div>
+                <div class="data-value">"$1,234.56"</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

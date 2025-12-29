@@ -9,6 +9,7 @@ import { NowMarkerProvider } from "./nowMarker";
 import { ReconciliationToggler } from "./reconciliationToggler";
 const chrono = require("chrono-node");
 import { RecurringTransactionProcessor } from "./recurringTransactions";
+import { ReconcileViewProvider } from "./reconcileView";
 
 export function formatDateForLedger(date?: Date): string {
   const today = date || new Date();
@@ -386,6 +387,29 @@ export function registerCommands(
     },
   );
 
+  // Register reconcile view command
+  const reconcileViewProvider = new ReconcileViewProvider(context);
+  const reconcileViewCommand = vscode.commands.registerCommand(
+    "ledger.reconcile",
+    async () => {
+      const activeEditor = vscode.window.activeTextEditor;
+      /* c8 ignore next 4 */
+      if (!activeEditor || activeEditor.document.languageId !== "ledger") {
+        vscode.window.showErrorMessage("No active Ledger file");
+        return;
+      }
+
+      try {
+        await reconcileViewProvider.show(activeEditor.document.fileName);
+      } catch (error) {
+        /* c8 ignore next 4 */
+        vscode.window.showErrorMessage(
+          `Failed to open reconcile view: ${error}`,
+        );
+      }
+    },
+  );
+
   // Register recurring transactions command
   const recurringTransactionsCommand = vscode.commands.registerCommand(
     "ledger.generateRecurringTransactions",
@@ -495,6 +519,7 @@ export function registerCommands(
     sortFileCommand,
     jumpToNowCommand,
     toggleReconciliationCommand,
+    reconcileViewCommand,
     recurringTransactionsCommand,
   );
 }

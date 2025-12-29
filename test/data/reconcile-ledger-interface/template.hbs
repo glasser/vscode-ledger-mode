@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reconcile Ledger Interface Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0 0 0;
+        }
+        .test-content {
+            padding: 15px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .content {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 0;
+        }
+        .expected-list {
+            background-color: #f8f8f8;
+            padding: 0;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        .expected-item {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .expected-item:last-child {
+            border-bottom: none;
+        }
+        .transaction-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .posting {
+            margin-left: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 4px 0;
+        }
+        .status-empty {
+            color: #666;
+        }
+        .status-pending {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        .status-cleared {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .line-num {
+            color: #999;
+            font-size: 11px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .account-badge {
+            display: inline-block;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+        .balance-section {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .accounts-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .account-tag {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reconcile Ledger Interface Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for the interface to the ledger CLI that extracts reconciliation data.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Getting list of accounts from ledger file</li>
+            <li>Getting uncleared/pending transactions for a specific account</li>
+            <li>Getting cleared+pending balance for reconciliation</li>
+            <li>Parsing ledger's "emacs" output format</li>
+        </ul>
+        <p><strong>Test cases:</strong> {{totalTestCases}}</p>
+    </div>
+
+{{#each testCases}}
+    <div class="test-case">
+        <div class="test-header">
+            <h3 class="test-title">{{title}}{{#if config.account}}<span class="account-badge">{{config.account}}</span>{{/if}}</h3>
+            <p class="test-name">test/data/reconcile-ledger-interface/{{name}}/</p>
+            {{#if config.description}}
+            <p class="test-description">{{config.description}}</p>
+            {{/if}}
+        </div>
+        <div class="test-content">
+            <div class="section">
+                <div class="section-title">Input File (input.ledger)</div>
+                <pre class="content">{{{numberLines input}}}</pre>
+            </div>
+
+            {{#if config.expected_accounts}}
+            <div class="section">
+                <div class="section-title">Expected Accounts</div>
+                <div class="accounts-list">
+                    {{#each config.expected_accounts}}
+                    <span class="account-tag">{{this}}</span>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if config.expected}}
+            {{#if config.expected.cleared_and_pending_balance}}
+            <div class="section">
+                <div class="section-title">Expected Cleared+Pending Balance</div>
+                <div class="balance-section">{{config.expected.cleared_and_pending_balance}}</div>
+            </div>
+            {{else}}
+            <div class="section">
+                <div class="section-title">Expected Transactions ({{config.expected.length}} uncleared)</div>
+                <div class="expected-list">
+                    {{#each config.expected}}
+                    <div class="expected-item">
+                        <div class="transaction-header">
+                            <span class="line-num">Line {{line_number}}:</span>
+                            {{date}} {{description}}
+                        </div>
+                        {{#each account_postings}}
+                        <div class="posting {{statusClass status}}">
+                            <span class="line-num">L{{line_number}}</span>
+                            {{#if status}}[{{status}}]{{else}}[ ]{{/if}}
+                            {{account}} {{amount}}
+                        </div>
+                        {{/each}}
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+            {{/if}}
+        </div>
+    </div>
+{{/each}}
+
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reconcile File Editor Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        .test-case {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-case.failure-case {
+            border-color: #ff9800;
+        }
+        .test-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .test-case.failure-case .test-header {
+            background-color: #fff3e0;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .test-name {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 0 0;
+            font-family: monospace;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0 0 0;
+        }
+        .test-content {
+            padding: 15px;
+        }
+        .params {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .params-title {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+        .file-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .file-column {
+            padding: 0;
+        }
+        .column-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .content {
+            background-color: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 0;
+        }
+        .line-number {
+            display: inline-block;
+            width: 25px;
+            color: #999;
+            text-align: right;
+            margin-right: 10px;
+            user-select: none;
+        }
+        .target-line {
+            background-color: #fff3e0;
+            display: block;
+            margin: 0 -12px;
+            padding: 0 12px;
+            border-left: 3px solid #ff9800;
+        }
+        .changed-line {
+            background-color: #e8f5e9;
+            display: block;
+            margin: 0 -12px;
+            padding: 0 12px;
+            border-left: 3px solid #4caf50;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0066cc;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .failure-badge {
+            display: inline-block;
+            background-color: #ff9800;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+        .legend {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        .target-indicator {
+            background-color: #fff3e0;
+            padding: 2px 4px;
+            border-radius: 2px;
+            border-left: 3px solid #ff9800;
+        }
+        .changed-indicator {
+            background-color: #e8f5e9;
+            padding: 2px 4px;
+            border-radius: 2px;
+            border-left: 3px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reconcile File Editor Test Cases</h1>
+
+    <div class="summary">
+        <h2>What This Shows</h2>
+        <p>Tests for the file editor that updates reconciliation status markers in ledger files.</p>
+        <p><strong>Features tested:</strong></p>
+        <ul>
+            <li>Updating posting statuses (uncleared → pending → cleared)</li>
+            <li>Smart normalization (using transaction headers when all postings have same status)</li>
+            <li>Precondition validation (checking expected current status before updating)</li>
+            <li>Error handling for invalid line numbers and edge cases</li>
+        </ul>
+        <div class="legend">
+            <strong>Legend:</strong>
+            <span class="target-indicator">Target posting lines</span> |
+            <span class="changed-indicator">Changed lines</span>
+        </div>
+        <p><strong>Test cases:</strong> 13</p>
+    </div>
+
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">All_pending_to_cleared</h3>
+            <p class="test-name">test/data/reconcile-file-editor/all_pending_to_cleared/</p>
+            <p class="test-description">Change all pending Assets:Checking postings to cleared</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [3, 7, 11]</div>
+                <div>expected_current_status: "!"</div>
+                <div>new_status: "*"</div>
+                <div>expected_result: true</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 ! First Transaction
+<span class="line-number">2</span>    Expenses:Food                 $30.00
+<span class="target-line"><span class="line-number">3</span>    Assets:Checking</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>2024-01-02 ! Second Transaction  
+<span class="line-number">6</span>    Expenses:Gas                  $40.00
+<span class="target-line"><span class="line-number">7</span>    Assets:Checking</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>2024-01-03 Third Transaction
+<span class="line-number">10</span>    ! Expenses:Utilities          $50.00
+<span class="target-line"><span class="line-number">11</span>    ! Assets:Checking</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content"><span class="changed-line"><span class="line-number">1</span>2024-01-01 First Transaction</span>
+<span class="changed-line"><span class="line-number">2</span>    ! Expenses:Food                 $30.00</span>
+<span class="changed-line"><span class="line-number">3</span>    * Assets:Checking</span>
+<span class="line-number">4</span>
+<span class="changed-line"><span class="line-number">5</span>2024-01-02 Second Transaction</span>
+<span class="changed-line"><span class="line-number">6</span>    ! Expenses:Gas                  $40.00</span>
+<span class="changed-line"><span class="line-number">7</span>    * Assets:Checking</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>2024-01-03 Third Transaction
+<span class="line-number">10</span>    ! Expenses:Utilities          $50.00
+<span class="changed-line"><span class="line-number">11</span>    * Assets:Checking</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Empty_posting_list</h3>
+            <p class="test-name">test/data/reconcile-file-editor/empty_posting_list/</p>
+            <p class="test-description">Handle empty posting list (should succeed as no-op)</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: []</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: true</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances</pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">(no expected output)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case failure-case">
+        <div class="test-header">
+            <h3 class="test-title">Invalid_line_number<span class="failure-badge">Expected Failure</span></h3>
+            <p class="test-name">test/data/reconcile-file-editor/invalid_line_number/</p>
+            <p class="test-description">Fail when line number is out of bounds</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [10]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: false</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances</pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">(no expected output)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Multiple_postings_same_transaction</h3>
+            <p class="test-name">test/data/reconcile-file-editor/multiple_postings_same_transaction/</p>
+            <p class="test-description">Update multiple postings in the same transaction to pending</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [2, 3, 4]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: true</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Split Transaction
+<span class="target-line"><span class="line-number">2</span>    Expenses:Food                 $30.00</span>
+<span class="target-line"><span class="line-number">3</span>    Expenses:Gas                  $20.00</span>
+<span class="target-line"><span class="line-number">4</span>    Assets:Checking              $-50.00</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content"><span class="changed-line"><span class="line-number">1</span>2024-01-01 ! Split Transaction</span>
+<span class="target-line"><span class="line-number">2</span>    Expenses:Food                 $30.00</span>
+<span class="target-line"><span class="line-number">3</span>    Expenses:Gas                  $20.00</span>
+<span class="target-line"><span class="line-number">4</span>    Assets:Checking              $-50.00</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Multiple_transactions</h3>
+            <p class="test-name">test/data/reconcile-file-editor/multiple_transactions/</p>
+            <p class="test-description">Update postings across multiple transactions</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [3, 7]</div>
+                <div>expected_current_status: "!"</div>
+                <div>new_status: "*"</div>
+                <div>expected_result: true</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 ! First Transaction
+<span class="line-number">2</span>    Expenses:Food                 $30.00
+<span class="target-line"><span class="line-number">3</span>    Assets:Checking</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>2024-01-02 ! Second Transaction
+<span class="line-number">6</span>    Expenses:Gas                  $40.00
+<span class="target-line"><span class="line-number">7</span>    Assets:Checking</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content"><span class="changed-line"><span class="line-number">1</span>2024-01-01 First Transaction</span>
+<span class="changed-line"><span class="line-number">2</span>    ! Expenses:Food                 $30.00</span>
+<span class="changed-line"><span class="line-number">3</span>    * Assets:Checking</span>
+<span class="line-number">4</span>
+<span class="changed-line"><span class="line-number">5</span>2024-01-02 Second Transaction</span>
+<span class="changed-line"><span class="line-number">6</span>    ! Expenses:Gas                  $40.00</span>
+<span class="changed-line"><span class="line-number">7</span>    * Assets:Checking</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case failure-case">
+        <div class="test-header">
+            <h3 class="test-title">One_posting_wrong_status<span class="failure-badge">Expected Failure</span></h3>
+            <p class="test-name">test/data/reconcile-file-editor/one_posting_wrong_status/</p>
+            <p class="test-description">Fail when one posting has wrong status but others are correct</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [2, 3, 4]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: false</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Transaction with mixed status
+<span class="target-line"><span class="line-number">2</span>    * Expenses:Food                 $30.00</span>
+<span class="target-line"><span class="line-number">3</span>    Expenses:Gas                  $20.00</span>
+<span class="target-line"><span class="line-number">4</span>    Assets:Checking              $-50.00</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">(no expected output)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Partial_update_same_status</h3>
+            <p class="test-name">test/data/reconcile-file-editor/partial_update_same_status/</p>
+            <p class="test-description">Partial update results in all postings having same status</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [3, 4]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "*"</div>
+                <div>expected_result: true</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Transaction with mixed status
+<span class="line-number">2</span>    * Expenses:Food                 $30.00
+<span class="target-line"><span class="line-number">3</span>    Expenses:Gas                  $20.00</span>
+<span class="target-line"><span class="line-number">4</span>    Assets:Checking              $-50.00</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content"><span class="changed-line"><span class="line-number">1</span>2024-01-01 * Transaction with mixed status</span>
+<span class="changed-line"><span class="line-number">2</span>    Expenses:Food                 $30.00</span>
+<span class="target-line"><span class="line-number">3</span>    Expenses:Gas                  $20.00</span>
+<span class="target-line"><span class="line-number">4</span>    Assets:Checking              $-50.00</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case failure-case">
+        <div class="test-header">
+            <h3 class="test-title">Pointing_to_blank_line<span class="failure-badge">Expected Failure</span></h3>
+            <p class="test-name">test/data/reconcile-file-editor/pointing_to_blank_line/</p>
+            <p class="test-description">Fail when line number points to blank line</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [4]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: false</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances
+<span class="target-line"><span class="line-number">4</span></span>
+<span class="line-number">5</span>2024-01-05 Grocery Store
+<span class="line-number">6</span>    Expenses:Food                 $50.00
+<span class="line-number">7</span>    Assets:Checking</pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">(no expected output)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case failure-case">
+        <div class="test-header">
+            <h3 class="test-title">Pointing_to_comment<span class="failure-badge">Expected Failure</span></h3>
+            <p class="test-name">test/data/reconcile-file-editor/pointing_to_comment/</p>
+            <p class="test-description">Fail when line number points to comment line</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [5]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: false</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances
+<span class="line-number">4</span>
+<span class="target-line"><span class="line-number">5</span>; This is a comment about the next transaction</span>
+<span class="line-number">6</span>2024-01-05 Grocery Store
+<span class="line-number">7</span>    Expenses:Food                 $50.00
+<span class="line-number">8</span>    Assets:Checking</pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">(no expected output)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case failure-case">
+        <div class="test-header">
+            <h3 class="test-title">Pointing_to_transaction_header<span class="failure-badge">Expected Failure</span></h3>
+            <p class="test-name">test/data/reconcile-file-editor/pointing_to_transaction_header/</p>
+            <p class="test-description">Fail when line number points to transaction header not posting</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [1]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: false</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="target-line"><span class="line-number">1</span>2024-01-01 Opening Balance</span>
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances</pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">(no expected output)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case failure-case">
+        <div class="test-header">
+            <h3 class="test-title">Precondition_failure<span class="failure-badge">Expected Failure</span></h3>
+            <p class="test-name">test/data/reconcile-file-editor/precondition_failure/</p>
+            <p class="test-description">Precondition fails when expected status doesn&#x27;t match actual</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [2, 3]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "*"</div>
+                <div>expected_result: false</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Mixed Status Transaction
+<span class="target-line"><span class="line-number">2</span>    ! Expenses:Food                 $30.00</span>
+<span class="target-line"><span class="line-number">3</span>    Assets:Checking              $-30.00</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content">(no expected output)</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Toggle_pending_to_uncleared</h3>
+            <p class="test-name">test/data/reconcile-file-editor/toggle_pending_to_uncleared/</p>
+            <p class="test-description">Toggle a pending posting back to uncleared</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [7]</div>
+                <div>expected_current_status: "!"</div>
+                <div>new_status: ""</div>
+                <div>expected_result: true</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances
+<span class="line-number">4</span>
+<span class="line-number">5</span>2024-01-05 ! Grocery Store
+<span class="line-number">6</span>    Expenses:Food                 $50.00
+<span class="target-line"><span class="line-number">7</span>    Assets:Checking</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances
+<span class="line-number">4</span>
+<span class="changed-line"><span class="line-number">5</span>2024-01-05 Grocery Store</span>
+<span class="changed-line"><span class="line-number">6</span>    ! Expenses:Food                 $50.00</span>
+<span class="target-line"><span class="line-number">7</span>    Assets:Checking</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="test-case ">
+        <div class="test-header">
+            <h3 class="test-title">Toggle_single_posting_to_pending</h3>
+            <p class="test-name">test/data/reconcile-file-editor/toggle_single_posting_to_pending/</p>
+            <p class="test-description">Toggle a single uncleared posting to pending status</p>
+        </div>
+        <div class="test-content">
+            <div class="params">
+                <div class="params-title">Test Parameters</div>
+                <div>posting_line_numbers: [7]</div>
+                <div>expected_current_status: ""</div>
+                <div>new_status: "!"</div>
+                <div>expected_result: true</div>
+            </div>
+            <div class="file-comparison">
+                <div class="file-column">
+                    <div class="column-header">Input (input.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances
+<span class="line-number">4</span>
+<span class="line-number">5</span>2024-01-05 Grocery Store
+<span class="line-number">6</span>    Expenses:Food                 $50.00
+<span class="target-line"><span class="line-number">7</span>    Assets:Checking</span></pre>
+                </div>
+                <div class="file-column">
+                    <div class="column-header">Expected (expected.ledger)</div>
+                    <pre class="content"><span class="line-number">1</span>2024-01-01 Opening Balance
+<span class="line-number">2</span>    Assets:Checking              $1000.00
+<span class="line-number">3</span>    Equity:Opening Balances
+<span class="line-number">4</span>
+<span class="line-number">5</span>2024-01-05 Grocery Store
+<span class="line-number">6</span>    Expenses:Food                 $50.00
+<span class="changed-line"><span class="line-number">7</span>    ! Assets:Checking</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

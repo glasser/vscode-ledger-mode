@@ -83,6 +83,10 @@
       {
         "command": "ledger.generateRecurringTransactions",
         "title": "Ledger: Generate Recurring Transactions"
+      },
+      {
+        "command": "ledger.reconcile",
+        "title": "Ledger: Reconcile Account"
       }
     ],
     "keybindings": [
@@ -110,7 +114,9 @@
           "items": {
             "type": "string"
           },
-          "default": ["<<(.+?)>>"],
+          "default": [
+            "<<(.+?)>>"
+          ],
           "description": "Regular expressions to strip from comments when inserting transactions with C-c TAB. If a comment contains only whitespace after stripping, the entire comment is removed."
         }
       }
@@ -200,7 +206,8 @@
     "prettier": "^3.5.3",
     "sinon": "^21.0.0",
     "typescript": "^4.9.3",
-    "vscode-tmgrammar-test": "^0.1.3"
+    "vscode-tmgrammar-test": "^0.1.3",
+    "yaml": "^2.8.2"
   },
   "dependencies": {
     "chrono-node": "^2.8.3",
