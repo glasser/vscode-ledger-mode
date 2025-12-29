@@ -30,8 +30,13 @@ export class LedgerCommandError extends Error {
   }
 }
 
+export interface BalanceReportResult {
+  report: string;
+  command: string;
+}
+
 export interface BalanceReporter {
-  getBalanceReport(filePath: string): Promise<string>;
+  getBalanceReport(filePath: string): Promise<BalanceReportResult>;
 }
 
 export class LedgerCli {
@@ -111,7 +116,7 @@ export class LedgerCli {
     return this.parseErrors(result.stderr);
   }
 
-  async getBalanceReport(filePath: string): Promise<string> {
+  async getBalanceReport(filePath: string): Promise<BalanceReportResult> {
     // Use David's custom balance report format from emacs config
     const priceDb = await this.extractPriceDbPath(filePath);
     const args = [];
@@ -142,8 +147,17 @@ export class LedgerCli {
       "^Expense",
     );
 
+    // Build the command string for display (without --no-color which is added internally)
+    const displayArgs = [
+      "-f",
+      filePath,
+      ...args.filter((a) => a !== "--force-color"),
+    ];
+    const command = `${this.ledgerPath} ${displayArgs.map((a) => (a.includes(" ") || a.startsWith("^") ? `'${a}'` : a)).join(" ")}`;
+
     try {
-      return await this.runLedgerCommandOrThrow(args, filePath);
+      const report = await this.runLedgerCommandOrThrow(args, filePath);
+      return { report, command };
     } catch (error) {
       throw new Error(`Failed to generate balance report: ${error}`);
     }

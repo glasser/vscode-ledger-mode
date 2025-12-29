@@ -51,8 +51,8 @@ suite("Balance Report View Advanced Tests", () => {
 
     // Default mock balance reporter (individual tests can override)
     mockBalanceReporter = {
-      async getBalanceReport(): Promise<string> {
-        return "Default mock report";
+      async getBalanceReport() {
+        return { report: "Default mock report", command: "ledger bal" };
       },
     };
 
@@ -156,7 +156,7 @@ suite("Balance Report View Advanced Tests", () => {
       let callCount = 0;
       mockBalanceReporter.getBalanceReport = async () => {
         callCount++;
-        return `Report ${callCount}`;
+        return { report: `Report ${callCount}`, command: "ledger bal" };
       };
 
       await provider.show("/test/file.ledger");
@@ -182,8 +182,10 @@ suite("Balance Report View Advanced Tests", () => {
       });
 
       // Mock balance reporter to simulate successful report generation initially
-      mockBalanceReporter.getBalanceReport = async () =>
-        "Sample balance report";
+      mockBalanceReporter.getBalanceReport = async () => ({
+        report: "Sample balance report",
+        command: "ledger bal",
+      });
 
       await provider.show("/test/file.ledger");
 
@@ -204,7 +206,10 @@ suite("Balance Report View Advanced Tests", () => {
       let callCount = 0;
       mockBalanceReporter.getBalanceReport = async () => {
         callCount++;
-        return callCount === 1 ? "Initial report" : "Updated report";
+        return {
+          report: callCount === 1 ? "Initial report" : "Updated report",
+          command: "ledger bal",
+        };
       };
 
       await provider.show("/test/file.ledger");
@@ -229,7 +234,7 @@ suite("Balance Report View Advanced Tests", () => {
       let callCount = 0;
       mockBalanceReporter.getBalanceReport = async () => {
         callCount++;
-        return "Created file report";
+        return { report: "Created file report", command: "ledger bal" };
       };
 
       await provider.show("/test/file.ledger");
@@ -300,8 +305,10 @@ suite("Balance Report View Advanced Tests", () => {
   suite("Error Handling and Edge Cases", () => {
     test("Should handle successful balance report generation", async () => {
       // Mock successful balance report
-      mockBalanceReporter.getBalanceReport = async () =>
-        "Assets:Checking  $1,000.00\nExpenses:Food  $500.00";
+      mockBalanceReporter.getBalanceReport = async () => ({
+        report: "Assets:Checking  $1,000.00\nExpenses:Food  $500.00",
+        command: "ledger bal",
+      });
 
       await provider.show("/test/file.ledger");
 
@@ -406,7 +413,7 @@ suite("Balance Report View Advanced Tests", () => {
       let callCount = 0;
       mockBalanceReporter.getBalanceReport = async () => {
         callCount++;
-        return "Test report";
+        return { report: "Test report", command: "ledger bal" };
       };
 
       // Manually call updateReport when panel is undefined
@@ -423,7 +430,10 @@ suite("Balance Report View Advanced Tests", () => {
 
     test("Should update panel title with timestamp and filename", async () => {
       // Mock successful balance report
-      mockBalanceReporter.getBalanceReport = async () => "Sample report";
+      mockBalanceReporter.getBalanceReport = async () => ({
+        report: "Sample report",
+        command: "ledger bal",
+      });
 
       await provider.show("/test/path/myfile.ledger");
 
@@ -436,8 +446,10 @@ suite("Balance Report View Advanced Tests", () => {
   suite("HTML Generation", () => {
     test("Should escape HTML in balance report content", async () => {
       // Mock balance report with HTML characters
-      mockBalanceReporter.getBalanceReport = async () =>
-        'Assets:Test<script>alert("xss")</script>  $100.00';
+      mockBalanceReporter.getBalanceReport = async () => ({
+        report: 'Assets:Test<script>alert("xss")</script>  $100.00',
+        command: "ledger bal",
+      });
 
       await provider.show("/test/file.ledger");
 

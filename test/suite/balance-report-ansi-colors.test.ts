@@ -8,8 +8,11 @@ suite("Balance Report ANSI Color Integration Tests", () => {
   test("Should include ANSI color CSS in HTML output", () => {
     const provider = new BalanceReportViewProvider({} as any);
 
-    const sampleReport =
-      "\x1b[31m$-1000.00\x1b[0m  \x1b[34mEquity:Opening-Balances\x1b[0m";
+    const sampleReport = {
+      report:
+        "\x1b[31m$-1000.00\x1b[0m  \x1b[34mEquity:Opening-Balances\x1b[0m",
+      command: "ledger -f test.ledger bal",
+    };
     const html = provider.getReportHtml(sampleReport);
 
     // Should include CSS for ANSI colors

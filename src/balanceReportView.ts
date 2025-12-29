@@ -2,7 +2,12 @@
 // Auto-updates when the source ledger file changes
 
 import * as vscode from "vscode";
-import { LedgerCli, BalanceReporter, LedgerCommandError } from "./ledgerCli";
+import {
+  LedgerCli,
+  BalanceReporter,
+  LedgerCommandError,
+  BalanceReportResult,
+} from "./ledgerCli";
 import * as path from "path";
 import * as fs from "fs";
 import { ERROR_FORMATTING_CSS } from "./errorFormattingCss";
@@ -121,10 +126,10 @@ export class BalanceReportViewProvider {
     }
 
     try {
-      const report = await this.balanceReporter.getBalanceReport(
+      const result = await this.balanceReporter.getBalanceReport(
         this.currentFilePath,
       );
-      this.panel.webview.html = this.getReportHtml(report);
+      this.panel.webview.html = this.getReportHtml(result);
 
       // Update title with timestamp
       const fileName = path.basename(this.currentFilePath);
@@ -147,8 +152,9 @@ export class BalanceReportViewProvider {
     }
   }
 
-  getReportHtml(report: string): string {
-    const htmlReport = this.ansiToHtml(report);
+  getReportHtml(result: BalanceReportResult): string {
+    const htmlReport = this.ansiToHtml(result.report);
+    const escapedCommand = this.escapeHtml(result.command);
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -181,13 +187,32 @@ export class BalanceReportViewProvider {
         .timestamp {
             float: right;
         }
+        .copy-command {
+            cursor: pointer;
+            text-decoration: underline;
+            margin-left: 10px;
+        }
+        .copy-command:hover {
+            opacity: 1;
+        }
         /* ANSI color mappings from shared CSS */
         ${ANSI_COLORS_CSS}
     </style>
+    <script>
+        function copyCommand() {
+            const command = ${JSON.stringify(result.command)};
+            navigator.clipboard.writeText(command).then(() => {
+                const el = document.getElementById('copy-link');
+                const original = el.textContent;
+                el.textContent = 'Copied!';
+                setTimeout(() => { el.textContent = original; }, 1500);
+            });
+        }
+    </script>
 </head>
 <body>
     <div class="header">
-        Balance Report <span class="timestamp">Auto-updating</span>
+        Balance Report <span id="copy-link" class="copy-command" onclick="copyCommand()" title="${escapedCommand}">[copy command]</span> <span class="timestamp">Auto-updating</span>
     </div>
     <pre>${htmlReport}</pre>
 </body>

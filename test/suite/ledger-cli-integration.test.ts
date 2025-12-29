@@ -34,11 +34,17 @@ suite("Ledger CLI Integration Tests", () => {
   test("Should generate balance report", async function () {
     this.timeout(10000);
 
-    const report = await ledgerCli.getBalanceReport(sampleLedgerPath);
-    assert.strictEqual(typeof report, "string");
-    assert.ok(report.length > 0);
+    const result = await ledgerCli.getBalanceReport(sampleLedgerPath);
+    assert.strictEqual(typeof result.report, "string");
+    assert.ok(result.report.length > 0);
 
     // Balance report should contain account names and amounts
-    assert.ok(report.includes("Assets") || report.includes("Expenses"));
+    assert.ok(
+      result.report.includes("Assets") || result.report.includes("Expenses"),
+    );
+
+    // Should also return the command string
+    assert.strictEqual(typeof result.command, "string");
+    assert.ok(result.command.includes("ledger"));
   });
 });
