@@ -555,7 +555,7 @@ export class ReconcileViewProvider {
         const rows = Array.from(document.querySelectorAll('tbody tr'));
         let selectedIndex = -1;
 
-        function selectRow(index) {
+        function selectRow(index, shouldFocus = true) {
             // Remove selection from previous row
             if (selectedIndex >= 0 && selectedIndex < rows.length) {
                 rows[selectedIndex].classList.remove('selected');
@@ -565,7 +565,9 @@ export class ReconcileViewProvider {
             selectedIndex = index;
             if (selectedIndex >= 0 && selectedIndex < rows.length) {
                 rows[selectedIndex].classList.add('selected');
-                rows[selectedIndex].focus();
+                if (shouldFocus) {
+                    rows[selectedIndex].focus();
+                }
                 rows[selectedIndex].scrollIntoView({ block: 'nearest' });
                 // Notify extension and scroll editor to show line (without taking focus)
                 const lineNumber = parseInt(rows[selectedIndex].dataset.line);
@@ -683,7 +685,7 @@ export class ReconcileViewProvider {
             else if (e.key === 'r' || e.key === 'R') refresh();
         });
 
-        // Restore selection from state or select first row
+        // Restore selection from state or select first row (without stealing focus)
         const savedLineNumber = ${this.state.selectedLineNumber ?? "null"};
         let initialIndex = 0;
         if (savedLineNumber !== null) {
@@ -693,7 +695,7 @@ export class ReconcileViewProvider {
             }
         }
         if (rows.length > 0) {
-            selectRow(initialIndex);
+            selectRow(initialIndex, false);
         }
     </script>
 </body>
