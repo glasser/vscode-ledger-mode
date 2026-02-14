@@ -86,9 +86,7 @@ export function parseDateString(
 }
 
 function startOfDay(date: Date): Date {
-  const [day, time] = date.toISOString().split("T");
-  const zeroTime = time.replace(/\d/g, "0");
-  return new Date(`${day}T${zeroTime}`);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 export function findDatePosition(content: string, targetDate: Date): number {
@@ -101,8 +99,12 @@ export function findDatePosition(content: string, targetDate: Date): number {
     const dateMatch = line.match(/^(\d{4}[/-]\d{2}[/-]\d{2})/);
 
     if (dateMatch) {
-      const dateStr = dateMatch[1].replace("/", "-");
-      const lineDate = startOfDay(new Date(dateStr));
+      const dateParts = dateMatch[1].split(/[/-]/);
+      const lineDate = new Date(
+        parseInt(dateParts[0]),
+        parseInt(dateParts[1]) - 1,
+        parseInt(dateParts[2]),
+      );
 
       // If we find a date that's after target, insert before this line
       if (lineDate > target) {

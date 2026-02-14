@@ -57,6 +57,34 @@ suite("Enhanced Date Insertion Tests", () => {
       assert.strictEqual(position, 1);
     });
 
+    test("Should use local date, not UTC date, for positioning", () => {
+      // Simulate what happens at e.g. 5 PM PST on Feb 13: UTC is already Feb 14.
+      // Create a Date where local day (13th) differs from UTC day (14th).
+      // We do this by picking a date at 23:00 UTC, which in any timezone
+      // behind UTC (like PST at UTC-8) is the same day, but in UTC+N
+      // timezones could be the next day. To make this test timezone-agnostic,
+      // we construct the Date from local components and verify it positions
+      // based on local date, not UTC.
+      const content = `2025-02-12 Past transaction
+  Assets:Checking  $100
+
+2025-02-13 Same day transaction
+  Assets:Checking  $50
+
+2025-02-14 Future transaction
+  Assets:Checking  $200`;
+
+      // Create a Date for Feb 13 at 11 PM local time.
+      // The local date is Feb 13, but in UTC this could be Feb 14.
+      const targetDate = new Date(2025, 1, 13, 23, 0, 0);
+      const position = findDatePosition(content, targetDate);
+
+      // Should position after the Feb 13 entry (line 5, the blank line before
+      // Feb 14), NOT after Feb 14 (which would be line 8 / end of file).
+      // The old UTC-based code would get this wrong in timezones behind UTC.
+      assert.strictEqual(position, 5);
+    });
+
     test("Should prefer blank line before transaction", () => {
       const content = `2024-01-01 Past transaction
   Assets:Checking  $100
