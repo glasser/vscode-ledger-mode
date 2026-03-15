@@ -364,9 +364,12 @@ ${ERROR_FORMATTING_CSS}
       const uri = vscode.Uri.file(filePath);
 
       const document = await vscode.workspace.openTextDocument(uri);
+      const existingEditor = vscode.window.visibleTextEditors.find(
+        (e) => e.document.uri.toString() === uri.toString(),
+      );
       const editor = await vscode.window.showTextDocument(
         document,
-        vscode.ViewColumn.One,
+        existingEditor?.viewColumn ?? vscode.ViewColumn.One,
       );
 
       // Move cursor to the specified line

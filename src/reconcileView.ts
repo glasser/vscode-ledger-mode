@@ -284,9 +284,12 @@ export class ReconcileViewProvider {
         const lineNumber = message.lineNumber as number;
         const uri = vscode.Uri.file(this.state.filePath);
         const document = await vscode.workspace.openTextDocument(uri);
+        const existingEditor = vscode.window.visibleTextEditors.find(
+          (e) => e.document.uri.toString() === uri.toString(),
+        );
         const editorView = await vscode.window.showTextDocument(
           document,
-          vscode.ViewColumn.One,
+          existingEditor?.viewColumn ?? vscode.ViewColumn.One,
         );
 
         const position = new vscode.Position(lineNumber - 1, 0);
@@ -303,9 +306,12 @@ export class ReconcileViewProvider {
         const lineNumber = message.lineNumber as number;
         const uri = vscode.Uri.file(this.state.filePath);
         const document = await vscode.workspace.openTextDocument(uri);
+        const existingEditor = vscode.window.visibleTextEditors.find(
+          (e) => e.document.uri.toString() === uri.toString(),
+        );
         // Use preserveFocus to keep focus in the webview
         const editorView = await vscode.window.showTextDocument(document, {
-          viewColumn: vscode.ViewColumn.One,
+          viewColumn: existingEditor?.viewColumn ?? vscode.ViewColumn.One,
           preserveFocus: true,
         });
 
