@@ -2,7 +2,9 @@
 
 A comprehensive Visual Studio Code extension for working with [Ledger](https://ledger-cli.org/) accounting files. Inspired by [Emacs ledger-mode](https://github.com/ledger/ledger-mode), this extension brings essential ledger editing features to VSCode with native integration.
 
-## Features
+This extension is entirely designed for my own use: I've taken all the features I loved about Emacs ledger-mode and made all the tweaks that I've wanted to make for years. I do not plan to publish this to the VSCode marketplace or to treat this as a collaborative open source project to serve everybody's needs. But if this works for you (either for direct use or as something to fork and tweak), that's great.
+
+## Features (partial list)
 
 ### Syntax Highlighting
 
@@ -86,23 +88,11 @@ Note: The extension will work for syntax highlighting and basic features even wi
 
 ## Installation
 
-### Method 1: Install from VSIX (Recommended)
-
-1. Download or build the `.vsix` file (see Development section)
-2. Open VSCode
-3. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
-4. Run "Extensions: Install from VSIX..."
-5. Select the `.vsix` file
-
-### Method 2: Development Installation
-
-1. Clone this repository
-2. Open the folder in VSCode
-3. Press `F5` to run the extension in a new Extension Development Host window
+`npm i && npm run install-in-vscode`
 
 ## Usage
 
-1. Open a Ledger file: Files with `.ledger` or `.rec` extensions are automatically recognized
+1. Open a Ledger file: Files with the `.ledger` extension are automatically recognized
 2. Start typing: Get Emacs-style syntax highlighting immediately that adapts to your current VSCode theme
 3. Autocompletion:
    - On transaction lines: Type a space after the date to get payee suggestions
@@ -284,7 +274,7 @@ If you see errors about the ledger command not being found:
 
 ### Syntax Highlighting Not Working
 
-1. Ensure the file has a `.ledger` or `.rec` extension
+1. Ensure the file has a `.ledger` extension
 2. Try manually setting the language: Command Palette → "Change Language Mode" → "Ledger"
 
 ### Autocompletion Not Working
